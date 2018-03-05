@@ -15,6 +15,16 @@ public:
 	void print();
 	bool operator==(const double d) const;
 };
+bool operator==(const MyVector& v,const double d) const{
+	for(int i = 0; i < v.n; i++) {
+		if(v.m[i] != d)
+			return false;
+	}
+	return true;
+}
+bool operator==(const double d,const MyVector& v) const{
+	return v == d;
+}
 
 int main(){
 	return 0;

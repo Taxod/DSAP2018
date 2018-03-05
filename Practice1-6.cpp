@@ -13,11 +13,29 @@ public:
 	MyVector(const MyVector& v);
 	~MyVector();
 	void print();
-	bool operator==(const double d) const;
+	MyVector operator-(Myvector& v);
 };
 
 int main(){
+	double d = 1.23;
+	double m[3] = {-d, -d, -d};
+	MyVector v(3, m);
+	v.print();
+	v = -v;
+	v.print();
+	if(v == d)
+		cout << "Equal!";
+	else
+		cout << "Unequal!";
 	return 0;
+}
+
+MyVector MyVector::operator-(Myvector& v){
+	MyVector t(v);
+	for(int i = 0 ; i < t.n ; i++){
+		t.m[i] = -t.m[i];
+	}
+	return t;
 }
 
 MyVector::MyVector()
@@ -53,12 +71,4 @@ void MyVector::print()
 	for(int i = 0; i < n - 1; i++)
 		cout << m[i] << ", ";
 	cout << m[n-1] << ")\n";
-}
-bool MyVector::operator==(const double d) const
-{
-	for(int i = 0; i < n; i++) {
-		if(this->m[i] != d)
-			return false;
-	}
-	return true;
 }
