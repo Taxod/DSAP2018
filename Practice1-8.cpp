@@ -14,8 +14,29 @@ public:
 	~MyVector();
 	void print();
 	friend istream& operator>>(istream& in, MyVector& v);
+	friend ostream& operator<<(ostream& out, const MyVector& v);
 };
+ostream& operator<<(ostream& out, const MyVector& v)
+{
+	out << "(";
+	for(int i = 0; i < v.n - 1; i++)
+		out << v.m[i] << ", ";
+	out << v.m[v.n - 1] << ")";
+	return out;
+}
+istream& operator>>(istream& in, MyVector& v){
+	in >> v.n ;
+	for(int i = 0; i < v.n; i++)
+		in >> v.m[i];
+	return in;
+}
 int main(){
+	double d = 1.23;
+	double m[3] = {-d, -d, -d};
+	MyVector v(3, m);
+	cout << v;
+	cin >> v;
+	cout << v;
 	return 0;
 }
 

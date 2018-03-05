@@ -17,6 +17,10 @@ public:
 };
 
 int main(){
+	double d = 1.1;
+	double m[2] = {1.1,1.5};
+	MyVector v(2,m);
+	cout << v.operator==(d);
 	return 0;
 }
 
@@ -57,7 +61,7 @@ void MyVector::print()
 bool MyVector::operator==(const double d) const
 {
 	for(int i = 0; i < n; i++) {
-		if(this->m[i] != d)
+		if(this->m[i] - d > 0.00001)
 			return false;
 	}
 	return true;
