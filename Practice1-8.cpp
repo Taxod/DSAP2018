@@ -24,8 +24,11 @@ ostream& operator<<(ostream& out, const MyVector& v)
 	out << v.m[v.n - 1] << ")";
 	return out;
 }
+
 istream& operator>>(istream& in, MyVector& v){
 	in >> v.n ;
+	delete [] v.m;
+	v.m  = new double[v.n];
 	for(int i = 0; i < v.n; i++)
 		in >> v.m[i];
 	return in;
