@@ -2,6 +2,11 @@
 #include<cstring>
 #include<stdlib.h>
 using namespace std;
+struct TwoInt
+{
+	int i;
+	int j;
+};
 class MyVector
 {
 private:
@@ -14,24 +19,12 @@ public:
 	~MyVector();
 	void print();
 	bool operator==(const double d) const;
-	double operator[](char* c) const;
+	double operator[](struct TwoInt) const;
 };
-
-double MyVector::operator[](char* c) const{
-	
-	char* delim = ":";
-	char* ptr;
-	ptr = strtok(c,delim);
-	int num[2] = {0};
-	int count = 0;
-	while(ptr != nullptr){
-		num[count] = atoi(ptr);
-		count ++;
-		ptr = strtok(nullptr,delim);
-	}
-	if(num[0] >= 0 && num[1] > num[0] && n-1 >= num[1]){
+double MyVector::operator[](TwoInt p) const{
+	if(p.i >= 0 && p.j > p.i && n-1 >= p.j){
 		double sum = 0;
-		for(int i = num[0];i <=num[1];i++){
+		for(int i = p.i;i <= p.j;i++){
 			sum += m[i];
 		}
 		return sum;
@@ -42,9 +35,8 @@ double MyVector::operator[](char* c) const{
 int main(){
 	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
 	MyVector v(5, d);
-	char c[] = "1:3";
-	cout << v[c];
-
+	TwoInt ti = {1, 3};
+	cout << v[ti];
 	return 0;
 }
 

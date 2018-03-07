@@ -14,37 +14,19 @@ public:
 	~MyVector();
 	void print();
 	bool operator==(const double d) const;
-	double operator[](char* c) const;
-};
+	double operator[](int i, int j) const;
 
-double MyVector::operator[](char* c) const{
-	
-	char* delim = ":";
-	char* ptr;
-	ptr = strtok(c,delim);
-	int num[2] = {0};
-	int count = 0;
-	while(ptr != nullptr){
-		num[count] = atoi(ptr);
-		count ++;
-		ptr = strtok(nullptr,delim);
-	}
-	if(num[0] >= 0 && num[1] > num[0] && n-1 >= num[1]){
-		double sum = 0;
-		for(int i = num[0];i <=num[1];i++){
-			sum += m[i];
-		}
-		return sum;
-	}else{
-		exit(1);
-	}
+};
+double MyVector::operator[](int i, int j) const{
+
+
+
+
 }
 int main(){
 	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
 	MyVector v(5, d);
-	char c[] = "1:3";
-	cout << v[c];
-
+	cout << v[1, 3];
 	return 0;
 }
 
