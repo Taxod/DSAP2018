@@ -26,12 +26,13 @@ double MyVector::operator[](char* c) const{
 	ptr = strtok(c,delim);
 	int n[2] = {0};
 	int count = 0;
-	while(ptr != nullptr){
-		n[count] = *ptr;
-//		n[count] = atoi(n[count]);
-		count ++;
-		ptr = strtok(c,delim);
-	}
+	n[0] = ptr;
+	cout << n[0]<< typeof(n[0]);
+//	while(ptr != nullptr){
+//		n[count] = *ptr;
+//		count ++;
+//		ptr = strtok(c,delim);
+//	}
 	if(n[0] >= 0 && n[1] > n[0] && len-1 >= n[1]){
 		double sum = 0;
 		for(int i = n[0];i <=n[1];i++){
@@ -41,6 +42,7 @@ double MyVector::operator[](char* c) const{
 	}else{
 		exit(1);
 	}
+	return 0; 
 }
 int main(){
 	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
