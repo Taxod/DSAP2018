@@ -2,7 +2,7 @@
 #include<string>
 #include<cstring>
 #include<stdlib.h>
-
+#include <typeinfo>
 using namespace std;
 class MyVector
 {
@@ -20,22 +20,20 @@ public:
 };
 
 double MyVector::operator[](char* c) const{
-	int len = sizeof(*this) / sizeof(double);
+	
 	char* delim = ":";
 	char* ptr;
 	ptr = strtok(c,delim);
-	int n[2] = {0};
+	int num[2] = {0};
 	int count = 0;
-	n[0] = ptr;
-	cout << n[0]<< typeof(n[0]);
-//	while(ptr != nullptr){
-//		n[count] = *ptr;
-//		count ++;
-//		ptr = strtok(c,delim);
-//	}
-	if(n[0] >= 0 && n[1] > n[0] && len-1 >= n[1]){
+	while(ptr != nullptr){
+		num[count] = atoi(ptr);
+		count ++;
+		ptr = strtok(nullptr,delim);
+	}
+	if(num[0] >= 0 && num[1] > num[0] && n-1 >= num[1]){
 		double sum = 0;
-		for(int i = n[0];i <=n[1];i++){
+		for(int i = num[0];i <=num[1];i++){
 			sum += m[i];
 		}
 		return sum;
