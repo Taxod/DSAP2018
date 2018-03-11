@@ -17,13 +17,16 @@ public:
 };
 istream& operator >>(istream& in, MyVector& v){
 	string p;
-	getline(in,p);
+	getline(in,p,',');
 }
 int main(){
-	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
+	string p;
+	getline(cin,p,',');
+	cout << p[3];
+	/*double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
 	MyVector u(5, d);
 	cin >> u;
-	u.print();
+	u.print();*/
 	return 0;
 }
 
