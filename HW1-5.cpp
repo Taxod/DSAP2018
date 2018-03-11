@@ -21,8 +21,17 @@ istream& operator >>(istream& in, MyVector& v){
 }
 int main(){
 	string p;
-	getline(cin,p,',');
-	cout << p[3];
+	getline(cin,p);
+	int count = 0;
+	size_t ptr = p.find(',');
+	while((p+ptr).find(',')!=string::npos){
+		count++;
+		ptr++;
+//		cout << "bfb";
+	}
+	cout << count;
+//	char* ptr = strtok(p,',');
+//	cout << p[3];
 	/*double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
 	MyVector u(5, d);
 	cin >> u;
