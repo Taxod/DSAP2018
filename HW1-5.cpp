@@ -20,14 +20,15 @@ istream& operator >>(istream& in, MyVector& v){
 	getline(in,p,',');
 }
 int main(){
-	string p;
-	getline(cin,p);
+	char p[1000];
+	cin.getline(p,1000);
 	int count = 0;
-	size_t ptr = p.find(',');
-	while((p+ptr).find(',')!=string::npos){
-		count++;
-		ptr++;
-//		cout << "bfb";
+	char* ptr = strchr(p, ',');
+	while(ptr != nullptr)
+	{
+		*ptr = '_';
+		ptr = strchr(ptr, ',');
+		count ++;
 	}
 	cout << count;
 //	char* ptr = strtok(p,',');
