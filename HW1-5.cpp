@@ -5,6 +5,7 @@
 using namespace std;
 class MyVector
 {
+friend istream& operator >>(istream& in, MyVector& v);
 private:
 	int n;
 	double* m;
@@ -16,12 +17,8 @@ public:
 	void print();
 };
 istream& operator >>(istream& in, MyVector& v){
-	string p;
-	getline(in,p,',');
-}
-int main(){
-	char p[1000];
-	cin.getline(p,1000);
+	char p[10000]={0};
+	cin.getline(p,10000);
 	int count = 0;
 	char* ptr = strchr(p, ',');
 	while(ptr != nullptr)
@@ -30,13 +27,34 @@ int main(){
 		ptr = strchr(ptr, ',');
 		count ++;
 	}
-	cout << count;
-//	char* ptr = strtok(p,',');
-//	cout << p[3];
-	/*double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
+	ptr = strchr(p, '<');
+	*ptr = '_';
+	ptr = strchr(p, '>');
+	*ptr = '_';
+	double* num = new double [count+1];
+	int wordcnt = 0;
+	char delim = '_';
+	char* start = strtok(p, &delim);
+	char temp[1000] ={0};
+	while(start != nullptr)
+	{
+		strcpy(temp, start);
+		num[wordcnt] = atoi(temp);
+		wordcnt++;
+		start = strtok(nullptr, &delim);
+	}
+	delete [] v.m ;
+	v.n = count + 1;
+	v.m = new double [v.n];
+	for(int i = 0 ; i < v.n; i++){
+		v.m[i] = num[i];
+	}
+}
+int main(){
+	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
 	MyVector u(5, d);
 	cin >> u;
-	u.print();*/
+	u.print();
 	return 0;
 }
 
