@@ -1,5 +1,4 @@
 #include<iostream>
-#include<cstring>
 #include<stdlib.h>
 using namespace std;
 class MyVector
@@ -13,12 +12,11 @@ public:
 	MyVector(const MyVector& v);
 	~MyVector();
 	void print();
-	bool operator==(const double d) const;
-	double operator[](char* c) const;
 	const MyVector operator+(const MyVector& v) const;
 };
 
 const MyVector MyVector::operator+(const MyVector& v) const{
+	//判斷數字個數、大小 
 	if(n == v.n){
 		int p = n;
 		double* q = new double [n];
@@ -53,7 +51,6 @@ int main(){
 	MyVector v(2, f);
 	MyVector w = u + v;
 	w.print();
-
 	return 0;
 }
 
@@ -91,35 +88,3 @@ void MyVector::print()
 		cout << m[i] << ", ";
 	cout << m[n-1] << ")\n";
 }
-bool MyVector::operator==(const double d) const
-{
-	for(int i = 0; i < n; i++) {
-		if(this->m[i] - d > 0.00001)
-			return false;
-	}
-	return true;
-}
-
-double MyVector::operator[](char* c) const{
-	
-	char* delim = ":";
-	char* ptr;
-	ptr = strtok(c,delim);
-	int num[2] = {0};
-	int count = 0;
-	while(ptr != nullptr){
-		num[count] = atoi(ptr);
-		count ++;
-		ptr = strtok(nullptr,delim);
-	}
-	if(num[0] >= 0 && num[1] > num[0] && n-1 >= num[1]){
-		double sum = 0;
-		for(int i = num[0];i <=num[1];i++){
-			sum += m[i];
-		}
-		return sum;
-	}else{
-		exit(1);
-	}
-}
-

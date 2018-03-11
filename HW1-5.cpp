@@ -1,10 +1,9 @@
 #include<iostream>
 #include<cstring>
-#include<stdlib.h>
-#include<string>
 using namespace std;
 class MyVector
 {
+	//砞friendn,m 
 friend istream& operator >>(istream& in, MyVector& v);
 private:
 	int n;
@@ -19,20 +18,23 @@ public:
 istream& operator >>(istream& in, MyVector& v){
 	char p[10000]={0};
 	cin.getline(p,10000);
-	int count = 0;
+	int count = 0;//璸衡计计 
 	char* ptr = strchr(p, ',');
+	//р硆翴传Θ┏絬 
 	while(ptr != nullptr)
 	{
 		*ptr = '_';
 		ptr = strchr(ptr, ',');
 		count ++;
 	}
+	//р腹传Θ┏絬 
 	ptr = strchr(p, '<');
 	*ptr = '_';
 	ptr = strchr(p, '>');
 	*ptr = '_';
 	double* num = new double [count+1];
 	int wordcnt = 0;
+	//ノ┏絬ち澄﹃(┮Τぃ琌计常竒传Θ┏絬) 
 	char delim = '_';
 	char* start = strtok(p, &delim);
 	char temp[1000] ={0};

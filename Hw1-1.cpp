@@ -13,22 +13,22 @@ public:
 	MyVector(const MyVector& v);
 	~MyVector();
 	void print();
-	bool operator==(const double d) const;
 	double operator[](char* c) const;
 };
 
 double MyVector::operator[](char* c) const{
-	
 	char* delim = ":";
 	char* ptr;
 	ptr = strtok(c,delim);
 	int num[2] = {0};
 	int count = 0;
+	//切開字串 
 	while(ptr != nullptr){
 		num[count] = atoi(ptr);
 		count ++;
 		ptr = strtok(nullptr,delim);
 	}
+	//比較大小確定符合題目 
 	if(num[0] >= 0 && num[1] > num[0] && n-1 >= num[1]){
 		double sum = 0;
 		for(int i = num[0];i <=num[1];i++){
@@ -44,7 +44,6 @@ int main(){
 	MyVector v(5, d);
 	char c[] = "1:3";
 	cout << v[c];
-
 	return 0;
 }
 
@@ -81,13 +80,5 @@ void MyVector::print()
 	for(int i = 0; i < n - 1; i++)
 		cout << m[i] << ", ";
 	cout << m[n-1] << ")\n";
-}
-bool MyVector::operator==(const double d) const
-{
-	for(int i = 0; i < n; i++) {
-		if(this->m[i] - d > 0.00001)
-			return false;
-	}
-	return true;
 }
 

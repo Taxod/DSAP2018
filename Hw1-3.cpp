@@ -1,5 +1,4 @@
 #include<iostream>
-#include<cstring>
 #include<stdlib.h>
 using namespace std;
 struct TwoInt
@@ -18,7 +17,6 @@ public:
 	MyVector(const MyVector& v);
 	~MyVector();
 	void print();
-	bool operator==(const double d) const;
 	double operator[](struct TwoInt) const;
 };
 double MyVector::operator[](TwoInt p) const{
@@ -66,7 +64,6 @@ MyVector::MyVector(const MyVector& v)
 	for(int i = 0; i < n; i++)
 		m[i] = v.m[i];
 }
-
 void MyVector::print()
 {
 	cout << "(";
@@ -74,12 +71,3 @@ void MyVector::print()
 		cout << m[i] << ", ";
 	cout << m[n-1] << ")\n";
 }
-bool MyVector::operator==(const double d) const
-{
-	for(int i = 0; i < n; i++) {
-		if(this->m[i] - d > 0.00001)
-			return false;
-	}
-	return true;
-}
-
