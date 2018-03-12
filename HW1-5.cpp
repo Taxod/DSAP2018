@@ -41,7 +41,7 @@ istream& operator >>(istream& in, MyVector& v){
 	while(start != nullptr)
 	{
 		strcpy(temp, start);
-		num[wordcnt] = atoi(temp);
+		num[wordcnt] = stod(temp);
 		wordcnt++;
 		start = strtok(nullptr, &delim);
 	}
@@ -51,6 +51,7 @@ istream& operator >>(istream& in, MyVector& v){
 	for(int i = 0 ; i < v.n; i++){
 		v.m[i] = num[i];
 	}
+	return in;
 }
 int main(){
 	double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
