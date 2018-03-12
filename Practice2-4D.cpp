@@ -4,22 +4,22 @@
 
 using namespace std;
 /*
-5
 Watermelon
 test.txt
 */
+
+void print (string target,string c);
 bool b_search(int num,string target, string d[]);
 int main(){
-	int num;
+	int num = 0;
 	string target;
 	string filename;
-	cin >> num >> target >> filename;
-	string* d = new string[num];
-	
+	cin >> target >> filename;
+	string* d = new string[10000];
 	ifstream fp;
 	fp.open(filename);
-	for(int i = 0 ; i < num ; i++){
-		fp >> d[i];
+	while(fp>>d[num]){
+		num++;
 	}
 	fp.close();
 	cout << b_search(num,target,d);
@@ -27,17 +27,27 @@ int main(){
 }
 
 bool b_search(int num,string target, string d[]){
+	string Target = target;
 	target[0] = tolower(target[0]);
 	int left = 0, right = num - 1;
 	while(left <= right){
 		int middle = (left + right)/2;
 		if(d[middle] == target){
+			print(Target,d[middle]);
+			cout << "... Got it!";
 			return 1;
 		}else if(d[middle] > target){
+			print(Target,d[middle]);
+			cout << endl;
 			right = middle - 1;
 		}else{
+			print(Target,d[middle]);
+			cout << endl;
 			left = middle+1;
 		}
 	}
 	return 0;
+}
+void print (string target,string c){
+	cout << "Comparing " << target << " with " << c;
 }

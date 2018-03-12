@@ -34,6 +34,7 @@ int main(){
 		}
 	}
 	cout << 0;
+	delete [] d;
 //	cout << target;
 	return 0;
 }
