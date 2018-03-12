@@ -21,6 +21,19 @@ int main(){
 		cin >> d[i];
 	}
 	target[0] = tolower(target[0]);
-	cout << target;
+	int left = 0, right = num - 1;
+	while(left <= right){
+		int middle = (left + right)/2;
+		if(d[middle] == target){
+			cout << 1;
+			return 0;
+		}else if(d[middle] > target){
+			right = middle - 1;
+		}else{
+			left = middle+1;
+		}
+	}
+	cout << 0;
+//	cout << target;
 	return 0;
 }
