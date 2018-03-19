@@ -32,10 +32,25 @@ class Car : public Entity
 	private:
 	public:
 	Car(string id, bool isOn, bool isSer, double lon, double lat);
+	print();
 };
 
 Car::Car(string id, bool isOn, bool isSer, double lon, double lat):Entity(id,isOn,isSer,lon,lat)
 {
+}
+Car::print(){
+//	Entity::print();
+	cout << this->id << ": " << this->isOn << " " << this->isSer<< endl;
+	if(isOn){
+		cout << lon << ":"<<lat<<endl;
+		if(isSer){
+			cout <<"in-service"<<endl; 
+		}else{
+			cout << "empty"<<endl;
+		}
+	}else{
+		cout << "offline"<<endl;
+	}
 }
 
 int main()
