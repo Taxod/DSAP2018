@@ -115,9 +115,6 @@ void CarArray::print()
 	}
 }
 
-
-
-
 int main()
 {
 	CarArray ca;
