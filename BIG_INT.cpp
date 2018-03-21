@@ -23,6 +23,8 @@ class big_int{
 		big_int operator+(big_int q);
 		big_int operator-(big_int q);
 		big_int operator*(big_int q);
+		big_int operator/(big_int q);
+		big_int operator%(big_int q);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
 		bool operator==(big_int q);
@@ -35,16 +37,39 @@ class big_int{
 		friend main();
 };
 int main(){
-	string k = "11999";
-	string l = "11100";
+	string k = "999";
+	string l = "111";
 	big_int p(k);
 	big_int q(l);
 
 	// p.print();
 	// q.print();
-	big_int t = q-p;
+	big_int t = p/q;
 	t.print();
 	return 0;
+}
+
+big_int big_int::operator/(big_int q){
+	string zero = "0";
+	string _one_ = "1";
+	big_int _one(_one_);
+	big_int result(zero);
+	big_int subd(*this);
+	big_int d(q);
+	if (subd < d)
+	{
+		return result;
+	}
+	while(subd > d || subd == d){
+		subd = subd - d;
+		result = result + _one;
+		cout <<"*";
+	}
+	return result;
+}
+big_int big_int::operator%(big_int q){
+	big_int result;
+	return result;
 }
 
 big_int big_int::operator-(big_int q){
