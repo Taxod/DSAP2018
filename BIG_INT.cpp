@@ -50,10 +50,11 @@ int main(){
 }
 
 big_int big_int::operator/(big_int q){
-	string zero = "0";
-	string _one_ = "1";
-	big_int _one(_one_);
-	big_int result(zero);
+	// string zero = "0";
+	// string _one_ = "1";
+	// big_int _one(_one_);
+	long long count = 0;
+	big_int result;//把count 放到result 裡---------------------------
 	big_int subd(*this);
 	big_int d(q);
 	if (subd < d)
@@ -62,9 +63,11 @@ big_int big_int::operator/(big_int q){
 	}
 	while(subd > d || subd == d){
 		subd = subd - d;
-		result = result + _one;
-		cout <<"*";
+		// result = result + _one;
+		// cout <<"*";
+		count ++;
 	}
+
 	return result;
 }
 big_int big_int::operator%(big_int q){
