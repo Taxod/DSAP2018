@@ -20,8 +20,8 @@ class big_int{
 		big_int(string& c);
 		big_int(const big_int &b);
 		~big_int();	
-		big_int operator+(big_int q);
-		big_int operator-(big_int q);
+		big_int operator+(big_int q);//同下
+		big_int operator-(big_int q);//需要改成絕對值大的減小的
 		big_int operator*(big_int q);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
@@ -31,7 +31,7 @@ class big_int{
 		void square();
 		void check();//新增負數檢查
 		void print();
-		big_int merge(big_int q);
+		big_int merge(const big_int q);
 		friend main();
 };
 int main(){
@@ -46,70 +46,45 @@ int main(){
 	// cout << (p==q);
 	big_int t = p + q;
 	t.print();
+	cout << "--------\n";
+	q.print();
+	cout <<"----------\n";
+	p.print();
 	return 0;
 }
-bool big_int::operator==(big_int q){
-	if (this->negative != q.negative)
+void big_int::check(){
+	for (int i = len-1; i >= 0; i--)
 	{
-		return false;
-	}
-	if (this->len == q.len)
-	{
-		for (int i = 0; i < this->len; ++i)
+		if (cal[i].n < 0)
 		{
-			if (this->cal[i].n != q.cal[i].n)
+			if (i == 0)
 			{
-				return false;
+			}else{
+				cal[i].n += 10;
+				cal[i-1].n --;
 			}
 		}
-		return true;
-	}else{
-		return false;
 	}
-}
-bool big_int::operator>(big_int q){
-	if (this->negative == false && q.negative == true)
-	{
-		return true;
-	}else if (this->negative == true && q.negative == false)
-	{
-		return false;
-	}
-	if (this->len > q.len)
-	{
-		return true;
-	}else if (this->len < q.len)
-	{
-		return false;
-	}else{
-		if (this->cal[0].n > q.cal[0].n)
-		{
-			return true;
-		}else{
-			return false;
+	//檢查前面是零(不只一位)，縮減長度---------------------------------------------
+	for(int i = len-1 ; i >= 0 ; i--){
+		if(cal[i].n >= 10){
+			if(i == 0){
+				for(int j = len-1; j >= 0 ; j--){
+					cal[j+1].n = (cal[j].n); 
+				}
+				cal[i].n = cal[i+1].n/10;
+				cal[i+1].n%=10;
+				len++;//更新長度
+				//更新位數
+				for(int i = 0 ; i < len;i++){
+					cal[i].p = len-1-i;
+				}
+			}else{
+				cal[i-1].n += (cal[i].n/10);
+				cal[i].n %= 10;
+			}
 		}
 	}
-}
-bool big_int::operator<(big_int q){
-	return !(*this > q);
-}
-
-big_int big_int::abs(){
-	if (this->negative == true)
-	{
-		for (int i = 0; i < this->len; ++i)
-		{
-			this->cal[i].n = this->cal[i].n*-1;
-		}
-	}
-	this->negative = false;
-
-	
-	return *this;
-}
-void big_int::square(){
-	*this = *this * *this;
-	this->negative = false;
 }
 big_int big_int::operator-(big_int q){
 	big_int result;
@@ -120,7 +95,12 @@ big_int big_int::operator-(big_int q){
 		{
 			result.cal[i].n *= -1; 
 		}
-		result = result + *this;
+
+		result = result.merge(*this);
+		for (int i = 0; i < result.len; ++i)
+		{
+			result.cal[i].n *= -1; 
+		}
 		if (this->abs() < q.abs())
 		{
 			result.negative = true;
@@ -133,7 +113,12 @@ big_int big_int::operator-(big_int q){
 		{
 			result.cal[i].n *= -1; 
 		}
-		result = result + q;
+
+		result = result.merge(q);
+		for (int i = 0; i < result.len; ++i)
+		{
+			result.cal[i].n *= -1; 
+		}
 		if (this->abs() > q.abs())
 		{
 			result.negative = true;
@@ -145,14 +130,22 @@ big_int big_int::operator-(big_int q){
 		{
 			q.cal[i].n *= -1; 
 		}
-		result = *this + q;
+		result = this->merge(q);
+		for (int i = 0; i < q.len; ++i)
+		{
+			q.cal[i].n *= -1; 
+		}
 		return result;
 	}else{
 		for (int i = 0; i < q.len; ++i)
 		{
 			q.cal[i].n *= -1; 
 		}
-		result = *this + q;
+		result = this->merge(q);
+		for (int i = 0; i < q.len; ++i)
+		{
+			q.cal[i].n *= -1; 
+		}
 		result.negative = true;
 		return result;
 	}
@@ -160,9 +153,55 @@ big_int big_int::operator-(big_int q){
 }
 
 big_int big_int::operator+(big_int q){//需要修改
-	return(this->merge(q));	
+	big_int result;
+	if (this->negative == q.negative)
+	{
+		if (this->negative == true)
+		{
+			result = this->merge(q);
+			result.negative = true;
+			return result;
+		}else{
+			result = this->merge(q);
+			result.negative = false;
+			return result;
+		}
+	}else{
+		if (this->negative == true)
+		{
+			for (int i = 0; i < this->len; ++i)
+			{
+				this->cal[i].n *= -1;
+			}
+			result = this->merge(q);
+			for (int i = 0; i < this->len; ++i)
+			{
+				this->cal[i].n *= -1;
+			}
+			if (this->abs() > q.abs())
+			{
+				result.negative = true;
+			}
+			return result;
+		}else{
+			for (int i = 0; i < q.len; ++i)
+			{
+				q.cal[i].n *= -1;
+			}
+			result = this->merge(q);
+			for (int i = 0; i < q.len; ++i)
+			{
+				q.cal[i].n *= -1;
+			}
+			if (q.abs() > this->abs())
+			{
+				result.negative = true;
+			}
+			return result;
+		}
+	}	
 }
-big_int big_int::merge(big_int q){
+big_int big_int::merge(const big_int q){
 	big_int result(*this);
 	int biglen = this->len;
 	if (q.len > biglen)
@@ -255,7 +294,7 @@ big_int::big_int(const big_int &b){
 big_int::big_int(string& c){
 	if (c[0] == '-'){
 		negative = true;
-		c.substr(1);
+		c = c.substr(1);
 	}else{
 		negative = false;
 	}	
@@ -269,31 +308,7 @@ big_int::big_int(string& c){
 }
 big_int::~big_int(){
 }
-void big_int::check(){
-	for(int i = len-1 ; i >= 0 ; i--){
-		if(cal[i].n >= 10){
-			if(i == 0){
-				// for(int j = len-1; j >= 0 ; j--){
-				// 	cal[j+1].n = (cal[j].n)%10; 
-				// }
-				for(int j = len-1; j >= 0 ; j--){
-					cal[j+1].n = (cal[j].n); 
-				}
-				cal[i].n = cal[i+1].n/10;
-				cal[i+1].n%=10;
-				len++;//更新長度
-				//更新位數
-				for(int i = 0 ; i < len;i++){
-					cal[i].p = len-1-i;
-				}
-			}else{
-				// cal[i-1].n ++;
-				cal[i-1].n += (cal[i].n/10);
-				cal[i].n %= 10;
-			}
-		}
-	}
-}
+
 void big_int::print(){
 	for(int i = 0 ; i < len ; i++){
 		cout << cal[i].n << " ";
@@ -303,5 +318,67 @@ void big_int::print(){
 		cout << cal[i].p << " ";
 	}
 	cout <<endl;
-	cout << "negative" << this->negative<<endl;
+	if (negative)
+	{
+		cout << "negative\n";
+	}else{
+		cout << "positive\n";
+	}
+	// cout << "negative" << this->negative<<endl;
+}
+
+bool big_int::operator==(big_int q){
+	if (this->negative != q.negative)
+	{
+		return false;
+	}
+	if (this->len == q.len)
+	{
+		for (int i = 0; i < this->len; ++i)
+		{
+			if (this->cal[i].n != q.cal[i].n)
+			{
+				return false;
+			}
+		}
+		return true;
+	}else{
+		return false;
+	}
+}
+bool big_int::operator>(big_int q){
+	if (this->negative == false && q.negative == true)
+	{
+		return true;
+	}else if (this->negative == true && q.negative == false)
+	{
+		return false;
+	}
+	if (this->len > q.len)
+	{
+		return true;
+	}else if (this->len < q.len)
+	{
+		return false;
+	}else{
+		if (this->cal[0].n > q.cal[0].n)
+		{
+			return true;
+		}else{
+			return false;
+		}
+	}
+}
+bool big_int::operator<(big_int q){
+	return !(*this > q);
+}
+
+big_int big_int::abs(){
+	big_int result(*this);
+	result.negative = false;
+	return result;
+}
+void big_int::square(){
+	*this = *this * *this;
+	this->negative = false;
 }
