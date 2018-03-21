@@ -31,6 +31,7 @@ class big_int{
 		void square();
 		void check();//新增負數檢查
 		void print();
+		big_int merge(big_int q);
 		friend main();
 };
 int main(){
@@ -157,6 +158,42 @@ big_int big_int::operator-(big_int q){
 	}
 	
 }
+
+big_int big_int::operator+(big_int q){//需要修改
+	return(this->merge(q));	
+}
+big_int big_int::merge(big_int q){
+	big_int result(*this);
+	int biglen = this->len;
+	if (q.len > biglen)
+	{
+		biglen = q.len;
+		result = q;
+		for (int i = 0; i < biglen; ++i)
+		{
+			for (int j = 0; j < this->len; ++j)
+			{
+				if (result.cal[i].p == this->cal[j].p)
+				{
+					result.cal[i].n += this->cal[j].n;
+				}
+			}
+		}
+	}else{
+		for (int i = 0; i < biglen; ++i)
+		{
+			for (int j = 0; j < q.len; ++j)
+			{
+				if (result.cal[i].p == q.cal[j].p)
+				{
+					result.cal[i].n += q.cal[j].n;
+				}
+			}
+		}
+	}
+	result.check();
+	return result;
+}
 big_int big_int::operator*(big_int q){
 	big_int result;
 	if (this->negative == false)
@@ -194,50 +231,6 @@ big_int big_int::operator*(big_int q){
 	
 	return result;
 }
-big_int big_int::operator+(big_int q){//需要修改
-	big_int result(*this);
-	int biglen = this->len;
-	// if (this->negative == false && this->abs() < q.abs())
-	// {
-	// 	result.negative = true;
-	// }else if (this->negative == true)
-	// {	
-	// 	if (this->abs() > q.abs() || q.negative == true)
-	// 	{
-	// 		result.negative = true;
-	// 	}
-	// }else{
-	// 	result.negative = false;
-	// }
-	if (q.len > biglen)
-	{
-		biglen = q.len;
-		result = q;
-		for (int i = 0; i < biglen; ++i)
-		{
-			for (int j = 0; j < this->len; ++j)
-			{
-				if (result.cal[i].p == this->cal[j].p)
-				{
-					result.cal[i].n += this->cal[j].n;
-				}
-			}
-		}
-	}else{
-		for (int i = 0; i < biglen; ++i)
-		{
-			for (int j = 0; j < q.len; ++j)
-			{
-				if (result.cal[i].p == q.cal[j].p)
-				{
-					result.cal[i].n += q.cal[j].n;
-				}
-			}
-		}
-	}
-	result.check();
-	return result;
-}
 void big_int::operator=(const big_int q){
 	this->len = q.len;
 	this->negative = q.negative;
@@ -260,28 +253,19 @@ big_int::big_int(const big_int &b){
 	}
 }
 big_int::big_int(string& c){
-	if (c[0] == '-')
-	{
+	if (c[0] == '-'){
 		negative = true;
-		c = c.substr(1);
-		num = c;
-		len = num.length();
-		for(int i = 0 ; i < len;i++){
-			char temp = num[i];
-			cal[i].n = atoi(&temp)*(-1);
-			cal[i].p = len-1-i;
-		}
+		c.substr(1);
 	}else{
 		negative = false;
-		num = c;
-		len = num.length();
-		for(int i = 0 ; i < len;i++){
-			char temp = num[i];
-			cal[i].n = atoi(&temp);
-			cal[i].p = len-1-i;
-		}
+	}	
+	num = c;
+	len = num.length();
+	for(int i = 0 ; i < len;i++){
+		char temp = num[i];
+		cal[i].n = atoi(&temp);
+		cal[i].p = len-1-i;
 	}
-	
 }
 big_int::~big_int(){
 }
@@ -321,34 +305,3 @@ void big_int::print(){
 	cout <<endl;
 	cout << "negative" << this->negative<<endl;
 }
-/*
-big_int big_int::operator+(big_int q){
-	big_int result(*this);
-	int biglen = len;
-	int gap = abs(this->len - q.len);
-	if(q.len > this->len){
-		biglen = q.len;
-		for(int i = len-1 ; i >= 0 ;i--){
-			result.cal[i+gap].n = result.cal[i].n;
-		}
-		for(int i = 0 ; i < gap ; i++){
-			result.cal[i].n = 0;
-		}
-	}else if(q.len < this->len){
-		for(int i = q.len-1 ; i >= 0 ;i--){
-			q.cal[i+gap].n = q.cal[i].n;
-		}
-		for(int i = 0 ; i < gap ; i++){
-			q.cal[i].n = 0;
-		}
-	}
-	result.len = biglen;
-	for(int i = 0 ; i < biglen ; i++){
-		result.cal[i].n += q.cal[i].n;
-	}
-	for(int i = 0 ; i < biglen;i++){
-		result.cal[i].p = len-1-i;
-	}
-	result.check();
-	return result;
-} */
