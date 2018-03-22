@@ -5,6 +5,23 @@
 #include <stdlib.h>
 
 using namespace std;
+string to_string(int n){
+	int count = 0;
+	string s;
+	int t = n;
+	while (t/=10){
+		count++;	
+	} 
+	for(int i = 0 ; i < count+1 ; i++){
+		s += '0';
+	}
+	while( n > 0){
+		s[count] = char(n%10 +'0');
+		count --; 
+		n /= 10;
+	} 
+	return s;
+}
 struct np{
 	int n;
 	int p;
@@ -29,6 +46,7 @@ class big_int{
 		bool operator<(big_int q);
 		bool operator==(big_int q);
 		void operator=(big_int q);
+		void operator=(string s);
 		big_int abs();
 		void square();
 		void check();
@@ -37,7 +55,7 @@ class big_int{
 		friend main();
 };
 int main(){
-	string k = "999";
+	string k = "0";
 	string l = "111";
 	big_int p(k);
 	big_int q(l);
@@ -48,13 +66,14 @@ int main(){
 	t.print();
 	return 0;
 }
-
+void big_int::operator=(string s){
+	
+	big_int p(s);
+	*this = p;
+}
 big_int big_int::operator/(big_int q){
-	// string zero = "0";
-	// string _one_ = "1";
-	// big_int _one(_one_);
 	long long count = 0;
-	big_int result;//把count 放到result 裡---------------------------
+	big_int result;
 	big_int subd(*this);
 	big_int d(q);
 	if (subd < d)
@@ -63,11 +82,10 @@ big_int big_int::operator/(big_int q){
 	}
 	while(subd > d || subd == d){
 		subd = subd - d;
-		// result = result + _one;
-		// cout <<"*";
 		count ++;
 	}
-
+	string c = to_string(count);
+	result = c;
 	return result;
 }
 big_int big_int::operator%(big_int q){
