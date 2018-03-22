@@ -3,26 +3,7 @@
 #include<math.h>
 #include<string>
 #include <stdlib.h>
-
 using namespace std;
-
-string to_string(int n){
-	int count = 0;
-	string s;
-	int t = n;
-	while (t/=10){
-		count++;	
-	} 
-	for(int i = 0 ; i < count+1 ; i++){
-		s += '0';
-	}
-	while( n > 0){
-		s[count] = char(n%10 +'0');
-		count --; 
-		n /= 10;
-	} 
-	return s;
-}
 struct np{
 	int n;
 	int p;
@@ -60,18 +41,161 @@ class big_int{
 		friend main();
 };
 string to_string(big_int n);
+string to_string(int n);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 int main(){
-	string k = "123546";
-	string l = "13";
-	big_int p(k);
-	big_int q(l);
+	string cs;
+	while(cin >> cs){
+		
+	}
+
+	// string k = "123546";
+	// string l = "13";
+	// big_int p(k);
+	// big_int q(l);
 	// big_int t = p%q;
 	// q.print();
-	cout << p[0];
+	// cout << p[0];
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 big_int big_int::operator-(){
 	if (this->negative == false)
 	{
@@ -514,5 +638,22 @@ string to_string(big_int n){
 	{
 		s += char(n.cal[i].n + '0');
 	}
+	return s;
+}
+string to_string(int n){
+	int count = 0;
+	string s;
+	int t = n;
+	while (t/=10){
+		count++;	
+	} 
+	for(int i = 0 ; i < count+1 ; i++){
+		s += '0';
+	}
+	while( n > 0){
+		s[count] = char(n%10 +'0');
+		count --; 
+		n /= 10;
+	} 
 	return s;
 }
