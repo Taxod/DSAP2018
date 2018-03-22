@@ -22,8 +22,8 @@ class big_int{
 		big_int operator+(big_int q);
 		big_int operator-(big_int q);
 		big_int operator-();
-		big_int operator*(big_int q);
-		big_int operator/(big_int q);
+		big_int operator*(big_int q);//同下
+		big_int operator/(big_int q);//處理正負號
 		big_int operator/(int n);
 		big_int operator%(big_int q);
 		int operator[](int n);
@@ -33,12 +33,13 @@ class big_int{
 		bool isPrime();//跑太久需要修正
 		void operator=(big_int q);
 		void operator=(string s);
-		big_int abs();
+		big_int abs();//自身要不要改變
 		void square();
 		void check();
-		void test_print();
+		void print();
 		big_int merge(const big_int q);
 		friend main();
+		//overload << >>
 };
 string to_string(big_int n);
 string to_string(int n);
@@ -122,6 +123,7 @@ int main(){
 			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
 		{
+			
 			/* code */
 		}else{
 
@@ -497,7 +499,7 @@ big_int::big_int(string& c){
 big_int::~big_int(){
 }
 
-void big_int::test_print(){
+void big_int::print(){
 	for(int i = 0 ; i < len ; i++){
 		cout << cal[i].n << " ";
 	}
