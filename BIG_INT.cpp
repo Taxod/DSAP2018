@@ -68,7 +68,7 @@ int main(){
 	big_int q(l);
 	// big_int t = p%q;
 	// q.print();
-	cout << p[3];
+	cout << p[0];
 	return 0;
 }
 int big_int::operator[](int n){
