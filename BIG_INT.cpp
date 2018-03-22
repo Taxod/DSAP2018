@@ -40,6 +40,7 @@ class big_int{
 		~big_int();	
 		big_int operator+(big_int q);
 		big_int operator-(big_int q);
+		big_int operator-();
 		big_int operator*(big_int q);
 		big_int operator/(big_int q);
 		big_int operator/(int n);
@@ -70,6 +71,15 @@ int main(){
 	// q.print();
 	cout << p[0];
 	return 0;
+}
+big_int big_int::operator-(){
+	if (this->negative == false)
+	{
+		this->negative = true;
+	}else{
+		this->negative = false;
+	}
+	return *this;
 }
 int big_int::operator[](int n){
 	big_int tmp = this->abs();
