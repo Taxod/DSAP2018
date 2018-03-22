@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 using namespace std;
+
 string to_string(int n){
 	int count = 0;
 	string s;
@@ -54,20 +55,17 @@ class big_int{
 		big_int merge(const big_int q);
 		friend main();
 };
+string to_string(big_int n);
 int main(){
-	string k = "0";
-	string l = "111";
+	string k = "123546";
+	string l = "123";
 	big_int p(k);
 	big_int q(l);
-
-	// p.print();
-	// q.print();
-	big_int t = p/q;
+	big_int t = p%q;
 	t.print();
 	return 0;
 }
 void big_int::operator=(string s){
-	
 	big_int p(s);
 	*this = p;
 }
@@ -78,6 +76,7 @@ big_int big_int::operator/(big_int q){
 	big_int d(q);
 	if (subd < d)
 	{
+		result = "0";
 		return result;
 	}
 	while(subd > d || subd == d){
@@ -90,6 +89,17 @@ big_int big_int::operator/(big_int q){
 }
 big_int big_int::operator%(big_int q){
 	big_int result;
+	big_int subd(*this);
+	big_int d(q);
+	if (subd < d)
+	{
+		result = "0";
+		return result;
+	}
+	while(subd > d || subd == d){
+		subd = subd - d;
+	}
+	result = to_string(subd);
 	return result;
 }
 
@@ -454,4 +464,12 @@ void big_int::check(){
 	for(int i = 0 ; i < len;i++){
 		cal[i].p = len-1-i;
 	}
+}
+string to_string(big_int n){
+	string s;
+	for (int i = 0; i < n.len; ++i)
+	{
+		s += char(n.cal[i].n + '0');
+	}
+	return s;
 }
