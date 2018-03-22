@@ -36,7 +36,7 @@ class big_int{
 		big_int abs();
 		void square();
 		void check();
-		void print();
+		void test_print();
 		big_int merge(const big_int q);
 		friend main();
 };
@@ -107,11 +107,31 @@ string to_string(int n);
 
 int main(){
 	string cs;
-	big_int** = new big_int* [20];
+	string name[20];
+	int nameCnt = 0;
+	big_int **BIGP = new big_int* [20];
 	while(getline(cin,cs)){
+		cout << cs<<"\n";
+		if (cs.find("int") != string::npos)
+		{
+			cs.erase(0,4);
+			name[nameCnt] = cs.substr(0,cs.find(" "));
+			cs.erase(0,name[nameCnt].length()+1);
+			BIGP[nameCnt] = new big_int(cs);
+			// BIGP[nameCnt]->print();
+			nameCnt++;
+		}else if (cs.find("cout") != string::npos)
+		{
+			/* code */
+		}else{
 
+		}
 	}
-
+	for (int i = 0; i < 20; ++i)
+	{
+		delete BIGP[i];
+	}
+	delete [] BIGP;
 	// string k = "123546";
 	// string l = "13";
 	// big_int p(k);
@@ -477,7 +497,7 @@ big_int::big_int(string& c){
 big_int::~big_int(){
 }
 
-void big_int::print(){
+void big_int::test_print(){
 	for(int i = 0 ; i < len ; i++){
 		cout << cal[i].n << " ";
 	}
