@@ -44,10 +44,11 @@ class big_int{
 		big_int operator/(big_int q);
 		big_int operator/(int n);
 		big_int operator%(big_int q);
+		int operator[](int n);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
 		bool operator==(big_int q);
-		bool isPrime();
+		bool isPrime();//跑太久需要修正
 		void operator=(big_int q);
 		void operator=(string s);
 		big_int abs();
@@ -66,9 +67,14 @@ int main(){
 	big_int p(k);
 	big_int q(l);
 	// big_int t = p%q;
-	// t.print();
-	cout << q.isPrime();
+	// q.print();
+	cout << p[3];
 	return 0;
+}
+int big_int::operator[](int n){
+	big_int tmp = this->abs();
+	int result = tmp.cal[tmp.len - n-1].n;
+	return result;
 }
 big_int big_int::operator/(int n){
 	big_int tmp;
