@@ -42,10 +42,12 @@ class big_int{
 		big_int operator-(big_int q);
 		big_int operator*(big_int q);
 		big_int operator/(big_int q);
+		big_int operator/(int n);
 		big_int operator%(big_int q);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
 		bool operator==(big_int q);
+		bool isPrime();
 		void operator=(big_int q);
 		void operator=(string s);
 		big_int abs();
@@ -56,14 +58,39 @@ class big_int{
 		friend main();
 };
 string to_string(big_int n);
+
+
 int main(){
 	string k = "123546";
-	string l = "123";
+	string l = "13";
 	big_int p(k);
 	big_int q(l);
-	big_int t = p%q;
-	t.print();
+	// big_int t = p%q;
+	// t.print();
+	cout << q.isPrime();
 	return 0;
+}
+big_int big_int::operator/(int n){
+	big_int tmp;
+	tmp = to_string(n);
+	big_int result = *this / tmp;
+	return result;
+}
+bool big_int::isPrime(){
+	big_int tmp = *this;
+	big_int zero;
+	zero = "0";
+	big_int one;
+	one = "1";
+	big_int i;
+	for (i = "0"; i < tmp; i = i + one)
+	{
+		if (*this % i == zero)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 void big_int::operator=(string s){
 	big_int p(s);
