@@ -107,8 +107,9 @@ string to_string(int n);
 
 int main(){
 	string cs;
-	while(cin >> cs){
-		
+	big_int** = new big_int* [20];
+	while(getline(cin,cs)){
+
 	}
 
 	// string k = "123546";
