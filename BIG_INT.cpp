@@ -66,8 +66,8 @@ big_int find_object(string s,int nameCnt,big_int** ptr,string name[]){
 	return result;
 }
 
-big_int calculate(string cs, big_int** ptr,string name,int nameCnt){
-	// big_int result;
+big_int calculate(string cs, big_int** ptr,string name[],int nameCnt){
+
 	big_int subop;
 	big_int op;
 	string c;
@@ -96,7 +96,7 @@ big_int calculate(string cs, big_int** ptr,string name,int nameCnt){
 		case '%':
 			return (subop % op);
 	}
-	// return result;
+	return subop;
 }
 
 
@@ -212,7 +212,7 @@ int main(){
 				{
 					if (name[i] == target)
 					{
-						*BIGP[i] = calculate(cs,BIGP);
+						*BIGP[i] = calculate(cs,BIGP,name,nameCnt);
 						cout << "here!!\n";
 					}
 				}
