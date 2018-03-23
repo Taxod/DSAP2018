@@ -47,10 +47,27 @@ string to_string(big_int n);
 string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
-big_int calculate(string cs,big_int** ptr);
+// big_int calculate(string cs,big_int** ptr);
 
-big_int calculate(string cs, big_int** ptr){
+big_int find_object(string s,int nameCnt,big_int** ptr,string name[]){
 	big_int result;
+	if (s.find_first_of("0123456789") != string::npos)
+	{
+		result = s;
+	}else{
+		for (int i = 0; i < nameCnt; ++i)
+		{
+			if (name[i] == s)
+			{
+				result = *ptr[i];
+			}
+		}
+	}
+	return result;
+}
+
+big_int calculate(string cs, big_int** ptr,string name,int nameCnt){
+	// big_int result;
 	big_int subop;
 	big_int op;
 	string c;
@@ -59,14 +76,27 @@ big_int calculate(string cs, big_int** ptr){
 	cs.erase(0,tmpname.length()+1);
 	c = cs.substr(0,1);
 	cs.erase(0,2);
-	cout << tmpname << ":"<< c <<":" <<cs <<endl;
-	if (tmpname.find_first_of("0123456789") != string::npos)
-	{
-		
-	}else{
-
+	// cout << tmpname << ":"<< c <<":" <<cs<<endl;
+	subop = find_object(tmpname,nameCnt,ptr,name);
+	op = find_object(cs,nameCnt,ptr,name);
+	char o = c[0];
+	switch(o){
+		case '+':
+			return (subop + op);
+			break;
+		case '-':
+			return (subop - op);
+			break;
+		case '*':
+			return (subop * op);
+			break;
+		case '/':
+			return (subop / op);
+			break;
+		case '%':
+			return (subop % op);
 	}
-	return result;
+	// return result;
 }
 
 
