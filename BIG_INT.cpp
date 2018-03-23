@@ -34,7 +34,7 @@ class big_int{
 		void operator=(big_int q);
 		void operator=(string s);
 		big_int abs();//自身要不要改變
-		void square();
+		big_int square();
 		void check();
 		void print();
 		big_int merge(const big_int q);
@@ -119,11 +119,7 @@ int main(){
 	string name[20];
 	int nameCnt = 0;
 	big_int **BIGP = new big_int* [20];
-	// int i = 12346;
-	// cout << i;
-	//處理分號------------
 	while(getline(cin,cs)){
-		// cout << cs<<"\n";
 		if (cs.find_last_of(";") != string::npos)
 		{
 			cs.erase(cs.find_last_of(";"));
@@ -154,9 +150,17 @@ int main(){
 				spaceCnt ++;
 				found = cs.find(" ",found+1);
 			}
-			if (spaceCnt == 2)//取絕對值、相反數、平方
+			if (spaceCnt == 2)
 			{
-				/* code */
+				if (cs.find(".abs()") != string::npos)//絕對值
+				{
+					/* code */
+				}else if (cs.find(".squre()") != string::npos)//平方
+				{
+					/* code */
+				}else{
+					//相反數
+				}
 			}else if (spaceCnt == 4)//運算
 			{
 				string target = cs.substr(0,cs.find(" "));
@@ -300,8 +304,6 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt){
 	return subop;
 }
 
-
-
 istream& operator>>(istream& in,big_int& q){
 	string tmp;
 	in >> tmp;
@@ -326,13 +328,14 @@ ostream& operator<<(ostream& out, const big_int& q){
 
 
 big_int big_int::operator-(){
-	if (this->negative == false)
+	big_int result(*this);
+	if (result.negative == false)
 	{
-		this->negative = true;
+		result.negative = true;
 	}else{
-		this->negative = false;
+		result.negative = false;
 	}
-	return *this;
+	return result;
 }
 int big_int::operator[](int n){
 	big_int tmp = this->abs();
@@ -705,9 +708,11 @@ big_int big_int::abs(){
 	result.negative = false;
 	return result;
 }
-void big_int::square(){
-	*this = *this * *this;
-	this->negative = false;
+big_int big_int::square(){
+	big_int result(*this);
+	result = result * result;
+	result.negative = false;
+	return result;
 }
 void big_int::check(){
 	for (int i = len-1; i >= 0; i--)
