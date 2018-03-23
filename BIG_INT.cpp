@@ -38,12 +38,15 @@ class big_int{
 		void check();
 		void print();
 		big_int merge(const big_int q);
-		friend main();
-		//overload << >>
+		friend main();//記得刪掉------------
+		friend ostream& operator<<(ostream& out,const big_int& q);
+		friend istream& operator>>(istream& in,const big_int& q);
+		
 };
 string to_string(big_int n);
 string to_string(int n);
-
+ostream& operator<<(ostream& out,const big_int& q);
+istream& operator>>(istream& in,big_int& q);
 
 
 
@@ -111,20 +114,33 @@ int main(){
 	string name[20];
 	int nameCnt = 0;
 	big_int **BIGP = new big_int* [20];
+	// int i = 12346
+	// cout << i
+	//處理分號------------
 	while(getline(cin,cs)){
 		cout << cs<<"\n";
 		if (cs.find("int") != string::npos)
 		{
 			cs.erase(0,4);
 			name[nameCnt] = cs.substr(0,cs.find(" "));
-			cs.erase(0,name[nameCnt].length()+1);
+			cs.erase(0,name[nameCnt].length()+3);
 			BIGP[nameCnt] = new big_int(cs);
 			// BIGP[nameCnt]->print();
 			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
 		{
 			
-			/* code */
+			cs.erase(0,8);
+			for (int i = 0; i < nameCnt; ++i)
+			{	
+				cout << name[i]<<"*"<<endl;
+				if (name[i] == cs)
+				{
+					// BIGP[i].print();
+					// cout <<"------------\n";
+					cout << *BIGP[i];
+				}
+			}
 		}else{
 
 		}
@@ -213,8 +229,21 @@ int main(){
 
 
 
-
-
+istream& operator>>(istream& in,big_int& q){
+	string tmp;
+	in >> tmp;
+	big_int t(tmp);
+	q = t;
+	return in;
+}
+ostream& operator<<(ostream& out, const big_int& q){
+	for (int i = 0; i < q.len; ++i)
+	{
+		out << q.cal[i].n;
+	}
+	out <<endl;
+	return out;
+}
 
 
 
