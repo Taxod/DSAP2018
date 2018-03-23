@@ -48,56 +48,11 @@ string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 // big_int calculate(string cs,big_int** ptr);
+big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
 
-big_int find_object(string s,int nameCnt,big_int** ptr,string name[]){
-	big_int result;
-	if (s.find_first_of("0123456789") != string::npos)
-	{
-		result = s;
-	}else{
-		for (int i = 0; i < nameCnt; ++i)
-		{
-			if (name[i] == s)
-			{
-				result = *ptr[i];
-			}
-		}
-	}
-	return result;
-}
+big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
-big_int calculate(string cs, big_int** ptr,string name[],int nameCnt){
 
-	big_int subop;
-	big_int op;
-	string c;
-	string tmpname;
-	tmpname = cs.substr(0,cs.find(" "));
-	cs.erase(0,tmpname.length()+1);
-	c = cs.substr(0,1);
-	cs.erase(0,2);
-	// cout << tmpname << ":"<< c <<":" <<cs<<endl;
-	subop = find_object(tmpname,nameCnt,ptr,name);
-	op = find_object(cs,nameCnt,ptr,name);
-	char o = c[0];
-	switch(o){
-		case '+':
-			return (subop + op);
-			break;
-		case '-':
-			return (subop - op);
-			break;
-		case '*':
-			return (subop * op);
-			break;
-		case '/':
-			return (subop / op);
-			break;
-		case '%':
-			return (subop % op);
-	}
-	return subop;
-}
 
 
 
@@ -182,8 +137,7 @@ int main(){
 			// BIGP[nameCnt]->print();
 			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
-		{
-			
+		{    // 取特定值、判斷質數------------------------
 			cs.erase(0,8);
 			for (int i = 0; i < nameCnt; ++i)
 			{	
@@ -200,8 +154,7 @@ int main(){
 				spaceCnt ++;
 				found = cs.find(" ",found+1);
 			}
-			cout << spaceCnt <<"*\n";
-			if (spaceCnt == 2)//去絕對值、相反數、平方
+			if (spaceCnt == 2)//取絕對值、相反數、平方
 			{
 				/* code */
 			}else if (spaceCnt == 4)//運算
@@ -213,7 +166,7 @@ int main(){
 					if (name[i] == target)
 					{
 						*BIGP[i] = calculate(cs,BIGP,name,nameCnt);
-						cout << "here!!\n";
+						cout << *BIGP[i] << "*\n";
 					}
 				}
 			}else{
@@ -297,6 +250,56 @@ int main(){
 
 
 
+big_int find_object(string s,int nameCnt,big_int** ptr,string name[]){
+	big_int result;
+	if (s.find_first_of("0123456789") != string::npos)
+	{
+		result = s;
+	}else{
+		for (int i = 0; i < nameCnt; ++i)
+		{
+			if (name[i] == s)
+			{
+				result = *ptr[i];
+			}
+		}
+	}
+	return result;
+}
+
+big_int calculate(string cs, big_int** ptr,string name[],int nameCnt){
+
+	big_int subop;
+	big_int op;
+	string c;
+	string tmpname;
+	tmpname = cs.substr(0,cs.find(" "));
+	cs.erase(0,tmpname.length()+1);
+	c = cs.substr(0,1);
+	cs.erase(0,2);
+	// cout << tmpname << ":"<< c <<":" <<cs<<endl;
+	subop = find_object(tmpname,nameCnt,ptr,name);
+	op = find_object(cs,nameCnt,ptr,name);
+	char o = c[0];
+	switch(o){
+		case '+':
+			return (subop + op);
+			break;
+		case '-':
+			return (subop - op);
+			break;
+		case '*':
+			return (subop * op);
+			break;
+		case '/':
+			return (subop / op);
+			break;
+		case '%':
+			return (subop % op);
+	}
+	return subop;
+}
+
 
 
 istream& operator>>(istream& in,big_int& q){
@@ -307,6 +310,10 @@ istream& operator>>(istream& in,big_int& q){
 	return in;
 }
 ostream& operator<<(ostream& out, const big_int& q){
+	if (q.negative)
+	{
+		out << "-";
+	}
 	for (int i = 0; i < q.len; ++i)
 	{
 		out << q.cal[i].n;
