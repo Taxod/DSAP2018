@@ -126,21 +126,26 @@ int main(){
 		}
 		if (cs.find("int") != string::npos)
 		{
+			// cout << "declare!!!\n";
 			cs.erase(0,4);
 			name[nameCnt] = cs.substr(0,cs.find(" "));
 			cs.erase(0,name[nameCnt].length()+3);
+			cout << cs<<"//\n";
 			BIGP[nameCnt] = new big_int(cs);
-			// BIGP[nameCnt]->print();
+			cout << "********\n";
+			cout << (*BIGP[nameCnt]).cal[0].n;
+			cout << "********\n";
 			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
 		{    // 取特定值、判斷質數------------------------
+			// cout << "print!!!\n";
 			cs.erase(0,8);
 			for (int i = 0; i < nameCnt; ++i)
 			{	
-				cout << name[i]<<"*"<<endl;
 				if (name[i] == cs)
 				{
 					cout << *BIGP[i];//這不是測試-------
+					// BIGP[i]->print();
 				}
 			}
 		}else{
@@ -154,12 +159,34 @@ int main(){
 			{
 				if (cs.find(".abs()") != string::npos)//絕對值
 				{
-					/* code */
+					cout << "abs!!!\n";
+					string target = cs.substr(0,cs.find(" "));
+					cs.erase(0,cs.find(" ")+3);
+					string base = cs.substr(0,cs.find("."));
+					for (int i = 0; i < nameCnt; ++i)
+					{
+						if (name[i] == target)
+						{
+							*BIGP[i] = find_object(base,nameCnt,BIGP,name).abs();
+						}
+					}
+					/*k = m.abs();*/
 				}else if (cs.find(".squre()") != string::npos)//平方
 				{
 					/* code */
-				}else{
-					//相反數
+				}else{//相反數
+					// cout << "-!!!\n";
+					string target = cs.substr(0,cs.find(" "));
+					cs.erase(0,cs.find(" ")+4);
+					string base = cs;
+					for (int i = 0; i < nameCnt; ++i)
+					{
+						if (name[i] == target)
+						{
+							*BIGP[i] = -(find_object(base,nameCnt,BIGP,name));
+						}
+					}
+					/*m = -m;*/
 				}
 			}else if (spaceCnt == 4)//運算
 			{
@@ -170,7 +197,7 @@ int main(){
 					if (name[i] == target)
 					{
 						*BIGP[i] = calculate(cs,BIGP,name,nameCnt);
-						cout << *BIGP[i] << "*\n";
+						// cout << *BIGP[i] << "*\n";
 					}
 				}
 			}else{
@@ -272,7 +299,6 @@ big_int find_object(string s,int nameCnt,big_int** ptr,string name[]){
 }
 
 big_int calculate(string cs, big_int** ptr,string name[],int nameCnt){
-
 	big_int subop;
 	big_int op;
 	string c;
@@ -600,17 +626,19 @@ big_int::big_int(string& c){
 	num = c;
 	len = num.length();
 	for(int i = 0 ; i < len;i++){
-		char temp = num[i];
-		cal[i].n = atoi(&temp);
+		// char temp = num[i];
+		// cal[i].n = atoi(&temp);
+		cal[i].n = int(num[i]-'0');
 		cal[i].p = len-1-i;
 	}
+
 }
 big_int::~big_int(){
 }
 
 void big_int::print(){
 	for(int i = 0 ; i < len ; i++){
-		cout << cal[i].n << " ";
+		cout << "-"<<cal[i].n << "-";
 	}
 	cout <<endl;
 	for(int i = 0 ; i < len ; i++){
