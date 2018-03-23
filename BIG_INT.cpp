@@ -114,11 +114,15 @@ int main(){
 	string name[20];
 	int nameCnt = 0;
 	big_int **BIGP = new big_int* [20];
-	// int i = 12346
-	// cout << i
+	// int i = 12346;
+	// cout << i;
 	//處理分號------------
 	while(getline(cin,cs)){
-		cout << cs<<"\n";
+		// cout << cs<<"\n";
+		if (cs.find_last_of(";") != string::npos)
+		{
+			cs.erase(cs.find_last_of(";"));
+		}
 		if (cs.find("int") != string::npos)
 		{
 			cs.erase(0,4);
