@@ -47,7 +47,27 @@ string to_string(big_int n);
 string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
+big_int calculate(string cs,big_int** ptr);
 
+big_int calculate(string cs, big_int** ptr){
+	big_int result;
+	big_int subop;
+	big_int op;
+	string c;
+	string tmpname;
+	tmpname = cs.substr(0,cs.find(" "));
+	cs.erase(0,tmpname.length()+1);
+	c = cs.substr(0,1);
+	cs.erase(0,2);
+	cout << tmpname << ":"<< c <<":" <<cs <<endl;
+	if (tmpname.find_first_of("0123456789") != string::npos)
+	{
+		
+	}else{
+
+	}
+	return result;
+}
 
 
 
@@ -151,6 +171,24 @@ int main(){
 				found = cs.find(" ",found+1);
 			}
 			cout << spaceCnt <<"*\n";
+			if (spaceCnt == 2)//去絕對值、相反數、平方
+			{
+				/* code */
+			}else if (spaceCnt == 4)//運算
+			{
+				string target = cs.substr(0,cs.find(" "));
+				cs.erase(0,cs.find(" ")+3);
+				for (int i = 0; i < nameCnt; ++i)
+				{
+					if (name[i] == target)
+					{
+						*BIGP[i] = calculate(cs,BIGP);
+						cout << "here!!\n";
+					}
+				}
+			}else{
+				cout <<"error!!\n";
+			}
 
 		}
 	}
