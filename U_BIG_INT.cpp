@@ -133,6 +133,13 @@ int main(){
 			// cout << cs<<"//\n";
 			BIGP[nameCnt] = new big_int(cs);
 			nameCnt++;
+		}else if(cs.find("BigInt") != string::npos){
+			cs.erase(0,7);
+			name[nameCnt] = cs.substr(0,cs.find(" "));
+			cs.erase(0,name[nameCnt].length()+3);
+			// cout << cs<<"//\n";
+			BIGP[nameCnt] = new big_int(cs);
+			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
 		{    // 取特定值、判斷質數------------------------
 			// cout << "print!!!\n";
@@ -406,6 +413,8 @@ big_int big_int::operator/(big_int q){
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
+	subd = subd.abs();
+	d = d.abs();
 	if (subd < d)
 	{
 		result = "0";
@@ -417,6 +426,10 @@ big_int big_int::operator/(big_int q){
 	}
 	string c = to_string(count);
 	result = c;
+	if (this->negative != q.negative)
+	{
+		result.negative = true;
+	}
 	return result;
 }
 big_int big_int::operator%(big_int q){
