@@ -22,29 +22,29 @@ class big_int{
 		big_int operator+(big_int q);
 		big_int operator-(big_int q);
 		big_int operator-();
-		big_int operator*(big_int q);//åŒä¸‹
-		big_int operator/(big_int q);//è™•ç†æ­£è² è™Ÿ
+		big_int operator*(big_int q);//¦P¤U
+		big_int operator/(big_int q);//³B²z¥¿­t¸¹
 		big_int operator/(int n);
 		big_int operator%(big_int q);
 		int operator[](int n);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
 		bool operator==(big_int q);
-		bool isPrime();//è·‘å¤ªä¹…éœ€è¦ä¿®æ­£
+		bool isPrime();//¶]¤Ó¤[»İ­n­×¥¿
 		void operator=(big_int q);
 		void operator=(string s);
-		big_int abs();//è‡ªèº«è¦ä¸è¦æ”¹è®Š
+		big_int abs();//¦Û¨­­n¤£­n§ïÅÜ
 		big_int square();
 		void check();
 		void print();
 		big_int merge(const big_int q);
-		// friend main();//è¨˜å¾—åˆªæ‰------------
+		// friend main();//°O±o§R±¼------------
 		friend ostream& operator<<(ostream& out,const big_int& q);
 		friend istream& operator>>(istream& in,const big_int& q);
 		
 };
 string to_string(big_int n);
-string to_string(int n);
+//string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 // big_int calculate(string cs,big_int** ptr);
@@ -134,14 +134,14 @@ int main(){
 			BIGP[nameCnt] = new big_int(cs);
 			nameCnt++;
 		}else if (cs.find("cout") != string::npos)
-		{    // å–ç‰¹å®šå€¼ã€åˆ¤æ–·è³ªæ•¸------------------------
+		{    // ¨ú¯S©w­È¡B§PÂ_½è¼Æ------------------------
 			// cout << "print!!!\n";
 			cs.erase(0,8);
 			for (int i = 0; i < nameCnt; ++i)
 			{	
 				if (name[i] == cs)
 				{
-					cout << *BIGP[i];//é€™ä¸æ˜¯æ¸¬è©¦-------
+					cout << *BIGP[i];//³o¤£¬O´ú¸Õ-------
 					// BIGP[i]->print();
 				}
 			}
@@ -154,7 +154,7 @@ int main(){
 			}
 			if (spaceCnt == 2)
 			{
-				if (cs.find(".abs()") != string::npos)//çµ•å°å€¼
+				if (cs.find(".abs()") != string::npos)//µ´¹ï­È
 				{
 					// cout << "abs!!!\n";
 					string target = cs.substr(0,cs.find(" "));
@@ -168,7 +168,7 @@ int main(){
 						}
 					}
 					/*k = m.abs();*/
-				}else if (cs.find(".squre()") != string::npos)//å¹³æ–¹
+				}else if (cs.find(".squre()") != string::npos)//¥­¤è
 				{
 					string target = cs.substr(0,cs.find(" "));
 					cs.erase(0,cs.find(" ")+3);
@@ -181,7 +181,7 @@ int main(){
 						}
 					}
 					/*k = m.square()*/
-				}else{//ç›¸åæ•¸
+				}else{//¬Û¤Ï¼Æ
 					// cout << "-!!!\n";
 					string target = cs.substr(0,cs.find(" "));
 					cs.erase(0,cs.find(" ")+4);
@@ -195,7 +195,7 @@ int main(){
 					}
 					/*m = -m;*/
 				}
-			}else if (spaceCnt == 4)//é‹ç®—
+			}else if (spaceCnt == 4)//¹Bºâ
 			{
 				string target = cs.substr(0,cs.find(" "));
 				cs.erase(0,cs.find(" ")+3);
@@ -485,7 +485,7 @@ big_int big_int::operator-(big_int q){
 	}
 }
 
-big_int big_int::operator+(big_int q){//éœ€è¦ä¿®æ”¹
+big_int big_int::operator+(big_int q){//»İ­n­×§ï
 	big_int result;
 	if (this->negative == q.negative)
 	{
@@ -641,7 +641,7 @@ big_int::big_int(string& c){
 	for(int i = 0 ; i < len;i++){
 		// char temp = num[i];
 		// cal[i].n = atoi(&temp);
-		//ä¸çŸ¥é“å“ªè£¡å‡ºéŒ¯!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//¤£ª¾¹D­ş¸Ì¥X¿ù!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		cal[i].n = int(num[i]-'0');
 		cal[i].p = len-1-i;
 	}
@@ -777,8 +777,8 @@ void big_int::check(){
 				}
 				cal[i].n = cal[i+1].n/10;
 				cal[i+1].n%=10;
-				len++;//æ›´æ–°é•·åº¦
-				//æ›´æ–°ä½æ•¸
+				len++;//§ó·sªø«×
+				//§ó·s¦ì¼Æ
 				for(int i = 0 ; i < len;i++){
 					cal[i].p = len-1-i;
 				}
@@ -788,7 +788,7 @@ void big_int::check(){
 			}
 		}
 	}
-	//æª¢æŸ¥å‰é¢æ˜¯é›¶(ä¸åªä¸€ä½)ï¼Œç¸®æ¸›é•·åº¦
+	//ÀË¬d«e­±¬O¹s(¤£¥u¤@¦ì)¡AÁY´îªø«×
 	int tmpcnt = 0;
 	for (int i = 0; i < len; ++i)
 	{
@@ -816,20 +816,21 @@ string to_string(big_int n){
 	}
 	return s;
 }
-string to_string(int n){
-	int count = 0;
-	string s;
-	int t = n;
-	while (t/=10){
-		count++;	
-	} 
-	for(int i = 0 ; i < count+1 ; i++){
-		s += '0';
-	}
-	while( n > 0){
-		s[count] = char(n%10 +'0');
-		count --; 
-		n /= 10;
-	} 
-	return s;
-}
+//string to_string(int n){
+//	int count = 0;
+//	string s;
+//	int t = n;
+//	while (t/=10){
+//		count++;	
+//	} 
+//	for(int i = 0 ; i < count+1 ; i++){
+//		s += '0';
+//	}
+//	while( n > 0){
+//		s[count] = char(n%10 +'0');
+//		count --; 
+//		n /= 10;
+//	} 
+//	return s;
+//}
+
