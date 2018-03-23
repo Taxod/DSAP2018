@@ -140,12 +140,17 @@ int main(){
 				cout << name[i]<<"*"<<endl;
 				if (name[i] == cs)
 				{
-					// BIGP[i].print();
-					// cout <<"------------\n";
-					cout << *BIGP[i];
+					cout << *BIGP[i];//這不是測試-------
 				}
 			}
 		}else{
+			size_t found = cs.find(" ",0);
+			int spaceCnt = 0;
+			while(found != string::npos){
+				spaceCnt ++;
+				found = cs.find(" ",found+1);
+			}
+			cout << spaceCnt <<"*\n";
 
 		}
 	}
@@ -154,13 +159,6 @@ int main(){
 		delete BIGP[i];
 	}
 	delete [] BIGP;
-	// string k = "123546";
-	// string l = "13";
-	// big_int p(k);
-	// big_int q(l);
-	// big_int t = p%q;
-	// q.print();
-	// cout << p[0];
 	return 0;
 }
 
