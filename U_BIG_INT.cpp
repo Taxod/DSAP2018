@@ -1,6 +1,4 @@
 #include<iostream>
-#include<cmath>
-#include<math.h>
 #include<string>
 #include <stdlib.h>
 using namespace std;
@@ -22,8 +20,8 @@ class big_int{
 		big_int operator+(big_int q);
 		big_int operator-(big_int q);
 		big_int operator-();
-		big_int operator*(big_int q);//同下
-		big_int operator/(big_int q);//處理正負號
+		big_int operator*(big_int q);
+		big_int operator/(big_int q);
 		big_int operator/(int n);
 		big_int operator%(big_int q);
 		int operator[](int n);
@@ -33,12 +31,11 @@ class big_int{
 		bool isPrime();//跑太久需要修正
 		void operator=(big_int q);
 		void operator=(string s);
-		big_int abs();//自身要不要改變
+		big_int abs();
 		big_int square();
 		void check();
 		void print();
-		big_int merge(const big_int q);
-		// friend main();//記得刪掉------------
+		big_int merge(big_int q);
 		friend ostream& operator<<(ostream& out,const big_int& q);
 		friend istream& operator>>(istream& in,const big_int& q);
 		
@@ -47,9 +44,7 @@ string to_string(big_int n);
 //string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
-// big_int calculate(string cs,big_int** ptr);
 big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
-
 big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
 
@@ -130,7 +125,6 @@ int main(){
 			cs.erase(0,4);
 			name[nameCnt] = cs.substr(0,cs.find(" "));
 			cs.erase(0,name[nameCnt].length()+3);
-			// cout << cs<<"//\n";
 			BIGP[nameCnt] = new big_int(cs);
 			nameCnt++;
 		}else if(cs.find("BigInt") != string::npos){
@@ -144,14 +138,47 @@ int main(){
 		{    // 取特定值、判斷質數------------------------
 			// cout << "print!!!\n";
 			cs.erase(0,8);
-			for (int i = 0; i < nameCnt; ++i)
-			{	
-				if (name[i] == cs)
+			if (cs.find(" ") != string::npos)
+			{
+				cout << calculate(cs,BIGP,name,nameCnt);
+			}else if (cs.find("[") != string::npos)
+			{
+				string target_number = cs.substr(cs.find("["),cs.find("]"));
+				string target = cs.substr(0,cs.find("["));
+				if (find_object(target,nameCnt,BIGP,name).len < atoi(target_number.c_str()))
 				{
-					cout << *BIGP[i];//這不是測試-------
-					// BIGP[i]->print();
+					cout << "-1\n";
+				}else{
+					cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl;	
+				}
+			}else if (cs.find(".square()")!=string::npos)
+			{
+				string base = cs.substr(0,cs.find("."));
+				cout << find_object(base,nameCnt,BIGP,name).square();
+			}else if (cs.find(".abs()")!=string::npos)
+			{
+				string base = cs.substr(0,cs.find("."));
+				cout << find_object(base,nameCnt,BIGP,name).abs();
+			}else if (cs.find("-")!=string::npos)
+			{
+				string target = cs.substr(cs.find("-")+1);
+				// cout << target<<"*";
+				cout << (-(find_object(target,nameCnt,BIGP,name)));
+			}
+			else if (cs.find(".isPrime()")!=string::npos)
+			{
+				/* code */
+			}else{
+				for (int i = 0; i < nameCnt; ++i)
+				{	
+					if (name[i] == cs)
+					{
+						cout << *BIGP[i];//這不是測試-------
+						// BIGP[i]->print();
+					}
 				}
 			}
+			
 		}else{
 			size_t found = cs.find(" ",0);
 			int spaceCnt = 0;
@@ -175,8 +202,9 @@ int main(){
 						}
 					}
 					/*k = m.abs();*/
-				}else if (cs.find(".squre()") != string::npos)//平方
+				}else if (cs.find(".square()") != string::npos)//平方
 				{
+					// cout << "SQUARE!!!\n";
 					string target = cs.substr(0,cs.find(" "));
 					cs.erase(0,cs.find(" ")+3);
 					string base = cs.substr(0,cs.find("."));
@@ -185,6 +213,9 @@ int main(){
 						if (name[i] == target)
 						{
 							*BIGP[i] = find_object(base,nameCnt,BIGP,name).square();
+							// cout <<"------\n";
+							// BIGP[i]->print();
+							// cout << "---------\n";
 						}
 					}
 					/*k = m.square()*/
@@ -354,7 +385,13 @@ istream& operator>>(istream& in,big_int& q){
 ostream& operator<<(ostream& out, const big_int& q){
 	if (q.negative)
 	{
-		out << "-";
+		if (q.len == 1 && q.cal[0].n == 0)
+		{
+			/* code */
+		}else{
+			out << "-";	
+		}
+		
 	}
 	for (int i = 0; i < q.len; ++i)
 	{
@@ -375,6 +412,7 @@ big_int big_int::operator-(){
 	}else{
 		result.negative = false;
 	}
+	// cout << "operator-";
 	return result;
 }
 int big_int::operator[](int n){
@@ -452,6 +490,12 @@ big_int big_int::operator-(big_int q){
 	big_int result;
 	big_int subm;
 	big_int m;
+	big_int zero;
+	zero = "0";
+	if (*this == q)
+	{
+		return zero;
+	}
 	if ((this->abs()) > (q.abs()))
 	{
 		subm = *this;
@@ -471,6 +515,8 @@ big_int big_int::operator-(big_int q){
 		if (this->abs() < q.abs())
 		{
 			result.negative = true;
+		}else{
+			result.negative = false;
 		}
 		return result;
 	}else if ((this->negative == true && q.negative == true))
@@ -484,6 +530,8 @@ big_int big_int::operator-(big_int q){
 		if (this->abs() > q.abs())
 		{
 			result.negative = true;
+		}else{
+			result.negative = false;
 		}
 		return result;
 	}else if ( this->negative == false && q.negative == true)
@@ -498,8 +546,11 @@ big_int big_int::operator-(big_int q){
 	}
 }
 
-big_int big_int::operator+(big_int q){//需要修改
+big_int big_int::operator+(big_int q){
 	big_int result;
+	big_int zero;
+	zero = "0";
+	result = zero;
 	if (this->negative == q.negative)
 	{
 		if (this->negative == true)
@@ -513,41 +564,48 @@ big_int big_int::operator+(big_int q){//需要修改
 			return result;
 		}
 	}else{
-		if (this->negative == true)
+		if (this->abs() == q.abs())
 		{
-			for (int i = 0; i < this->len; ++i)
+			return zero;
+		}else if (this->abs() > q.abs())
+		{
+			for (int i = 0; i < q.len; ++i)
 			{
-				this->cal[i].n *= -1;
+				q.cal[i].n *= -1;
 			}
 			result = this->merge(q);
-			for (int i = 0; i < this->len; ++i)
+			for (int i = 0; i < q.len; ++i)
 			{
-				this->cal[i].n *= -1;
+				q.cal[i].n *= -1;
 			}
-			if (this->abs() > q.abs())
+			if (this->negative == true)
 			{
 				result.negative = true;
+			}else{
+				result.negative = false;
 			}
 			return result;
 		}else{
-			for (int i = 0; i < q.len; ++i)
+			for (int i = 0; i < this->len; ++i)
 			{
-				q.cal[i].n *= -1;
+				this->cal[i].n *= -1;
 			}
 			result = this->merge(q);
-			for (int i = 0; i < q.len; ++i)
+			for (int i = 0; i < this->len; ++i)
 			{
-				q.cal[i].n *= -1;
+				this->cal[i].n *= -1;
 			}
-			if (q.abs() > this->abs())
+			if (q.negative == true)
 			{
-				result.negative = true;
+					result.negative = true;
+			}else{
+				result.negative = false;
 			}
 			return result;
 		}
 	}	
 }
-big_int big_int::merge(const big_int q){
+big_int big_int::merge(big_int q){
 	big_int result(*this);
 	int biglen = this->len;
 	if (q.len > biglen)
@@ -607,17 +665,9 @@ big_int big_int::operator*(big_int q){
 		}
 		result.check();
 	}
-	if (this->negative == false)
+	if (this->negative != q.negative)
 	{
-		if (q.negative == true)
-		{
 			result.negative = true;		
-		}
-	}else{
-		if (q.negative == false)
-		{
-			result.negative = true;
-		}
 	}
 	return result;
 }
@@ -770,56 +820,62 @@ big_int big_int::square(){
 	return result;
 }
 void big_int::check(){
-	for (int i = len-1; i >= 0; i--)
+	big_int zero;
+	zero = "0";
+	if (!(*this == zero))
 	{
-		if (cal[i].n < 0)
+		for (int i = len-1; i >= 0; i--)
 		{
-			if (i == 0)
+			if (cal[i].n < 0)
 			{
-			}else{
-				cal[i].n += 10;
-				cal[i-1].n --;
+				if (i == 0)
+				{
+				}else{
+					cal[i].n += 10;
+					cal[i-1].n --;
+				}
 			}
 		}
-	}
-	for(int i = len-1 ; i >= 0 ; i--){
-		if(cal[i].n >= 10){
-			if(i == 0){
-				for(int j = len-1; j >= 0 ; j--){
-					cal[j+1].n = (cal[j].n); 
+		for(int i = len-1 ; i >= 0 ; i--){
+			if(cal[i].n >= 10){
+				if(i == 0){
+					for(int j = len-1; j >= 0 ; j--){
+						cal[j+1].n = (cal[j].n); 
+					}
+					cal[i].n = cal[i+1].n/10;
+					cal[i+1].n%=10;
+					len++;//更新長度
+					//更新位數
+					for(int i = 0 ; i < len;i++){
+						cal[i].p = len-1-i;
+					}
+				}else{
+					cal[i-1].n += (cal[i].n/10);
+					cal[i].n %= 10;
 				}
-				cal[i].n = cal[i+1].n/10;
-				cal[i+1].n%=10;
-				len++;//更新長度
-				//更新位數
-				for(int i = 0 ; i < len;i++){
-					cal[i].p = len-1-i;
-				}
-			}else{
-				cal[i-1].n += (cal[i].n/10);
-				cal[i].n %= 10;
 			}
 		}
-	}
-	//檢查前面是零(不只一位)，縮減長度
-	int tmpcnt = 0;
-	for (int i = 0; i < len; ++i)
-	{
-		if (cal[i].n == 0)
+		//檢查前面是零(不只一位)，縮減長度
+		int tmpcnt = 0;
+		for (int i = 0; i < len; ++i)
 		{
-			tmpcnt ++;
-		}else{
-			break;
+			if (cal[i].n == 0)
+			{
+				tmpcnt ++;
+			}else{
+				break;
+			}
+		}
+		for (int i = tmpcnt; i < len; ++i)
+		{
+			cal[i-tmpcnt].n = cal[i].n;
+		}
+		len -= tmpcnt;
+		for(int i = 0 ; i < len;i++){
+			cal[i].p = len-1-i;
 		}
 	}
-	for (int i = tmpcnt; i < len; ++i)
-	{
-		cal[i-tmpcnt].n = cal[i].n;
-	}
-	len -= tmpcnt;
-	for(int i = 0 ; i < len;i++){
-		cal[i].p = len-1-i;
-	}
+	
 }
 string to_string(big_int n){
 	string s;

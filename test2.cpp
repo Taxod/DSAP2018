@@ -202,9 +202,8 @@ int main(){
 						}
 					}
 					/*k = m.abs();*/
-				}else if (cs.find(".square()") != string::npos)//平方
+				}else if (cs.find(".squre()") != string::npos)//平方
 				{
-					// cout << "SQUARE!!!\n";
 					string target = cs.substr(0,cs.find(" "));
 					cs.erase(0,cs.find(" ")+3);
 					string base = cs.substr(0,cs.find("."));
@@ -239,6 +238,7 @@ int main(){
 					if (name[i] == target)
 					{
 						*BIGP[i] = calculate(cs,BIGP,name,nameCnt);
+						// cout << *BIGP[i] << "*\n";
 					}
 				}
 			}else{
@@ -805,14 +805,16 @@ bool big_int::operator<(big_int q){
 }
 
 big_int big_int::abs(){
+	this->negative = false;
 	big_int result(*this);
 	result.negative = false;
 	return result;
 }
 big_int big_int::square(){
+	*this = *this * *this;
 	big_int result(*this);
-	result = result * result;
-	result.negative = false;
+	// result = result * result;
+	// result.negative = false;
 	return result;
 }
 void big_int::check(){
