@@ -44,12 +44,10 @@ class big_int{
          
 };
 string to_string(big_int n);
-// string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
 big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
- 
  
  
 
