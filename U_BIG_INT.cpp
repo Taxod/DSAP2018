@@ -50,7 +50,7 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
 
 
-//
+
 //string to_string(int n){
 //	int count = 0;
 //	string s;
@@ -68,7 +68,7 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 //	} 
 //	return s;
 //}
-//
+
 
 
 
@@ -460,24 +460,31 @@ bool big_int::isPrime(){
 	one = "1";
 	big_int two;
 	two = "2";
-
+	int sum = 0;
+	for (int i = 0; i < this->len; ++i)
+	{
+		sum += this->cal[i].n;
+	}
 	big_int tmp = *this;
-	if (*this == one || *this == two)
+	if (*this == one)
+	{
+		return false;
+	}else if (*this == two)
 	{
 		return true;
 	}
 	if (this->cal[this->len-1].n % 2 == 0)
 	{
 		return false;
-	}else if ((this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	}else if (this->len > 2 && sum % 3 == 0)
 	{
 		return false;
 	}else{
 		big_int i;
-		for ( i = "2"; i < *this; i = i + one)
+		for ( i = "2"; i < this->abs(); i = i + one)
 		{
-			cout << "*"<<i ;
-			if (*this % i == zero)
+			// cout << "*"<<i ;
+			if ((*this % i).abs() == zero)
 			{
 				return false;
 			}
@@ -550,9 +557,14 @@ big_int big_int::operator%(big_int q){
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
-	if (subd.abs() < d.abs())
+	if (d.abs() > subd.abs())
 	{
 		result = subd;
+		// result.negative
+		return result;
+	}else if (subd.abs() == d.abs())
+	{
+		result = "0";
 		return result;
 	}
 	big_int ans;
@@ -887,7 +899,15 @@ bool big_int::operator>(big_int q){
 	
 }
 bool big_int::operator<(big_int q){
-	return !(*this > q);
+	if (*this > q )
+	{
+		return false;
+	}else if (*this == q)
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
 big_int big_int::abs(){
