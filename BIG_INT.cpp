@@ -462,21 +462,24 @@ bool big_int::isPrime(){
 	two = "2";
 
 	big_int tmp = *this;
-	if (*this == one || *this == two)
+	if (*this == one)
+	{
+		return false;
+	}else if (*this == two)
 	{
 		return true;
 	}
 	if (this->cal[this->len-1].n % 2 == 0)
 	{
 		return false;
-	}else if ((this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	}else if (this->len > 2 && (this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
 	{
 		return false;
 	}else{
 		big_int i;
 		for ( i = "2"; i < *this; i = i + one)
 		{
-			cout << "*"<<i ;
+			// cout << "*"<<i ;
 			if (*this % i == zero)
 			{
 				return false;
@@ -553,6 +556,7 @@ big_int big_int::operator%(big_int q){
 	if (d.abs() > subd.abs())
 	{
 		result = subd;
+		// result.negative
 		return result;
 	}else if (subd.abs() == d.abs())
 	{
@@ -891,7 +895,15 @@ bool big_int::operator>(big_int q){
 	
 }
 bool big_int::operator<(big_int q){
-	return !(*this > q);
+	if (*this > q )
+	{
+		return false;
+	}else if (*this == q)
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
 big_int big_int::abs(){

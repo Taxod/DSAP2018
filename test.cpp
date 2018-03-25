@@ -128,7 +128,7 @@ string to_string(int n){
 
 
 int main(){
-	string y ="17";
+	string y ="12345";
 	big_int i(y);
 	string h ="17";
 	big_int j(h);
@@ -136,10 +136,11 @@ int main(){
 	big_int u(k);
 	string r = "14";
 	big_int R (r);
+	cout << -1%-2;
 	// cout << i[5];
-	cout << i % j;
-	cout << 17 %17;
-	// cout << i.isPrime();
+	// cout << i % j;
+	// cout << 17 %17;
+	cout << i.isPrime();
 	// int ii = -11;
 	// int jj = -12;
 	// cout << ii%jj<<"//\n";
@@ -324,14 +325,17 @@ bool big_int::isPrime(){
 	two = "2";
 
 	big_int tmp = *this;
-	if (*this == one || *this == two)
+	if (*this == one)
+	{
+		return false;
+	}else if (*this == two)
 	{
 		return true;
 	}
 	if (this->cal[this->len-1].n % 2 == 0)
 	{
 		return false;
-	}else if ((this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	}else if (this->len > 2 && (this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
 	{
 		return false;
 	}else{
@@ -760,7 +764,15 @@ bool big_int::operator>(big_int q){
 	
 }
 bool big_int::operator<(big_int q){
-	return !(*this > q);
+	if (*this > q )
+	{
+		return false;
+	}else if (*this == q)
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
 big_int big_int::abs(){
