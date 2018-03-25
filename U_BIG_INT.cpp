@@ -50,7 +50,7 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
 
 
-
+//
 //string to_string(int n){
 //	int count = 0;
 //	string s;
@@ -70,7 +70,7 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 //}
 //
 //
-
+//
 
 
 
@@ -164,8 +164,9 @@ int main(){
 			
 				string target_number = cs.substr(cs.find("[")+1,cs.find("]")-cs.find("[")-1);
 				string target = cs.substr(0,cs.find("["));
-				// cout << target <<":"<<target_number<<":\n";			
-				cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl;	
+				// cout << target <<":"<<target_number<<":\n";
+				
+					cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl;	
 			}else if (cs.find(".square()")!=string::npos)
 			{
 				string base = cs.substr(0,cs.find("."));
@@ -432,7 +433,7 @@ big_int big_int::operator-(){
 int big_int::operator[](int n){
 	big_int tmp = this->abs();
 	int result;
-	if (this->len <= n)
+	if (this->len <= n || n < 0)
 	{
 		result = -1;
 	}else{
@@ -500,7 +501,7 @@ big_int big_int::operator/(big_int q){
 	subd = subd.abs();
 	d = d.abs();
 	result = "0";
-	if (subd < d)
+	if (d > subd)
 	{
 		// result = "0";
 		return result;

@@ -130,15 +130,15 @@ string to_string(int n){
 int main(){
 	string y ="17";
 	big_int i(y);
-	string h ="2";
+	string h ="17";
 	big_int j(h);
 	string k = "0";
 	big_int u(k);
 	string r = "14";
 	big_int R (r);
 	// cout << i[5];
-	// cout << i / j;
-	cout << i.isPrime();
+	cout << i / j;
+	// cout << i.isPrime();
 	// int ii = -11;
 	// int jj = -12;
 	// cout << ii%jj<<"//\n";
@@ -362,11 +362,13 @@ big_int big_int::operator/(big_int q){
 	subd = subd.abs();
 	d = d.abs();
 	result = "0";
-	if (subd < d)
+	// cout << "---";
+	if (d > subd)
 	{
 		// result = "0";
 		return result;
 	}
+	// cout << "---";
 	string tmpd;
 	for (int i = 0; i < d.len; ++i)
 	{
@@ -378,6 +380,7 @@ big_int big_int::operator/(big_int q){
 		tmpd.insert(tmpd.length(),"0");
 		count++;
 	}
+	// cout << tmpd<<"*\n";
 	big_int bd(tmpd);
 	while(subd > d || subd == d){
 		if (subd > bd || subd == d)
@@ -386,9 +389,12 @@ big_int big_int::operator/(big_int q){
 			string ans = "1";
 			for (int i = 0; i < count; ++i)
 			{
+				// cout <<ans<<";";
 				ans.insert(ans.length(),"0");
+				// cout << ans<<"\n";
 			}
 			big_int A(ans);
+			// cout << A;
 			result = result + A;
 		}else{
 			tmpd = tmpd.substr(0,tmpd.length()-1);

@@ -433,7 +433,7 @@ big_int big_int::operator-(){
 int big_int::operator[](int n){
 	big_int tmp = this->abs();
 	int result;
-	if (this->len <= n)
+	if (this->len <= n || n < 0)
 	{
 		result = -1;
 	}else{
@@ -501,7 +501,7 @@ big_int big_int::operator/(big_int q){
 	subd = subd.abs();
 	d = d.abs();
 	result = "0";
-	if (subd < d)
+	if (d > subd)
 	{
 		// result = "0";
 		return result;
