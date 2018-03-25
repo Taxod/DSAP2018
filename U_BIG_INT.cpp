@@ -69,8 +69,8 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 //	return s;
 //}
 //
-//
-//
+
+
 
 
 
@@ -559,7 +559,7 @@ big_int big_int::operator%(big_int q){
 	ans = subd.abs() / d.abs();
 	ans = ans * d.abs();
 	result = subd.abs() - ans;
-	if (subd.negative == true)
+	if (subd.negative != d.negative)
 	{
 		result.negative = true;
 	}else{

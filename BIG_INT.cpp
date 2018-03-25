@@ -550,16 +550,20 @@ big_int big_int::operator%(big_int q){
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
-	if (subd.abs() < d.abs())
+	if (d.abs() > subd.abs())
 	{
 		result = subd;
+		return result;
+	}else if (subd.abs() == d.abs())
+	{
+		result = "0";
 		return result;
 	}
 	big_int ans;
 	ans = subd.abs() / d.abs();
 	ans = ans * d.abs();
 	result = subd.abs() - ans;
-	if (subd.negative == true)
+	if (subd.negative != d.negative)
 	{
 		result.negative = true;
 	}else{
