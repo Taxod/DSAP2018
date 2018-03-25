@@ -10,6 +10,7 @@ class big_int{
     private:
         string num;
         bool negative = false; 
+    	
     public:
         int len = 0;
         np cal[100]={{0}};
@@ -39,6 +40,7 @@ class big_int{
         big_int merge(big_int q);
         friend ostream& operator<<(ostream& out,const big_int& q);
         friend istream& operator>>(istream& in,const big_int& q);
+        friend string to_string(int n);
          
 };
 string to_string(big_int n);
