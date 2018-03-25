@@ -128,7 +128,7 @@ string to_string(int n){
 
 
 int main(){
-	string y ="12345";
+	string y ="3121";
 	big_int i(y);
 	string h ="17";
 	big_int j(h);
@@ -136,7 +136,6 @@ int main(){
 	big_int u(k);
 	string r = "14";
 	big_int R (r);
-	cout << -1%-2;
 	// cout << i[5];
 	// cout << i % j;
 	// cout << 17 %17;

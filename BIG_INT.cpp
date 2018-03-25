@@ -460,7 +460,11 @@ bool big_int::isPrime(){
 	one = "1";
 	big_int two;
 	two = "2";
-
+	int sum = 0;
+	for (int i = 0; i < this->len; ++i)
+	{
+		sum += this->cal[i].n;
+	}
 	big_int tmp = *this;
 	if (*this == one)
 	{
@@ -472,7 +476,7 @@ bool big_int::isPrime(){
 	if (this->cal[this->len-1].n % 2 == 0)
 	{
 		return false;
-	}else if (this->len > 2 && (this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	}else if (this->len > 2 && sum % 3 == 0)
 	{
 		return false;
 	}else{
