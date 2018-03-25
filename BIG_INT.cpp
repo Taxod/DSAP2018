@@ -42,7 +42,6 @@ class big_int{
          
 };
 string to_string(big_int n);
-// string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
@@ -485,17 +484,16 @@ bool big_int::isPrime(){
         return false;
     }else{
         big_int i;
-        for ( i = "2"; i * i < this->abs(); i = i + one)
+        for ( i = "3"; i * i < this->abs(); i = i + one)
         {
             // cout << "*"<<i ;
             if ((*this % i).abs() == zero)
             {
                 return false;
             }
-            if (!(i == two))
-            {
-                i = i + one;
-            }
+            
+                i = i + two;
+            
         }
         return true;
     }
