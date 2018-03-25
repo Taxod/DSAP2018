@@ -481,10 +481,10 @@ bool big_int::isPrime(){
 		return false;
 	}else{
 		big_int i;
-		for ( i = "2"; i < this->abs(); i = i + one)
+		for ( i = "2"; i * i < this->abs(); i = i + one)
 		{
 			// cout << "*"<<i ;
-			if (*this % i == zero)
+			if ((*this % i).abs() == zero)
 			{
 				return false;
 			}
