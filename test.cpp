@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include <stdlib.h>
+#include<math.h>
 using namespace std;
 struct np{
 	int n;
@@ -41,12 +42,29 @@ class big_int{
 		
 };
 string to_string(big_int n);
-string to_string(int n);
+//string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
 big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
+string to_string(int n){
+	int count = 0;
+	string s;
+	int t = n;
+	while (t/=10){
+		count++;	
+	} 
+	for(int i = 0 ; i < count+1 ; i++){
+		s += '0';
+	}
+	while( n > 0){
+		s[count] = char(n%10 +'0');
+		count --; 
+		n /= 10;
+	} 
+	return s;
+}
 
 
 
@@ -110,39 +128,27 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
 
 int main(){
-	string y ="-11";
+	string y ="17";
 	big_int i(y);
-	string h ="-2";
+	string h ="2";
 	big_int j(h);
 	string k = "0";
 	big_int u(k);
-	string r = "3";
+	string r = "14";
 	big_int R (r);
-
-	cout << i;//-11
-	cout << j;//-2
-	cout << u;//0
-	cout << R;//3
-	// i = -i;
-	u = u.square();
-
-	i = i.square();
-	i = i + i;
-	cout << i * j;//18
-	u = u * u;
-	cout << u;
-	cout << i * u;
-	cout << i + u;
-
-	u = u + j ;
-	cout << u;
-	// cout << j * i;//18
-	// cout << j * R;//-6
-	// cout << R * j;//-6
-	// cout << i * u;//0
-	// cout << R * u;//0
-	// cout << u.square();//0
-	// cout << i.square();//81
+	// cout << i[5];
+	// cout << i / j;
+	cout << i.isPrime();
+	// int ii = -11;
+	// int jj = -12;
+	// cout << ii%jj<<"//\n";
+	// cout << i;//120
+	// cout << j;//11
+	// cout << u;//0
+	// cout << R;//3
+	// cout << j%i;//10
+	// cout << i.isPrime();
+	// cout << i;
 	return 0;
 }
 
@@ -302,19 +308,46 @@ big_int big_int::operator/(int n){
 	big_int result = *this / tmp;
 	return result;
 }
+// big_int big_int::operator%(int n){
+// 	big_int tmp;
+// 	tmp = to_string(n);
+// 	big_int result = *this % tmp;
+// 	return result;	
+// }
 bool big_int::isPrime(){
-	big_int tmp = *this;
 	big_int zero;
 	zero = "0";
 	big_int one;
 	one = "1";
-	big_int i;
-	for (i = "0"; i < tmp; i = i + one)
+	big_int two;
+	two = "2";
+
+	big_int tmp = *this;
+	if (*this == one || *this == two)
 	{
-		if (*this % i == zero)
+		return true;
+	}
+	if (this->cal[this->len-1].n % 2 == 0)
+	{
+		return false;
+	}else if ((this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	{
+		return false;
+	}else{
+		big_int i;
+		for ( i = "2"; i < *this; i = i + one)
 		{
-			return false;
+			cout << "*"<<i ;
+			if (*this % i == zero)
+			{
+				return false;
+			}
+			if (!(i == two))
+			{
+				i = i + one;
+			}
 		}
+		return true;
 	}
 	return true;
 }
@@ -323,42 +356,76 @@ void big_int::operator=(string s){
 	*this = p;
 }
 big_int big_int::operator/(big_int q){
-	long long count = 0;
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
 	subd = subd.abs();
 	d = d.abs();
+	result = "0";
 	if (subd < d)
 	{
-		result = "0";
+		// result = "0";
 		return result;
 	}
-	while(subd > d || subd == d){
-		subd = subd - d;
-		count ++;
+	string tmpd;
+	for (int i = 0; i < d.len; ++i)
+	{
+		tmpd += (d.cal[i].n+'0');
 	}
-	string c = to_string(count);
-	result = c;
+	int count = 0;
+	for (int i = 0; i < subd.len-d.len; ++i)
+	{
+		tmpd.insert(tmpd.length(),"0");
+		count++;
+	}
+	big_int bd(tmpd);
+	while(subd > d || subd == d){
+		if (subd > bd || subd == d)
+		{
+			subd = subd - bd;
+			string ans = "1";
+			for (int i = 0; i < count; ++i)
+			{
+				ans.insert(ans.length(),"0");
+			}
+			big_int A(ans);
+			result = result + A;
+		}else{
+			tmpd = tmpd.substr(0,tmpd.length()-1);
+			bd = tmpd;
+			count--;
+			if (count < 0)
+			{
+				break;
+			}
+		}
+	}
 	if (this->negative != q.negative)
 	{
 		result.negative = true;
 	}
 	return result;
 }
+
 big_int big_int::operator%(big_int q){
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
-	if (subd < d)
+	if (subd.abs() < d.abs())
 	{
-		result = "0";
+		result = subd;
 		return result;
 	}
-	while(subd > d || subd == d){
-		subd = subd - d;
+	big_int ans;
+	ans = subd.abs() / d.abs();
+	ans = ans * d.abs();
+	result = subd.abs() - ans;
+	if (subd.negative == true)
+	{
+		result.negative = true;
+	}else{
+		result.negative = false;
 	}
-	result = to_string(subd);
 	return result;
 }
 
@@ -761,20 +828,4 @@ string to_string(big_int n){
 	}
 	return s;
 }
-string to_string(int n){
-	int count = 0;
-	string s;
-	int t = n;
-	while (t/=10){
-		count++;	
-	} 
-	for(int i = 0 ; i < count+1 ; i++){
-		s += '0';
-	}
-	while( n > 0){
-		s[count] = char(n%10 +'0');
-		count --; 
-		n /= 10;
-	} 
-	return s;
-}
+

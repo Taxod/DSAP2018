@@ -3,8 +3,8 @@
 #include <stdlib.h>
 using namespace std;
 struct np{
-	int n;
-	int p;
+	short n;
+	short p;
 };
 class big_int{
 	private:
@@ -24,6 +24,7 @@ class big_int{
 		big_int operator/(big_int q);
 		big_int operator/(int n);
 		big_int operator%(big_int q);
+		big_int operator%(int n);
 		int operator[](int n);
 		bool operator>(big_int q);
 		bool operator<(big_int q);
@@ -41,7 +42,7 @@ class big_int{
 		
 };
 string to_string(big_int n);
-//string to_string(int n);
+// string to_string(int n);
 ostream& operator<<(ostream& out,const big_int& q);
 istream& operator>>(istream& in,big_int& q);
 big_int find_object(string s,int nameCnt,big_int** ptr,string name[]);
@@ -50,9 +51,25 @@ big_int calculate(string cs, big_int** ptr,string name[],int nameCnt);
 
 
 
-
-
-
+//string to_string(int n){
+//	int count = 0;
+//	string s;
+//	int t = n;
+//	while (t/=10){
+//		count++;	
+//	} 
+//	for(int i = 0 ; i < count+1 ; i++){
+//		s += '0';
+//	}
+//	while( n > 0){
+//		s[count] = char(n%10 +'0');
+//		count --; 
+//		n /= 10;
+//	} 
+//	return s;
+//}
+//
+//
 
 
 
@@ -143,14 +160,12 @@ int main(){
 				cout << calculate(cs,BIGP,name,nameCnt);
 			}else if (cs.find("[") != string::npos)
 			{
-				string target_number = cs.substr(cs.find("["),cs.find("]"));
+				// cout<< "here!!\n";
+			
+				string target_number = cs.substr(cs.find("[")+1,cs.find("]")-cs.find("[")-1);
 				string target = cs.substr(0,cs.find("["));
-				if (find_object(target,nameCnt,BIGP,name).len < atoi(target_number.c_str()))
-				{
-					cout << "-1\n";
-				}else{
-					cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl;	
-				}
+				// cout << target <<":"<<target_number<<":\n";			
+				cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl;	
 			}else if (cs.find(".square()")!=string::npos)
 			{
 				string base = cs.substr(0,cs.find("."));
@@ -167,7 +182,10 @@ int main(){
 			}
 			else if (cs.find(".isPrime()")!=string::npos)
 			{
-				/* code */
+				string target = cs.substr(0,cs.find("."));
+				// cout << target<< "*\n";
+				cout << find_object(target,nameCnt,BIGP,name).isPrime();
+				// cout << "1";
 			}else{
 				for (int i = 0; i < nameCnt; ++i)
 				{	
@@ -213,9 +231,6 @@ int main(){
 						if (name[i] == target)
 						{
 							*BIGP[i] = find_object(base,nameCnt,BIGP,name).square();
-							// cout <<"------\n";
-							// BIGP[i]->print();
-							// cout << "---------\n";
 						}
 					}
 					/*k = m.square()*/
@@ -242,7 +257,6 @@ int main(){
 					if (name[i] == target)
 					{
 						*BIGP[i] = calculate(cs,BIGP,name,nameCnt);
-						// cout << *BIGP[i] << "*\n";
 					}
 				}
 			}else{
@@ -417,7 +431,13 @@ big_int big_int::operator-(){
 }
 int big_int::operator[](int n){
 	big_int tmp = this->abs();
-	int result = tmp.cal[tmp.len - n-1].n;
+	int result;
+	if (this->len <= n)
+	{
+		result = -1;
+	}else{
+		result = tmp.cal[tmp.len - n-1].n;
+	}
 	return result;
 }
 big_int big_int::operator/(int n){
@@ -426,19 +446,46 @@ big_int big_int::operator/(int n){
 	big_int result = *this / tmp;
 	return result;
 }
+big_int big_int::operator%(int n){
+	big_int tmp;
+	tmp = to_string(n);
+	big_int result = *this % tmp;
+	return result;	
+}
 bool big_int::isPrime(){
-	big_int tmp = *this;
 	big_int zero;
 	zero = "0";
 	big_int one;
 	one = "1";
-	big_int i;
-	for (i = "0"; i < tmp; i = i + one)
+	big_int two;
+	two = "2";
+
+	big_int tmp = *this;
+	if (*this == one || *this == two)
 	{
-		if (*this % i == zero)
+		return true;
+	}
+	if (this->cal[this->len-1].n % 2 == 0)
+	{
+		return false;
+	}else if ((this->cal[this->len-1].n + this->cal[this->len-2].n) % 3 == 0)
+	{
+		return false;
+	}else{
+		big_int i;
+		for ( i = "2"; i < *this; i = i + one)
 		{
-			return false;
+			cout << "*"<<i ;
+			if (*this % i == zero)
+			{
+				return false;
+			}
+			if (!(i == two))
+			{
+				i = i + one;
+			}
 		}
+		return true;
 	}
 	return true;
 }
@@ -447,42 +494,76 @@ void big_int::operator=(string s){
 	*this = p;
 }
 big_int big_int::operator/(big_int q){
-	long long count = 0;
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
 	subd = subd.abs();
 	d = d.abs();
+	result = "0";
 	if (subd < d)
 	{
-		result = "0";
+		// result = "0";
 		return result;
 	}
-	while(subd > d || subd == d){
-		subd = subd - d;
-		count ++;
+	string tmpd;
+	for (int i = 0; i < d.len; ++i)
+	{
+		tmpd += (d.cal[i].n+'0');
 	}
-	string c = to_string(count);
-	result = c;
+	int count = 0;
+	for (int i = 0; i < subd.len-d.len; ++i)
+	{
+		tmpd.insert(tmpd.length(),"0");
+		count++;
+	}
+	big_int bd(tmpd);
+	while(subd > d || subd == d){
+		if (subd > bd || subd == d)
+		{
+			subd = subd - bd;
+			string ans = "1";
+			for (int i = 0; i < count; ++i)
+			{
+				ans.insert(ans.length(),"0");
+			}
+			big_int A(ans);
+			result = result + A;
+		}else{
+			tmpd = tmpd.substr(0,tmpd.length()-1);
+			bd = tmpd;
+			count--;
+			if (count < 0)
+			{
+				break;
+			}
+		}
+	}
 	if (this->negative != q.negative)
 	{
 		result.negative = true;
 	}
 	return result;
 }
+
 big_int big_int::operator%(big_int q){
 	big_int result;
 	big_int subd(*this);
 	big_int d(q);
-	if (subd < d)
+	if (subd.abs() < d.abs())
 	{
-		result = "0";
+		result = subd;
 		return result;
 	}
-	while(subd > d || subd == d){
-		subd = subd - d;
+	big_int ans;
+	ans = subd.abs() / d.abs();
+	ans = ans * d.abs();
+	result = subd.abs() - ans;
+	if (subd.negative == true)
+	{
+		result.negative = true;
+	}else{
+		result.negative = false;
 	}
-	result = to_string(subd);
 	return result;
 }
 
@@ -885,21 +966,5 @@ string to_string(big_int n){
 	}
 	return s;
 }
-//string to_string(int n){
-//	int count = 0;
-//	string s;
-//	int t = n;
-//	while (t/=10){
-//		count++;	
-//	} 
-//	for(int i = 0 ; i < count+1 ; i++){
-//		s += '0';
-//	}
-//	while( n > 0){
-//		s[count] = char(n%10 +'0');
-//		count --; 
-//		n /= 10;
-//	} 
-//	return s;
-//}
+
 
