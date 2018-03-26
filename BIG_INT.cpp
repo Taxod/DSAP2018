@@ -10,7 +10,9 @@ class big_int{
     private:
         string num;
         bool negative = false; 
-    	
+        void check();
+        void print();
+        big_int merge(big_int q);
     public:
         int len = 0;
         np cal[100]={{0}};
@@ -35,12 +37,9 @@ class big_int{
         void operator=(string s);
         big_int abs();
         big_int square();
-        void check();
-        void print();
-        big_int merge(big_int q);
         friend ostream& operator<<(ostream& out,const big_int& q);
         friend istream& operator>>(istream& in,const big_int& q);
-        friend string to_string(int n);
+        // friend string to_string(int n);
          
 };
 string to_string(big_int n);
