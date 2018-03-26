@@ -164,8 +164,8 @@ int main(){
                 string target_number = cs.substr(cs.find("[")+1,cs.find("]")-cs.find("[")-1);
                 string target = cs.substr(0,cs.find("["));
                 // cout << target <<":"<<target_number<<":\n";
-                 
-                    cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl; 
+    
+                cout << find_object(target,nameCnt,BIGP,name)[atoi(target_number.c_str())] << endl; 
             }else if (cs.find(".square()")!=string::npos)
             {
                 string base = cs.substr(0,cs.find("."));
