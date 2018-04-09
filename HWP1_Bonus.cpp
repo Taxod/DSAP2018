@@ -36,7 +36,7 @@ bool compare(Myvector **ptr);
 /*
 N a 3 0 0 0
 N b 3 0 0 0
-C E a b 
+C E a b
 A a 8 3 4 3 4 3 4 5 6
 C E a b
 C G a b
