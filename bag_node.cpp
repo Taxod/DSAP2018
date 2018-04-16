@@ -17,6 +17,8 @@ public:
   Node<ItemType>* getNext() const ;
 }; 
 
+
+//overload item operator=
 template <typename ItemType>
 Node<ItemType>::Node():next(nullptr){}
 template <typename ItemType>
@@ -66,30 +68,78 @@ public:
   bool remove(const ItemType& anEntry);
   void clear();
   bool contains(const ItemType& anEntry) const;
-  int getFrequencyOf(const ItemType& anEntry) const;
+  // int getFrequencyOf(const ItemType& anEntry) const;
   // vector<ItemType> toVector() const;
 };
 
 template<typename ItemType>
 Node<ItemType>* Bag<ItemType>::getPointerTo(const ItemType& target) const{
 	bool found = false;
-	while(!found && headptr != nullptr){
-		if (&target == )
+	Node<ItemType>* tmptr = headPtr;
+	while(!found && (tmptr != nullptr)){
+		if (target == tmptr->getItem())
 		{
+			found = true;
 		}else{
-			headptr->next();//------headptr另外存
+			tmptr = tmptr->getNext();
 		}
 	}
+	return tmptr;
 }
 template<typename ItemType>
 Bag<ItemType>::Bag():headPtr(nullptr),itemCount(0){}
 
 template<typename ItemType>
-Bag<ItemType>::Bag(const Bag<ItemType>& aBag){}//---------------------
+Bag<ItemType>::Bag(const Bag<ItemType>& aBag){}//---------------------copy constructor
 
 template<typename ItemType>
 int Bag<ItemType>::getCurrentSize() const{
 	return itemCount;
+}
+template<typename ItemType>
+bool Bag<ItemType>::isEmpty() const{
+	if (itemCount == 0)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+template<typename ItemType>
+bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
+	Node<ItemType>* newNodePtr = new Node<ItemType>();
+    newNodePtr->setItem(newEntry);
+    newNodePtr->setNext(headPtr);
+    headPtr = newNodePtr;
+    itemCount++; 
+    return true;
+}
+template<typename ItemType>
+bool Bag<ItemType>::remove(const ItemType& anEntry){
+	Node<ItemType>* entryNodePtr = getPointerTo(anEntry);
+  	bool canRemoveItem = !isEmpty() && (entryNodePtr != nullptr);
+  	if (canRemoveItem)
+  	{
+    	entryNodePtr->setItem(headPtr->getItem());
+    	Node<ItemType>* nodeToDeletePtr = headPtr;
+    	headPtr = headPtr->getNext();
+    	delete nodeToDeletePtr;
+    	nodeToDeletePtr = nullptr; 
+    	itemCount--;
+  	} 
+	return canRemoveItem;
+}
+template<typename ItemType>
+void Bag<ItemType>::clear(){//---------------------------
+}
+template<typename ItemType>
+bool Bag<ItemType>::contains(const ItemType& anEntry) const{
+	if (getPointerTo(anEntry) == nullptr)
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
 int main(int argc, char const *argv[])
