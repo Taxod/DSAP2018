@@ -86,6 +86,7 @@ Node<ItemType>* Bag<ItemType>::getPointerTo(const ItemType& target) const{
 	}
 	return tmptr;
 }
+
 template<typename ItemType>
 Bag<ItemType>::Bag():headPtr(nullptr),itemCount(0){}
 
@@ -114,6 +115,7 @@ bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
     itemCount++; 
     return true;
 }
+
 template<typename ItemType>
 bool Bag<ItemType>::remove(const ItemType& anEntry){
 	Node<ItemType>* entryNodePtr = getPointerTo(anEntry);
@@ -129,9 +131,11 @@ bool Bag<ItemType>::remove(const ItemType& anEntry){
   	} 
 	return canRemoveItem;
 }
+
 template<typename ItemType>
 void Bag<ItemType>::clear(){//---------------------------
 }
+
 template<typename ItemType>
 bool Bag<ItemType>::contains(const ItemType& anEntry) const{
 	if (getPointerTo(anEntry) == nullptr)

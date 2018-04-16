@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
+// #include <stdio.h>
 
 using namespace std;
 struct loc{
 	int x;
 	int y;
 };
+
 //讀的時候把全部的標籤記下來，定訂次序，讀資料的時候比對、設定對應bool
 class Entity{
 protected:
@@ -38,10 +40,69 @@ public:
 
 int main(int argc, char const *argv[])
 {
-	bool *ptr=0;
-	loc C = {1,1};
-	Entity* A = new car("name",1,1,C,ptr,10,100,true,'N',10);
-	A->print();
+	// int max_dis,ar,br,al,bl,k,h,p,attributeN;
+	// cin >> max_dis >> ar >> br >> al >> bl >> k >> h >> p >> attributeN;
+	// string trash;
+	// getline(cin,trash);
+	// string total_atrribute[];
+	// getline(cin,tmp_a);
+	string s;
+	/*
+	00:01 NP:0987654321(love,enjoy,hate)
+	*/
+	while(getline(cin,s)){
+		int time = 0;
+		if (cin.eof())
+		{
+			break;
+		}
+		string T = 	s.substr(0,s.find(' ')); // T 時間字串 ex : 00:00
+		s = s.substr(s.find(' ')+1,string::npos);
+		string condition = s.substr(0,s.find(':'));
+		s = s.substr(s.find(':')+1,string::npos);
+		if (condition == "NP")
+		{
+			/* code */
+		}else if (condition == "NC")
+		{
+			/* code */
+		}else if (condition == "OC")
+		{
+			/* code */
+		}else if (condition == "EC")
+		{
+			/* code */
+		}else if (condition == "OP")
+		{
+			/* code */
+		}else if (condition == "CP")
+		{
+			/* code */
+		}else if (condition == "AD")
+		{
+			/* code */
+		}else if (condition == "LC")
+		{
+			/* code */
+		}else if (condition == "SC")
+		{
+			/* code */
+		}else if (condition == "SP")
+		{
+			/* code */
+		}else if (condition == "SR")
+		{
+			/* code */
+		}else if (condition == "ZZ")
+		{
+			/* code */
+		}
+		cout << T << "*" << condition << "*" << s <<endl;
+	}
+	// bool *ptr=0;
+	// loc C = {1,1};
+	// Entity* A = new car("name",1,1,C,ptr,10,100,true,'N',10);
+	// A->print();
 	return 0;
 }
 
