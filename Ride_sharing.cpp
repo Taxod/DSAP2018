@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include<stdlib.h>
+#include <math.h>
 using namespace std;
 template<typename ItemType>
 class Node
@@ -141,7 +142,10 @@ void OC_condition(string s,int time,Bag<car> car_bag){
 	
 */
 }
-
+int distance(loc A,loc B){
+	int d = abs(A.x - B.x) + abs(A.y - B.y);
+	return d;
+}
 
 
 
@@ -255,9 +259,12 @@ int main()
 				{
 					if (first->getItem().getlevel() == need_car_level)
 					{
-						//距離篩選
-						//適配度計算
+						if (distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation()) < max_dis )
+						{
+							//適配度計算
+						}
 					}
+					first = first->getNext();
 				}
 			}
 			
