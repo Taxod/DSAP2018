@@ -61,6 +61,7 @@ protected:
     int gap;
 public:
     Entity(string id/*,bool* attribute*/,int time,int attributeN);
+//    virtual Entity(const Entity& anEntity);
     Entity();
     virtual void print(int attributeN);
     string getid(){return id;}
@@ -84,7 +85,7 @@ private:
 public:
     Passenger();
     Passenger(string id/*,bool *attribute*/,int time,int attributeN);
-    Passenger(const Passenger &anPassenger);
+    // Passenger(const Passenger &anPassenger);
     void print(int attributeN);
     void setC_id(string C){C_id = C;}
     string getC_id(){return C_id;}
@@ -103,7 +104,7 @@ protected:
 public:
     car();
     car(string id/*,bool*attribute*/,int time,bool high_level,int attributeN);
-    car(const car &ancar);
+    // car(const car &ancar);
     void print(int attributeN);
     char getdirection();
     void setdirection(char c);
@@ -213,7 +214,9 @@ love programming;hate programming;love baseball;enjoy chatting
         //處理時間
 
         s = s.substr(s.find(' ')+1,string::npos);
-        string condition = s.substr(0,s.find(':'));
+        // string condition = s.substr(0,s.find(':'));
+        string condition = s.substr(0,2);
+        // cout << condition << "*\n";
         s = s.substr(s.find(':')+1,string::npos);
         
 
@@ -229,26 +232,27 @@ love programming;hate programming;love baseball;enjoy chatting
         {
             //車子上線
             string target = s.substr(0,s.find('('));
+           
             Node<car>* car_node_ptr = car_bag.get(target);
-
             //車子上線地點
             loc pl;
             pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
             pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
-            
+           
             //車子行駛方向
             char c = s.substr(s.find(')')+1,string::npos)[0];
+           
             //如果找的到車子
             if (car_node_ptr != nullptr)
             {
-                car tt = car_node_ptr->getItem();
+                car tt(car_node_ptr->getItem());
                 tt.setdirection(c);//設定方向
                 tt.setlocation(pl);//設定地點
                 tt.settime(time);//設定時間
                 tt.setison(true);//設定為上線
                 car_node_ptr->setItem(tt);
             }
-            // car_node_ptr->getItem().print();
+             // car_node_ptr->getItem().print(attributeN);
         }else if (condition == "EC")//空車改變移動方式
         {
             string target = s.substr(0,s.find('('));
@@ -275,32 +279,38 @@ love programming;hate programming;love baseball;enjoy chatting
             //0987654321(6,10)L
             string target = s.substr(0,s.find('('));
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(target);
+            
             loc pl;
             pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
             pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
             
             //車子等級
             char le = s.substr(s.find(')')+1,string::npos)[0];
+            // cout << "------\n";
             bool need_car_level = 0;
             if (le != 'R')
             {
                 need_car_level = 1;
             }
-            
+            cout << "-----\n";
             int max_suit = -100;
             Node<car>* first = car_bag.getfirstnode();
             Node<car>* max_suit_car = first;
+            cout << "****\n";
             if (Passenger_node_ptr != nullptr)
             {
                 //從第一輛車開始檢查
                 for (int i = 0; i < car_bag.getCurrentSize(); ++i)
                 {
+                    cout << car_bag.getCurrentSize() << ":" << i << endl;
+                    cout << "======\n";
                     if (first->getItem().getlevel() == need_car_level)
                     {
                         //refresh car location
                         int timegap = first->getItem().gettime() - time;
                         first->setItem(change_car_loc_by_time(first->getItem(),timegap));
                         int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
+                        cout << "{{{{{\n";
                         if (dis < max_dis)
                         {
                             int atricnt = 0;//相同的屬性個數
@@ -311,6 +321,7 @@ love programming;hate programming;love baseball;enjoy chatting
                                     atricnt ++;
                                 }
                             }
+                            cout <<"}}}}}\n";
                             //適配度計算
                             int suit_num = first->getItem().getscore() - k*first->getItem().getjudge_time() + h*atricnt - p * dis; 
                             if (suit_num > max_suit)
@@ -320,9 +331,12 @@ love programming;hate programming;love baseball;enjoy chatting
                             }
                         }
                     }
+                    cout <<"IIIIIII\n";
                     first = first->getNext();
                 }
                 Passenger tmpP(Passenger_node_ptr->getItem());
+                cout <<"RRR";
+                //找不到需要處裡---------------------------------------------------------------------設bool?
                 car tmpcar(first->getItem());
 
                 tmpP.settime(time);
@@ -523,7 +537,7 @@ love programming;hate programming;love baseball;enjoy chatting
             }
         }else if (condition == "SR")//查詢平台收益
         {
-            //查詢平台收益--------------------------------------------------------------------------------------------------
+            cout << benefit << endl;
         }else if (condition == "ZZ")//當機
         {   
             // 全部離線----------------------------------------------------------------------------------------------------
@@ -531,52 +545,59 @@ love programming;hate programming;love baseball;enjoy chatting
     }
     return 0;
 }
-Passenger::Passenger(const Passenger &anPassenger){
-	this->id = anPassenger.id;
-	for (int i = 0; i < attribute_len; ++i)
-	{
-		this->attribute[i] = anPassenger.attribute[i];
-	}
-	this->time = anPassenger.time;
-	attribute_len = anPassenger.attribute_len;
-	this->C_id = anPassenger.C_id;
-	this->isser = anPassenger.isser;
-	this->ison = anPassenger.ison;
-	this->location = anPassenger.location;
-	this->gap = anPassenger.gap;
-}
+// Passenger::Passenger(const Passenger &anPassenger){
+// 	this->id = anPassenger.id;
+// 	for (int i = 0; i < attribute_len; ++i)
+// 	{
+// 		this->attribute[i] = anPassenger.attribute[i];
+// 	}
+// 	this->time = anPassenger.time;
+// 	attribute_len = anPassenger.attribute_len;
+// 	this->C_id = anPassenger.C_id;
+// 	this->isser = anPassenger.isser;
+// 	this->ison = anPassenger.ison;
+// 	this->location = anPassenger.location;
+// 	this->gap = anPassenger.gap;
+// }
 Passenger::Passenger():Entity(){}
 Passenger::Passenger(string id/*,bool*attribute*/,int time,int attributeN)
 :Entity(id/*,attribute*/,time,attributeN)
 {
 	C_id="";
     gap = -1;
+    attribute_len = attributeN;
 }
 
-car::car(const car &ancar){
-	this->id = ancar.id;
-	for (int i = 0; i < attribute_len; ++i)
-	{
-		this->attribute[i] = ancar.attribute[i];
-	}
-	this->time = ancar.time;
-	attribute_len = ancar.attribute_len;
-	this->isser = ancar.isser;
-	this->ison = ancar.ison;
-	this->location = ancar.location;
-	score = ancar.score;
-    high_level = ancar.high_level;
-    direction = ancar.direction;
-    judge_time = ancar.judge_time;
-    gap = ancar.gap;
-    P = ancar.P;
-}
+// car::car(const car &ancar){
+// 	cout << "here!!";
+// 	this->id = ancar.id;
+// 	cout << "1\n";
+// 	for (int i = 0; i < attribute_len; ++i)
+// 	{
+// 		attribute[i] = ancar.attribute[i];
+// 		cout << "*";
+// 	}
+// 	cout << "2\n";
+// 	this->time = ancar.time;
+// 	attribute_len = ancar.attribute_len;
+// 	this->isser = ancar.isser;
+// 	this->ison = ancar.ison;
+// 	this->location = ancar.location;
+// 	cout << "3\n";
+// 	score = ancar.score;
+//     high_level = ancar.high_level;
+//     direction = ancar.direction;
+//     judge_time = ancar.judge_time;
+//     gap = ancar.gap;
+//     P = ancar.P;
+// }
 
 car::car():Entity(){}
 car::car(string id/*,bool*attribute*/,int time,bool high_level,int attributeN)
 :Entity(id/*,attribute*/,time,attributeN),high_level(high_level)
 {
     judge_time = 0;
+    attribute_len = attributeN;
     direction = 'X';
     score = 0;
     P=""; 
