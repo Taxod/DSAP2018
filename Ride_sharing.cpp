@@ -80,6 +80,10 @@ public:
 		return time;
 	}
 	bool* getattribute(){return attribute;}
+	bool getser(){return isser;}
+	bool geton(){return ison;}
+	void seton(bool a){ison = a;}
+	void setser(bool a){isser = a;}
 };
 loc Entity::getlocation(){
 	return location;
@@ -114,9 +118,7 @@ public:
 	void print();
 	char getdirection();
 	void setdirection(char c);
-	bool getlevel(){
-		return high_level;
-	}
+	bool getlevel(){return high_level;}
 	string getP(){return P;};
 	int getscore(){return score;}
 	int getjudge_time(){return judge_time;}
@@ -275,6 +277,7 @@ int main()
 				{
 					if (first->getItem().getlevel() == need_car_level)
 					{
+						//NEED refresh car location !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
 						if (dis < max_dis)
 						{
@@ -318,19 +321,80 @@ int main()
 			tmpcar.setgap((time - tmpP.gettime()));
 			tmpP.settime(time);
 			tmpcar.settime(time);
+			tmpcar.setlocation(tmpP.getlocation());
 			car_node_ptr->setItem(tmpcar);
 			Passenger_node_ptr->setItem(tmpP);
 		}else if (condition == "AD")
 		{
 			//BBB111(6,14)S
-			
-			
+			loc pl;
+			pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
+			pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
+			string target = s.substr(0,s.find('('));
+			char c = s.substr(s.find('(')+1,string::npos)[0];
+			Node<car>* car_node_ptr = car_bag.get(target);
+			car tmpcar = car_node_ptr->getItem();
+			int length = distance(pl,tmpcar.getlocation());
+			int drive_time = time - tmpcar.gettime();
+			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(tmpcar.getP());
+			Passenger tmpP = Passenger_node_ptr->getItem();
+			tmpP.setlocation(pl);
+
+			tmpcar.setlocation(pl);
+			tmpcar.setdirection(c);
+			//車資 、 分數、 被評分次數
+			if (tmpcar.getlevel() == true)
+			{
+			}else{
+
+			}
+
+			tmpcar.setgap(-1);
 		}else if (condition == "LC")
 		{
-			
+			//AAA111
+			Node<car>* car_node_ptr = car_bag.get(s);
+			if (car_node_ptr!=nullptr)
+			{
+				car tmpcar(car_node_ptr->getItem());
+				if (!tmpcar.getser())
+				{
+					tmpcar.settime(time);
+					tmpcar.seton(false);
+					car_node_ptr->setItem(tmpcar);
+				}	
+			}
 		}else if (condition == "SC")
 		{
-			
+			//AAA111
+			int status = 0;
+			Node<car>* car_node_ptr = car_bag.get(s);
+			if (car_node_ptr == nullptr)
+			{
+				cout << s << ": no registration!\n";
+			}else{
+				car tmpcar = car_node_ptr->getItem();
+				if (tmpcar.geton())
+				{
+					status++;
+					if (tmpcar.getser())
+					{
+						status++;
+						if (tmpcar.getgap() != -1)
+						{
+							status++;
+						}
+					}
+				}
+				cout << s <<" "<< status <<" "<<tmpcar.getjudge_time() << " "<< tmpcar.getscore();
+				if (status == 1)
+				{
+				 	cout <<" "<< tmpcar.getlocation().x <<" "<< tmpcar.getlocation().y<<endl;
+				}else if (status == 2 || status == 3)
+				{
+					cout << " "<< tmpcar.getP() << endl;
+				}
+			}
 		}else if (condition == "SP")
 		{
 			
