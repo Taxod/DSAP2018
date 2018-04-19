@@ -183,7 +183,7 @@ int main()
     string tmp_a;
     string* total_attribute = new string [attributeN];
     getline(cin,tmp_a);
-    
+    // cout << ""
     for (int i = 0; i < attributeN-1; ++i)
     {
         string atmp = tmp_a.substr(0,tmp_a.find(';'));
@@ -194,10 +194,12 @@ int main()
 
     string s;
     /*
-    00:01 NC:AAA111(love,enjoy,hate)L
-    00:05 NP:0987654321(love,enjoy,hate)
-    00:12 OC:AAA111(1,5)N
-    00:19 EC:AAA111(E)
+10 50 2 80 3 4 10 1 4
+love programming;hate programming;love baseball;enjoy chatting
+00:01 NC:AAA111(love,enjoy,hate)L
+00:05 NP:0987654321(love,enjoy,hate)
+00:12 OC:AAA111(1,5)N
+00:19 EC:AAA111(E)
     */
     Bag<car> car_bag;
     Bag<Passenger> Passenger_bag;
@@ -372,7 +374,7 @@ int main()
             tmpcar.setlocation(pl);
             tmpcar.setdirection(c);
             //車資 、 分數、 被評分次數------------------------------------------------------
-            if (tmpcar.getlevel() == true)
+            if (tmpcar.getlevel() == true)//高級車
             {
             }else{
 
