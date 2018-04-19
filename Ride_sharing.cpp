@@ -190,45 +190,66 @@ int main()
 	Bag<Passenger> Passenger_bag;
 	while(getline(cin,s)){
 		string T = 	s.substr(0,s.find(' ')); // T 時間字串 ex : 00:00
+		
 		int time = chargetime(T);
+		//處理時間
+
 		s = s.substr(s.find(' ')+1,string::npos);
 		string condition = s.substr(0,s.find(':'));
 		s = s.substr(s.find(':')+1,string::npos);
+		
+
 		if (condition == "NP")
 		{	
+			//新增乘客
 			Passenger_bag.add(NP_condition(s,time,total_attribute,attributeN));
 		}else if (condition == "NC")
 		{
+			//新增車子
 			car_bag.add(NC_condition(s,time,total_attribute,attributeN));
 		}else if (condition == "OC")
 		{
+			//車子上線
 			string target = s.substr(0,s.find('('));
 			Node<car>* car_node_ptr = car_bag.get(target);
+
+			//車子上線地點
 			loc pl;
 			pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
 			pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
+			
+			//車子行駛方向
 			char c = s.substr(s.find(')')+1,string::npos)[0];
+			//如果找的到車子
 			if (car_node_ptr != nullptr)
 			{
 				car tt = car_node_ptr->getItem();
-				tt.setdirection(c);
-				tt.setlocation(pl);
-				tt.settime(time);
-				tt.setison(true);
+				tt.setdirection(c);//設定方向
+				tt.setlocation(pl);//設定地點
+				tt.settime(time);//設定時間
+				tt.setison(true);//設定為上線
 				car_node_ptr->setItem(tt);
 			}
-			car_node_ptr->getItem().print();
-		}else if (condition == "EC")
+			// car_node_ptr->getItem().print();
+		}else if (condition == "EC")//空車改變移動方式
 		{
 			string target = s.substr(0,s.find('('));
+			
+
 			Node<car>* car_node_ptr = car_bag.get(target);
+			
+			//要改變的方向
 			char c = s.substr(s.find('(')+1,s.find(')'))[0];
+			
 			if (car_node_ptr != nullptr)
 			{
 				car tt = car_node_ptr->getItem();
-				int timegap = time - tt.gettime();
-				char d = tt.getdirection();
-				loc tmp = tt.getlocation();
+				
+				int timegap = time - tt.gettime();//時間差
+				char d = tt.getdirection();//原本的方向
+				loc tmp = tt.getlocation();//原本的位置
+				//更新位置
+				//---------------------------車子移動的速度差異-----------R 1/min other 2/min
 				switch(d){
 					case 'N':
 						tmp.y += timegap;
@@ -245,34 +266,35 @@ int main()
 					case 'H':
 						break;
 				}
-				tt.setlocation(tmp);
-				tt.setdirection(c);
-				tt.settime(time);
+				tt.setlocation(tmp);//設定新位置
+				tt.setdirection(c);//設定新的方向
+				tt.settime(time);//設定新時間
 				car_node_ptr->setItem(tt);
 			}
-			car_node_ptr->getItem().print();
-		}else if (condition == "OP")
+			// car_node_ptr->getItem().print();
+		}else if (condition == "OP")//乘客上線
 		{
 			//0987654321(6,10)L
 			string target = s.substr(0,s.find('('));
 			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(target);
-			// string suit_id;
 			loc pl;
 			pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
 			pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
 			
+			//車子等級
 			char le = s.substr(s.find(')')+1,string::npos)[0];
 			bool need_car_level = 0;
 			if (le != 'R')
 			{
 				need_car_level = 1;
 			}
+			
 			int max_suit = -100;
-
 			Node<car>* first = car_bag.getfirstnode();
 			Node<car>* max_suit_car = first;
 			if (Passenger_node_ptr != nullptr)
 			{
+				//從第一輛車開始檢查
 				for (int i = 0; i < car_bag.getCurrentSize(); ++i)
 				{
 					if (first->getItem().getlevel() == need_car_level)
@@ -281,7 +303,7 @@ int main()
 						int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
 						if (dis < max_dis)
 						{
-							int atricnt = 0;
+							int atricnt = 0;//相同的屬性個數
 							for (int i = 0; i < attributeN; ++i)
 							{
 								if ((first->getItem().getattribute())[i] && (Passenger_node_ptr->getItem().getattribute())[i])
@@ -289,8 +311,8 @@ int main()
 									atricnt ++;
 								}
 							}
-							int suit_num = first->getItem().getscore() - k*first->getItem().getjudge_time() + h*atricnt - p * dis; //-------------------------------------------------- 
 							//適配度計算
+							int suit_num = first->getItem().getscore() - k*first->getItem().getjudge_time() + h*atricnt - p * dis; 
 							if (suit_num > max_suit)
 							{
 								max_suit = suit_num;
@@ -301,16 +323,20 @@ int main()
 					first = first->getNext();
 				}
 				Passenger tmpP(Passenger_node_ptr->getItem());
+				car tmpcar(first->getItem());
+
 				tmpP.settime(time);
 				tmpP.setlocation(pl);
-				car tmpcar(first->getItem());
+				tmpP.setser(true);
+				tmpcar.setser(true);
 				tmpcar.setP(Passenger_node_ptr->getItem().getid());
 				tmpcar.settime(time);
-				//更改狀態-----------------------------------------------------------------------------------------------NEED
+
+				Passenger_node_ptr->setItem(tmpP);
 				first->setItem(tmpcar);
 			}
 			
-		}else if (condition == "CP")
+		}else if (condition == "CP")//車子接到乘客
 		{
 			//BBB111
 			Node<car>* car_node_ptr = car_bag.get(s);
@@ -318,13 +344,15 @@ int main()
 			string wait_passenger = car_node_ptr->getItem().getP();
 			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
 			Passenger tmpP = Passenger_node_ptr->getItem();
+			
 			tmpcar.setgap((time - tmpP.gettime()));
 			tmpP.settime(time);
 			tmpcar.settime(time);
 			tmpcar.setlocation(tmpP.getlocation());
+			
 			car_node_ptr->setItem(tmpcar);
 			Passenger_node_ptr->setItem(tmpP);
-		}else if (condition == "AD")
+		}else if (condition == "AD")//車子載乘客抵達目的地
 		{
 			//BBB111(6,14)S
 			loc pl;
@@ -349,8 +377,12 @@ int main()
 
 			}
 
+			//更改狀態
+			//gap 的初始化->constructor
 			tmpcar.setgap(-1);
-		}else if (condition == "LC")
+
+			//更改狀態
+		}else if (condition == "LC")//車子離線
 		{
 			//AAA111
 			Node<car>* car_node_ptr = car_bag.get(s);
@@ -364,7 +396,7 @@ int main()
 					car_node_ptr->setItem(tmpcar);
 				}	
 			}
-		}else if (condition == "SC")
+		}else if (condition == "SC")//查詢車子
 		{
 			//AAA111
 			int status = 0;
@@ -395,15 +427,15 @@ int main()
 					cout << " "<< tmpcar.getP() << endl;
 				}
 			}
-		}else if (condition == "SP")
+		}else if (condition == "SP")//查詢乘客
 		{
 			//0987654321
 			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(s);
 			//需要車牌號碼，狀態!!!------------------------------------------------------------------------------------------
-		}else if (condition == "SR")
+		}else if (condition == "SR")//查詢平台收益
 		{
 			//查詢平台收益--------------------------------------------------------------------------------------------------
-		}else if (condition == "ZZ")
+		}else if (condition == "ZZ")//當機
 		{	
 			// 全部離線----------------------------------------------------------------------------------------------------
 		}
@@ -436,7 +468,6 @@ void Passenger::print()
 	Entity::print();
 }
 void Entity::print(){
-	// cout << "Entity:\n";
 	cout << "ID:" << id << endl;
 	cout << "ison" << ison << endl;
 	cout << "isser" << isser << endl;
