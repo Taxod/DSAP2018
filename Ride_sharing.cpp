@@ -83,6 +83,7 @@ private:
 public:
     Passenger();
     Passenger(string id,bool *attribute,int time);
+    Passenger(const Passenger &anPassenger);
     void print();
     void setC_id(string C){C_id = C;}
     string getC_id(){return C_id;}
@@ -97,7 +98,6 @@ protected:
     char direction;//方向
     int judge_time;//被評分次數
     string P;
-    // int gap;
     //基本價、單位里程價
 public:
     car();
@@ -525,7 +525,7 @@ car NC_condition(string s,int time,string total_attribute[],int attributeN){
         carlevel = false;
     }
     s = s.substr(s.find('(')+1,s.find(')'));
-    bool* tmpatt = new bool [attributeN];
+    bool* tmpatt = new bool [attributeN];//---------------------------------------------------------------
     for (int i = 0; i < attributeN; ++i)
     {
         tmpatt[i] = 0;
@@ -560,7 +560,7 @@ car NC_condition(string s,int time,string total_attribute[],int attributeN){
 Passenger NP_condition(string s,int time,string total_attribute[],int attributeN){
     string _id = s.substr(0,s.find('('));
     s = s.substr(s.find('(')+1,s.find(')'));
-    bool* tmpatt = new bool [attributeN];
+    bool* tmpatt = new bool [attributeN];//-----------------------------------------------------
     for (int i = 0; i < attributeN; ++i)
     {
         tmpatt[i] = 0;
