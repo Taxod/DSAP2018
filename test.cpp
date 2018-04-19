@@ -274,7 +274,7 @@ int main()
                 car tt = car_node_ptr->getItem();
                 
                 int timegap = time - tt.gettime();//時間差
-                tt = change_car_loc_by_time(tt,timegap);
+//                tt = change_car_loc_by_time(tt,timegap);
                 tt.setdirection(c);//設定新的方向
                 tt.settime(time);//設定新時間
                 car_node_ptr->setItem(tt);

@@ -40,14 +40,10 @@ public:
   Node<ItemType>* getfirstnode(){
     return headPtr;
   }
-  
-  // int getFrequencyOf(const ItemType& anEntry) const;
-  // vector<ItemType> toVector() const;
 };
 
 
 
-//using namespace std;
 struct loc{
     int x;
     int y;
@@ -61,44 +57,35 @@ protected:
     loc location;//地點
     bool* attribute;//標籤 bool array
     int time;//上一次更新時間 int
+    int gap;
 public:
     Entity(string id,bool* attribute,int time);
     Entity();
     virtual void print();
-    string getid();
-    loc getlocation();
-    void setlocation(loc c){
-        location = c;
-    }
-    void settime(int time){
-        this->time = time;
-    }
-    void setison(bool on){
-        ison = on;
-    }
-    int gettime(){
-        return time;
-    }
+    string getid(){return id;}
+    loc getlocation(){return location;}
+    void setlocation(loc c){location = c;}
+    void settime(int time){this->time = time;}
+    void setison(bool on){ison = on;}
+    int gettime(){return time;}
     bool* getattribute(){return attribute;}
     bool getser(){return isser;}
     bool geton(){return ison;}
     void seton(bool a){ison = a;}
     void setser(bool a){isser = a;}
+    void setgap(int t){gap = t;}
+    int getgap(){return gap;}
 };
-loc Entity::getlocation(){
-    return location;
-}
-string Entity::getid(){
-    return id;
-}
 class Passenger : public Entity
 {
 private:
-    // int gap;
+	string C_id;
 public:
     Passenger();
     Passenger(string id,bool *attribute,int time);
     void print();
+    void setC_id(string C){C_id = C;}
+    string getC_id(){return C_id;}
     // ~passenger();
     
 };
@@ -110,7 +97,7 @@ protected:
     char direction;//方向
     int judge_time;//被評分次數
     string P;
-    int gap;
+    // int gap;
     //基本價、單位里程價
 public:
     car();
@@ -123,8 +110,6 @@ public:
     int getscore(){return score;}
     int getjudge_time(){return judge_time;}
     void setP(string k){ P = k;};
-    void setgap(int t){gap = t;}
-    int getgap(){return gap;}
 };
 void car::setdirection(char c){
     direction = c;
@@ -307,7 +292,9 @@ int main()
                 {
                     if (first->getItem().getlevel() == need_car_level)
                     {
-                        //NEED refresh car location !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------------------
+                        //refresh car location
+                        int timegap = first->getItem().gettime() - time;
+                        first->setItem(change_car_loc_by_time(first->getItem(),timegap));
                         int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
                         if (dis < max_dis)
                         {
@@ -336,6 +323,7 @@ int main()
                 tmpP.settime(time);
                 tmpP.setlocation(pl);
                 tmpP.setser(true);
+                tmpP.setC_id(tmpcar.getid());
                 tmpcar.setser(true);
                 tmpcar.setP(Passenger_node_ptr->getItem().getid());
                 tmpcar.settime(time);
@@ -353,7 +341,9 @@ int main()
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
             Passenger tmpP = Passenger_node_ptr->getItem();
             
+            //更新等待時間
             tmpcar.setgap((time - tmpP.gettime()));
+            tmpP.setgap((time - tmpP.gettime()));
             tmpP.settime(time);
             tmpcar.settime(time);
             tmpcar.setlocation(tmpP.getlocation());
@@ -367,15 +357,18 @@ int main()
             pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
             pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
             string target = s.substr(0,s.find('('));
+            
             char c = s.substr(s.find('(')+1,string::npos)[0];
+            
             Node<car>* car_node_ptr = car_bag.get(target);
             car tmpcar = car_node_ptr->getItem();
-            int length = distance(pl,tmpcar.getlocation());
-            int drive_time = time - tmpcar.gettime();
+            int length = distance(pl,tmpcar.getlocation());//車子移動的路徑長
+            int drive_time = time - tmpcar.gettime();//開車的時間
+
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(tmpcar.getP());
             Passenger tmpP = Passenger_node_ptr->getItem();
+            
             tmpP.setlocation(pl);
-
             tmpcar.setlocation(pl);
             tmpcar.setdirection(c);
             //車資 、 分數、 被評分次數------------------------------------------------------
@@ -387,8 +380,10 @@ int main()
 
             //更改狀態
             tmpcar.setgap(-1);
+            tmpP.setgap(-1);
 
             //更改狀態
+            //更新車子、乘客
         }else if (condition == "LC")//車子離線
         {
             //AAA111
@@ -438,7 +433,25 @@ int main()
         {
             //0987654321
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(s);
-            //需要車牌號碼，狀態!!!------------------------------------------------------------------------------------------
+            if (Passenger_node_ptr == nullptr)
+            {
+            	cout << s << ": no registration!\n"; 
+            }else{
+            	int status = 0;
+            	if (Passenger_node_ptr->getItem().geton())
+            	{
+            		status++;
+            		if (Passenger_node_ptr->getItem().getgap() != -1)
+            		{
+            			status++;
+            		}
+            	}
+            	cout << s << " " << status;
+            	if (status != 0)
+            	{
+            		cout << " " << Passenger_node_ptr->getItem().getC_id() << endl;
+            	}
+            }
         }else if (condition == "SR")//查詢平台收益
         {
             //查詢平台收益--------------------------------------------------------------------------------------------------
@@ -453,7 +466,10 @@ int main()
 Passenger::Passenger():Entity(){}
 Passenger::Passenger(string id,bool*attribute,int time)
 :Entity(id,attribute,time)
-{}
+{
+	C_id="";
+    gap = -1;
+}
 car::car():Entity(){}
 car::car(string id,bool*attribute,int time,bool high_level)
 :Entity(id,attribute,time),high_level(high_level)
@@ -461,8 +477,8 @@ car::car(string id,bool*attribute,int time,bool high_level)
     judge_time = 0;
     direction = 'X';
     score = 0;
+    P=""; 
     gap = -1;
-    P; 
 }
 Entity::Entity(){}
 Entity::Entity(string id,bool*attribute,int time)
