@@ -79,6 +79,7 @@ public:
 	int gettime(){
 		return time;
 	}
+	bool* getattribute(){return attribute;}
 };
 loc Entity::getlocation(){
 	return location;
@@ -89,6 +90,7 @@ string Entity::getid(){
 class Passenger : public Entity
 {
 private:
+	// int gap;
 public:
 	Passenger();
 	Passenger(string id,bool *attribute,int time);
@@ -103,6 +105,8 @@ protected:
 	bool high_level;//高檔車
 	char direction;//方向
 	int judge_time;//被評分次數
+	string P;
+	int gap;
 	//基本價、單位里程價
 public:
 	car();
@@ -113,6 +117,12 @@ public:
 	bool getlevel(){
 		return high_level;
 	}
+	string getP(){return P;};
+	int getscore(){return score;}
+	int getjudge_time(){return judge_time;}
+	void setP(string k){ P = k;};
+	void setgap(int t){gap = t;}
+	int getgap(){return gap;}
 };
 void car::setdirection(char c){
 	direction = c;
@@ -192,15 +202,15 @@ int main()
 		{
 			string target = s.substr(0,s.find('('));
 			Node<car>* car_node_ptr = car_bag.get(target);
-			loc p;
-			p.x = stoi(s.substr(s.find('(')+1,s.find(',')));
-			p.y = stoi(s.substr(s.find(',')+1,s.find(')')));
+			loc pl;
+			pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
+			pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
 			char c = s.substr(s.find(')')+1,string::npos)[0];
 			if (car_node_ptr != nullptr)
 			{
 				car tt = car_node_ptr->getItem();
 				tt.setdirection(c);
-				tt.setlocation(p);
+				tt.setlocation(pl);
 				tt.settime(time);
 				tt.setison(true);
 				car_node_ptr->setItem(tt);
@@ -244,35 +254,76 @@ int main()
 			//0987654321(6,10)L
 			string target = s.substr(0,s.find('('));
 			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(target);
-			string suit_id;
+			// string suit_id;
+			loc pl;
+			pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
+			pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
+			
 			char le = s.substr(s.find(')')+1,string::npos)[0];
 			bool need_car_level = 0;
 			if (le != 'R')
 			{
 				need_car_level = 1;
 			}
-			int max_suit;
+			int max_suit = -100;
+
 			Node<car>* first = car_bag.getfirstnode();
+			Node<car>* max_suit_car = first;
 			if (Passenger_node_ptr != nullptr)
 			{
 				for (int i = 0; i < car_bag.getCurrentSize(); ++i)
 				{
 					if (first->getItem().getlevel() == need_car_level)
 					{
-						if (distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation()) < max_dis )
+						int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
+						if (dis < max_dis)
 						{
+							int atricnt = 0;
+							for (int i = 0; i < attributeN; ++i)
+							{
+								if ((first->getItem().getattribute())[i] && (Passenger_node_ptr->getItem().getattribute())[i])
+								{
+									atricnt ++;
+								}
+							}
+							int suit_num = first->getItem().getscore() - k*first->getItem().getjudge_time() + h*atricnt - p * dis; //-------------------------------------------------- 
 							//適配度計算
+							if (suit_num > max_suit)
+							{
+								max_suit = suit_num;
+								max_suit_car = first;
+							}
 						}
 					}
 					first = first->getNext();
 				}
+				Passenger tmpP(Passenger_node_ptr->getItem());
+				tmpP.settime(time);
+				tmpP.setlocation(pl);
+				car tmpcar(first->getItem());
+				tmpcar.setP(Passenger_node_ptr->getItem().getid());
+				tmpcar.settime(time);
+				//更改狀態------------------------------------NEED
+				first->setItem(tmpcar);
 			}
 			
 		}else if (condition == "CP")
 		{
-			
+			//BBB111
+			Node<car>* car_node_ptr = car_bag.get(s);
+			car tmpcar = car_node_ptr->getItem();//------------------------NEED copy constructor
+			string wait_passenger = car_node_ptr->getItem().getP();
+			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
+			Passenger tmpP = Passenger_node_ptr->getItem();
+			tmpcar.setgap((time - tmpP.gettime()));
+			tmpP.settime(time);
+			tmpcar.settime(time);
+			car_node_ptr->setItem(tmpcar);
+			Passenger_node_ptr->setItem(tmpP);
 		}else if (condition == "AD")
 		{
+			//BBB111(6,14)S
+			
 			
 		}else if (condition == "LC")
 		{
@@ -304,6 +355,7 @@ car::car(string id,bool*attribute,int time,bool high_level)
 	judge_time = 0;
 	direction = 'X';
 	score = 0;
+	P; 
 }
 Entity::Entity(){}
 Entity::Entity(string id,bool*attribute,int time)
