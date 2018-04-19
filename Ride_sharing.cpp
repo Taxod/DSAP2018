@@ -277,7 +277,7 @@ int main()
 				{
 					if (first->getItem().getlevel() == need_car_level)
 					{
-						//NEED refresh car location !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+						//NEED refresh car location !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------------------
 						int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
 						if (dis < max_dis)
 						{
@@ -306,7 +306,7 @@ int main()
 				car tmpcar(first->getItem());
 				tmpcar.setP(Passenger_node_ptr->getItem().getid());
 				tmpcar.settime(time);
-				//更改狀態------------------------------------NEED
+				//更改狀態-----------------------------------------------------------------------------------------------NEED
 				first->setItem(tmpcar);
 			}
 			
@@ -314,7 +314,7 @@ int main()
 		{
 			//BBB111
 			Node<car>* car_node_ptr = car_bag.get(s);
-			car tmpcar = car_node_ptr->getItem();//------------------------NEED copy constructor
+			car tmpcar = car_node_ptr->getItem();//-----------------------------------------------------NEED copy constructor
 			string wait_passenger = car_node_ptr->getItem().getP();
 			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
 			Passenger tmpP = Passenger_node_ptr->getItem();
@@ -342,7 +342,7 @@ int main()
 
 			tmpcar.setlocation(pl);
 			tmpcar.setdirection(c);
-			//車資 、 分數、 被評分次數
+			//車資 、 分數、 被評分次數------------------------------------------------------
 			if (tmpcar.getlevel() == true)
 			{
 			}else{
@@ -397,12 +397,15 @@ int main()
 			}
 		}else if (condition == "SP")
 		{
-			
+			//0987654321
+			Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(s);
+			//需要車牌號碼，狀態!!!------------------------------------------------------------------------------------------
 		}else if (condition == "SR")
 		{
-			
+			//查詢平台收益--------------------------------------------------------------------------------------------------
 		}else if (condition == "ZZ")
 		{	
+			// 全部離線----------------------------------------------------------------------------------------------------
 		}
 	}
 	return 0;
