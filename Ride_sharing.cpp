@@ -63,7 +63,7 @@ public:
     Entity(string id/*,bool* attribute*/,int time,int attributeN);
 //    virtual Entity(const Entity& anEntity);
     Entity();
-    virtual void print(int attributeN);
+    virtual void print();
     string getid(){return id;}
     loc getlocation(){return location;}
     void setlocation(loc c){location = c;}
@@ -77,6 +77,12 @@ public:
     void setser(bool a){isser = a;}
     void setgap(int t){gap = t;}
     int getgap(){return gap;}
+    void setattribute(bool tmp[]){
+    	for (int i = 0; i < attribute_len; ++i)
+    	{
+    		attribute[i] = tmp[i];
+    	}
+    }
 };
 class Passenger : public Entity
 {
@@ -86,7 +92,7 @@ public:
     Passenger();
     Passenger(string id/*,bool *attribute*/,int time,int attributeN);
     // Passenger(const Passenger &anPassenger);
-    void print(int attributeN);
+    void print();
     void setC_id(string C){C_id = C;}
     string getC_id(){return C_id;}
     // ~passenger();
@@ -105,7 +111,7 @@ public:
     car();
     car(string id/*,bool*attribute*/,int time,bool high_level,int attributeN);
     // car(const car &ancar);
-    void print(int attributeN);
+    void print();
     char getdirection();
     void setdirection(char c);
     bool getlevel(){return high_level;}
@@ -141,6 +147,7 @@ Passenger NP_condition(string s,int time,string total_attribute[],int attributeN
 car change_car_loc_by_time(car A,int timegap){
     char d = A.getdirection();//原本的方向
     loc tmp = A.getlocation();//原本的位置
+    // cout << tmp.x << " " << tmp.y << ";" << d << endl;
     //更新位置
     //車子移動的速度差異R 1/min other 2/min
     int speed = 0;
@@ -172,6 +179,7 @@ car change_car_loc_by_time(car A,int timegap){
 
 
 int distance(loc A,loc B){
+	// cout << "distance: " << A.x <<":" << A.y << " || " << B.x <<":"<< B.y<<endl;
     int d = abs(A.x - B.x) + abs(A.y - B.y);
     return d;
 }
@@ -200,10 +208,36 @@ int main()
     /*
 10 50 2 80 3 4 10 1 4
 love programming;hate programming;love baseball;enjoy chatting
-00:01 NC:AAA111(love,enjoy,hate)L
-00:05 NP:0987654321(love,enjoy,hate)
+00:01 NP:0987654321(love baseball,enjoy chatting,hate programming)
+00:08 SC:AAA111
+00:08 NC:LLL111()L
+00:08 NC:AAA111(love baseball)R
+00:10 NC:BBB111(hate programming,enjoy chatting)R
 00:12 OC:AAA111(1,5)N
+00:13 OC:BBB111(5,8)N
+00:13 OC:LLL111(6,10)H
 00:19 EC:AAA111(E)
+00:23 LC:LLL111
+00:23 OP:0987654321(6,10)L
+00:24 OP:0987654321(6,10)R
+00:30 CP:BBB111
+00:42 SR
+00:42 AD:BBB111(6,14)S
+00:42 SR
+00:45 LC:AAA111
+00:49 SC:AAA111
+00:50 SC:BBB111
+00:51 SC:CCC111
+00:52 SP:0988123456
+00:53 NP:0999888777()
+00:53 OC:LLL111(20,20)H
+00:53 OP:0999888777(20,20)L
+00:53 CP:LLL111
+00:55 ZZ
+00:56 SC:BBB111
+00:57 OC:AAA111(9,8)S
+00:57 SR
+
     */
     Bag<car> car_bag;
     Bag<Passenger> Passenger_bag;
@@ -246,10 +280,12 @@ love programming;hate programming;love baseball;enjoy chatting
             if (car_node_ptr != nullptr)
             {
                 car tt(car_node_ptr->getItem());
+                // cout << "setdirection: " << c << endl;
                 tt.setdirection(c);//設定方向
                 tt.setlocation(pl);//設定地點
                 tt.settime(time);//設定時間
                 tt.setison(true);//設定為上線
+                tt.setser(false);
                 car_node_ptr->setItem(tt);
             }
              // car_node_ptr->getItem().print(attributeN);
@@ -279,7 +315,10 @@ love programming;hate programming;love baseball;enjoy chatting
             //0987654321(6,10)L
             string target = s.substr(0,s.find('('));
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(target);
-            
+            // cout << "target Passenger:\n";
+            // Passenger_node_ptr->getItem().print();
+            // cout << "-------------------\n";
+
             loc pl;
             pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
             pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
@@ -292,27 +331,34 @@ love programming;hate programming;love baseball;enjoy chatting
             {
                 need_car_level = 1;
             }
-            cout << "-----\n";
             int max_suit = -100;
             Node<car>* first = car_bag.getfirstnode();
-            Node<car>* max_suit_car = first;
-            cout << "****\n";
+            Node<car>* max_suit_car = nullptr;
             if (Passenger_node_ptr != nullptr)
             {
                 //從第一輛車開始檢查
                 for (int i = 0; i < car_bag.getCurrentSize(); ++i)
                 {
-                    cout << car_bag.getCurrentSize() << ":" << i << endl;
-                    cout << "======\n";
+                    //判斷車子是否上線
+                    if (first->getItem().geton() == false || first->getItem().getser() == true)
+                    {
+                    	continue;
+                    }
                     if (first->getItem().getlevel() == need_car_level)
                     {
                         //refresh car location
-                        int timegap = first->getItem().gettime() - time;
+                        // cout << i << ":" << endl;
+                        // first->getItem().print();
+                        // cout <<"------\n";
+                        int timegap = time - first->getItem().gettime();
                         first->setItem(change_car_loc_by_time(first->getItem(),timegap));
-                        int dis = distance(Passenger_node_ptr->getItem().getlocation(),first->getItem().getlocation());
-                        cout << "{{{{{\n";
-                        if (dis < max_dis)
+                        int dis = distance(pl,first->getItem().getlocation());
+                        // cout << i <<":dis : " << dis << endl;
+						if (dis <= max_dis)
                         {
+                            // cout << i << ":" << endl;
+                            // first->getItem().print();
+                            // cout << "--------------------------------------\n";
                             int atricnt = 0;//相同的屬性個數
                             for (int i = 0; i < attributeN; ++i)
                             {
@@ -321,7 +367,6 @@ love programming;hate programming;love baseball;enjoy chatting
                                     atricnt ++;
                                 }
                             }
-                            cout <<"}}}}}\n";
                             //適配度計算
                             int suit_num = first->getItem().getscore() - k*first->getItem().getjudge_time() + h*atricnt - p * dis; 
                             if (suit_num > max_suit)
@@ -331,34 +376,37 @@ love programming;hate programming;love baseball;enjoy chatting
                             }
                         }
                     }
-                    cout <<"IIIIIII\n";
                     first = first->getNext();
                 }
-                Passenger tmpP(Passenger_node_ptr->getItem());
-                cout <<"RRR";
-                //找不到需要處裡---------------------------------------------------------------------設bool?
-                car tmpcar(first->getItem());
+                if (max_suit_car != nullptr)
+                {
+                	// cout << "OP succes!!\n";
+                	Passenger tmpP(Passenger_node_ptr->getItem());
+                	car tmpcar(max_suit_car->getItem());
+	                tmpP.settime(time);
+    	            tmpP.setlocation(pl);
+        	        tmpP.setser(true);
+            	    tmpP.setC_id(tmpcar.getid());
+                	tmpcar.setser(true);
+    	            tmpcar.setP(Passenger_node_ptr->getItem().getid());
+        	        tmpcar.settime(time);
+					Passenger_node_ptr->setItem(tmpP);
+    	            max_suit_car->setItem(tmpcar);
+                }
 
-                tmpP.settime(time);
-                tmpP.setlocation(pl);
-                tmpP.setser(true);
-                tmpP.setC_id(tmpcar.getid());
-                tmpcar.setser(true);
-                tmpcar.setP(Passenger_node_ptr->getItem().getid());
-                tmpcar.settime(time);
-
-                Passenger_node_ptr->setItem(tmpP);
-                first->setItem(tmpcar);
             }
             
         }else if (condition == "CP")//車子接到乘客
         {
             //BBB111
             Node<car>* car_node_ptr = car_bag.get(s);
+
             car tmpcar = car_node_ptr->getItem();
+            // tmpcar.print();
             string wait_passenger = car_node_ptr->getItem().getP();
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
             Passenger tmpP = Passenger_node_ptr->getItem();
+            // tmpP.print();
             
             //更新等待時間
             tmpcar.setgap((time - tmpP.gettime()));
@@ -377,7 +425,7 @@ love programming;hate programming;love baseball;enjoy chatting
             pl.y = stoi(s.substr(s.find(',')+1,s.find(')')));
             string target = s.substr(0,s.find('('));
             
-            char c = s.substr(s.find('(')+1,string::npos)[0];
+            char c = s.substr(s.find(')')+1,string::npos)[0];
             
             Node<car>* car_node_ptr = car_bag.get(target);
             car tmpcar = car_node_ptr->getItem();
@@ -459,7 +507,7 @@ love programming;hate programming;love baseball;enjoy chatting
             	base_score = 1;
             }
             tmpcar.setscore(tmpcar.getscore()+base_score);
-
+            tmpcar.settime(time);
             tmpcar.setser(false);
             tmpP.setser(false);
             tmpP.seton(false);
@@ -486,6 +534,7 @@ love programming;hate programming;love baseball;enjoy chatting
             //AAA111
             int status = 0;
             Node<car>* car_node_ptr = car_bag.get(s);
+
             if (car_node_ptr == nullptr)
             {
                 cout << s << ": no registration!\n";
@@ -494,6 +543,15 @@ love programming;hate programming;love baseball;enjoy chatting
                 if (tmpcar.geton())
                 {
                     status++;
+                    // cout <<"test: \n";
+                    // tmpcar.print();
+                    // cout << tmpcar.getlocation().x << tmpcar.getlocation().y<<endl;
+                    int timegap = time - tmpcar.gettime();
+                    // cout << "timegap: "<<timegap << endl;
+                    tmpcar = change_car_loc_by_time(tmpcar,timegap);
+
+                    // cout << tmpcar.getlocation().x << tmpcar.getlocation().y<<endl;
+                    // cout << "-----------------------\n";
                     if (tmpcar.getser())
                     {
                         status++;
@@ -615,31 +673,31 @@ Entity::Entity(string id/*,bool*attribute*/,int time,int attributeN)
     ison = 0;
     isser = 0;
   }
-void Passenger::print(int attributeN)
+void Passenger::print()
 {
-    Entity::print(attributeN);
+    Entity::print();
 }
-void Entity::print(int attributeN){
+void Entity::print(){
     cout << "ID:" << id << endl;
     cout << "ison" << ison << endl;
     cout << "isser" << isser << endl;
     cout << "location: "<< location.x << " " << location.y << endl; 
     cout << "time: " << time << endl;
     cout << "attribute: ";
-    cout << attributeN << "*\n";
-    for (int i = 0; i < attributeN; ++i)
+    // cout << attributeN << "*\n";
+    for (int i = 0; i < attribute_len; ++i)
     {
         cout << attribute[i] << " ";
     }cout << endl;
 }
-void car::print(int attributeN){
+void car::print(){
     cout << "Car\n";
-    Entity::print(attributeN);
+    Entity::print();
     cout <<"score:" <<  score << endl;
     cout <<"high_level:" << high_level << endl;
     cout <<"direction:" << direction << endl;
     cout <<"judge_time:" << judge_time << endl;
-    
+    cout << "P: "<< P << endl;
 }
 
 
@@ -665,7 +723,7 @@ car NC_condition(string s,int time,string total_attribute[],int attributeN){
             if (stmp == total_attribute[i])
             {
                 tmpatt[i] = 1;
-                break;
+                continue;//------------------------------------------------
             }
         }
     }
@@ -675,9 +733,12 @@ car NC_condition(string s,int time,string total_attribute[],int attributeN){
             if (s == total_attribute[i])
             {
                 tmpatt[i] = 1;
+                continue;//------------------------------------
             }
         }
     car result(_id,time,carlevel,attributeN);
+    result.setattribute(tmpatt);
+
     return result;
 
 }
@@ -713,6 +774,7 @@ Passenger NP_condition(string s,int time,string total_attribute[],int attributeN
             }
         }
     Passenger result(_id,time,attributeN);
+    result.setattribute(tmpatt);
     return result;
 
 }
