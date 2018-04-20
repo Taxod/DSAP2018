@@ -288,6 +288,14 @@ love programming;hate programming;love baseball;enjoy chatting
                 tt.setser(false);
                 car_node_ptr->setItem(tt);
             }
+            Node<car>* first = car_bag.getfirstnode();
+                        for (int i = 0; i < car_bag.getCurrentSize(); ++i)
+{
+    cout <<i << "*\n";
+    first->getItem().print();
+    cout << "*\n";
+    first = first->getNext();
+}
              // car_node_ptr->getItem().print(attributeN);
         }else if (condition == "EC")//空車改變移動方式
         {
@@ -313,11 +321,27 @@ love programming;hate programming;love baseball;enjoy chatting
         }else if (condition == "OP")//乘客上線
         {
             //0987654321(6,10)L
+            //這裡有問題!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            cout << "first--------------------------------------------\n";
+            Node<car>* first = car_bag.getfirstnode();
+            for (int i = 0; i < car_bag.getCurrentSize(); ++i)
+			{
+				cout <<i << "*\n";
+				first->getItem().print();
+				cout << "*\n";
+				first = first->getNext();
+			}
+			cout <<"---------------------------------------------\n";
+            
             string target = s.substr(0,s.find('('));
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(target);
-            // cout << "target Passenger:\n";
-            // Passenger_node_ptr->getItem().print();
-            // cout << "-------------------\n";
+            // cout << "target: " << target << endl;
+
+
+
+            cout << "target Passenger:\n";
+            Passenger_node_ptr->getItem().print();
+            cout << "-------------------\n";
 
             loc pl;
             pl.x = stoi(s.substr(s.find('(')+1,s.find(',')));
@@ -331,22 +355,29 @@ love programming;hate programming;love baseball;enjoy chatting
             {
                 need_car_level = 1;
             }
+
             int max_suit = -100;
-            Node<car>* first = car_bag.getfirstnode();
+            /*Node<car>* */first = car_bag.getfirstnode();
             Node<car>* max_suit_car = nullptr;
             if (Passenger_node_ptr != nullptr)
             {
                 //從第一輛車開始檢查
+                // cout << "*\n";
+                // first->getItem().print();
+                // cout << "*\n";
                 for (int i = 0; i < car_bag.getCurrentSize(); ++i)
                 {
                     //判斷車子是否上線
+                    cout <<i << "*\n";
+                    first->getItem().print();
+                    cout << "*\n";
                     if (first->getItem().geton() == false || first->getItem().getser() == true)
                     {
                     	continue;
                     }
                     if (first->getItem().getlevel() == need_car_level)
                     {
-                        //refresh car location
+//                        refresh car location
                         // cout << i << ":" << endl;
                         // first->getItem().print();
                         // cout <<"------\n";
@@ -402,7 +433,7 @@ love programming;hate programming;love baseball;enjoy chatting
             Node<car>* car_node_ptr = car_bag.get(s);
 
             car tmpcar = car_node_ptr->getItem();
-            // tmpcar.print();
+            tmpcar.print();
             string wait_passenger = car_node_ptr->getItem().getP();
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
             Passenger tmpP = Passenger_node_ptr->getItem();
@@ -518,6 +549,7 @@ love programming;hate programming;love baseball;enjoy chatting
         }else if (condition == "LC")//車子離線
         {
             //AAA111
+            Node<car>* first = car_bag.getfirstnode();
             Node<car>* car_node_ptr = car_bag.get(s);
             if (car_node_ptr!=nullptr)
             {
@@ -529,9 +561,17 @@ love programming;hate programming;love baseball;enjoy chatting
                     car_node_ptr->setItem(tmpcar);
                 }   
             }
+            for (int i = 0; i < car_bag.getCurrentSize(); ++i)
+{
+    cout << "*\n";
+    first->getItem().print();
+    cout << "*\n";
+    first = first->getNext();
+}
         }else if (condition == "SC")//查詢車子
         {
             //AAA111
+            Node<car>* first = car_bag.getfirstnode();
             int status = 0;
             Node<car>* car_node_ptr = car_bag.get(s);
 
@@ -570,6 +610,13 @@ love programming;hate programming;love baseball;enjoy chatting
                     cout << " "<< tmpcar.getP() << endl;
                 }
             }
+            for (int i = 0; i < car_bag.getCurrentSize(); ++i)
+{
+    cout << "*\n";
+    first->getItem().print();
+    cout << "*\n";
+    first = first->getNext();
+}
         }else if (condition == "SP")//查詢乘客
         {
             //0987654321
