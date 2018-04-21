@@ -339,10 +339,8 @@ int main()
             
             if (car_node_ptr != nullptr && car_node_ptr->getItem().getser() == false && car_node_ptr->getItem().geton() == true)
             {
-                car tt = car_node_ptr->getItem();
-                
-                int timegap = time - tt.gettime();//時間差
-                tt = change_car_loc_by_time(tt,timegap);
+                int timegap = time - car_node_ptr->getItem().gettime();//時間差
+                car tt(change_car_loc_by_time(car_node_ptr->getItem(),timegap));
                 tt.setdirection(c);//設定新的方向
                 tt.settime(time);//設定新時間
                 car_node_ptr->setItem(tt);
@@ -366,7 +364,7 @@ int main()
                 need_car_level = 1;
             }
 
-            int max_suit = -100;
+            int max_suit = -1000000;
             Node<car>* first = car_bag.getfirstnode();
             Node<car>* max_suit_car = nullptr;
             if (Passenger_node_ptr != nullptr && Passenger_node_ptr->getItem().geton() == false)
@@ -384,7 +382,11 @@ int main()
                     {
                         //refresh car location
                         int timegap = time - first->getItem().gettime();
-                        first->setItem(change_car_loc_by_time(first->getItem(),timegap));
+                        // car tcar(first->getItem());
+                        car tcar(change_car_loc_by_time(first->getItem(),timegap));
+                        tcar.settime(time);
+                        first->setItem(tcar);
+                        // first->setItem(change_car_loc_by_time(first->getItem(),timegap));
                         int dis = distance(pl,first->getItem().getlocation());
                         if (dis <= max_dis)
                         {
@@ -647,22 +649,26 @@ int main()
             // 全部離線
             Node<car>* car_node_ptr = car_bag.getfirstnode();
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.getfirstnode();
-            int i = 0;
             while(car_node_ptr != nullptr){
-                // i++;
-                // cout << i;
-                car tmpcar(car_node_ptr->getItem());
+                int timegap = time - car_node_ptr->getItem().gettime();
+                car tmpcar(change_car_loc_by_time(car_node_ptr->getItem(),timegap));
+                tmpcar.settime(time);
                 tmpcar.seton(false);
                 tmpcar.setser(false);
                 tmpcar.setP("");
+                tmpcar.setgap(-1);
                 car_node_ptr->setItem(tmpcar);
                 car_node_ptr = car_node_ptr->getNext();
             }
             while(Passenger_node_ptr != nullptr){
+                int timegap = time - Passenger_node_ptr->getItem().gettime();
                 Passenger tmpP(Passenger_node_ptr->getItem());
+                // Passenger tmpP(change_car_loc_by_time(Passenger_node_ptr->getItem(),timegap));
+                tmpP.settime(time);
                 tmpP.seton(false);
                 tmpP.setser(false);
                 tmpP.setC_id("");
+                tmpP.setgap(-1);
                 Passenger_node_ptr->setItem(tmpP);
                 Passenger_node_ptr = Passenger_node_ptr->getNext();
             }
