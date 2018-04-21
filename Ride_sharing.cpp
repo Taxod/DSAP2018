@@ -289,6 +289,10 @@ love programming;hate programming;love baseball;enjoy chatting
                 tt.settime(time);//設定時間
                 tt.setison(true);//設定為上線
                 tt.setser(false);
+            //     if (tt.getid() == "bguyyp")
+            // {
+            // 	tt.print();
+            // }
                 car_node_ptr->setItem(tt);
             }
         }else if (condition == "EC")//空車改變移動方式
@@ -301,7 +305,7 @@ love programming;hate programming;love baseball;enjoy chatting
             //要改變的方向
             char c = s.substr(s.find('(')+1,s.find(')'))[0];
             
-            if (car_node_ptr != nullptr)
+            if (car_node_ptr != nullptr && car_node_ptr->getItem().getser() == false)
             {
                 car tt = car_node_ptr->getItem();
                 
@@ -310,6 +314,10 @@ love programming;hate programming;love baseball;enjoy chatting
                 tt.setdirection(c);//設定新的方向
                 tt.settime(time);//設定新時間
                 car_node_ptr->setItem(tt);
+            //     if (tt.getid() == "bguyyp")
+            // {
+            // 	tt.print();
+            // }
             }
         }else if (condition == "OP")//乘客上線
         {
@@ -396,7 +404,7 @@ love programming;hate programming;love baseball;enjoy chatting
             if (car_node_ptr != nullptr)
             {
             	car tmpcar = car_node_ptr->getItem();
-            if (tmpcar.geton() && tmpcar.getP() != "" && tmpcar.getser())
+            if (tmpcar.geton() && tmpcar.getP() != "" && tmpcar.getser() && time >= tmpcar.gettime())
             {
             	string wait_passenger = car_node_ptr->getItem().getP();
 	            Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
@@ -408,11 +416,15 @@ love programming;hate programming;love baseball;enjoy chatting
 	            tmpP.settime(time);
 	            tmpcar.settime(time);
 	            tmpcar.setlocation(tmpP.getlocation());
-	            
+	           //  if (tmpcar.getid() == "bguyyp")
+            // {
+            // 	tmpcar.print();
+            // }
 	            car_node_ptr->setItem(tmpcar);
 	            Passenger_node_ptr->setItem(tmpP);
 	            }
             }
+            
             
             
         }else if (condition == "AD")//車子載乘客抵達目的地
@@ -431,7 +443,7 @@ love programming;hate programming;love baseball;enjoy chatting
             	continue;
             }
             car tmpcar(car_node_ptr->getItem());
-            if (tmpcar.geton() && tmpcar.getser() && tmpcar.getP() != "" && tmpcar.getgap() != -1)
+            if (tmpcar.geton() && tmpcar.getser() && tmpcar.getP() != "" && tmpcar.getgap() != -1 && time >= tmpcar.gettime())
             {
             	int length = distance(pl,tmpcar.getlocation());//車子移動的路徑長
             int drive_time = time - tmpcar.gettime();//開車的時間
@@ -519,6 +531,10 @@ love programming;hate programming;love baseball;enjoy chatting
             tmpP.setgap(-1);
             tmpcar.setP("");
             tmpP.setC_id("");
+            // if (tmpcar.getid() == "bguyyp")
+            // {
+            // 	tmpcar.print();
+            // }
             car_node_ptr->setItem(tmpcar);
             Passenger_node_ptr->setItem(tmpP);
             }
