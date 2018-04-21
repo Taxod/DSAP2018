@@ -196,13 +196,16 @@ int main()
     string tmp_a;
     string* total_attribute = new string [attributeN];
     getline(cin,tmp_a);
-    for (int i = 0; i < attributeN-1; ++i)
+    if(attributeN != 0){
+    	for (int i = 0; i < attributeN-1; ++i)
     {
         string atmp = tmp_a.substr(0,tmp_a.find(';'));
         tmp_a.erase(0,tmp_a.find(';')+1);
         total_attribute[i] = atmp;  
     }
-    total_attribute[attributeN-1] = tmp_a;
+    total_attribute[attributeN-1] = tmp_a;	
+	}
+	
 
     string s;
     /*
@@ -390,22 +393,28 @@ love programming;hate programming;love baseball;enjoy chatting
         {
             //BBB111
             Node<car>* car_node_ptr = car_bag.get(s);
-
-            car tmpcar = car_node_ptr->getItem();
-            // tmpcar.print();
-            string wait_passenger = car_node_ptr->getItem().getP();
-            Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
-            Passenger tmpP = Passenger_node_ptr->getItem();
+            if (car_node_ptr != nullptr)
+            {
+            	car tmpcar = car_node_ptr->getItem();
+            if (tmpcar.geton() && tmpcar.getP() != "" && tmpcar.getser())
+            {
+            	string wait_passenger = car_node_ptr->getItem().getP();
+	            Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(wait_passenger);
+	            Passenger tmpP = Passenger_node_ptr->getItem();
+	            
+	            //更新等待時間
+	            tmpcar.setgap((time - tmpP.gettime()));
+	            tmpP.setgap((time - tmpP.gettime()));
+	            tmpP.settime(time);
+	            tmpcar.settime(time);
+	            tmpcar.setlocation(tmpP.getlocation());
+	            
+	            car_node_ptr->setItem(tmpcar);
+	            Passenger_node_ptr->setItem(tmpP);
+	            }
+            }
             
-            //更新等待時間
-            tmpcar.setgap((time - tmpP.gettime()));
-            tmpP.setgap((time - tmpP.gettime()));
-            tmpP.settime(time);
-            tmpcar.settime(time);
-            tmpcar.setlocation(tmpP.getlocation());
             
-            car_node_ptr->setItem(tmpcar);
-            Passenger_node_ptr->setItem(tmpP);
         }else if (condition == "AD")//車子載乘客抵達目的地
         {
             //BBB111(6,14)S
@@ -417,8 +426,14 @@ love programming;hate programming;love baseball;enjoy chatting
             char c = s.substr(s.find(')')+1,string::npos)[0];
             
             Node<car>* car_node_ptr = car_bag.get(target);
-            car tmpcar = car_node_ptr->getItem();
-            int length = distance(pl,tmpcar.getlocation());//車子移動的路徑長
+            if (car_node_ptr == nullptr)
+            {
+            	continue;
+            }
+            car tmpcar(car_node_ptr->getItem());
+            if (tmpcar.geton() && tmpcar.getser() && tmpcar.getP() != "" && tmpcar.getgap() != -1)
+            {
+            	int length = distance(pl,tmpcar.getlocation());//車子移動的路徑長
             int drive_time = time - tmpcar.gettime();//開車的時間
 
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.get(tmpcar.getP());
@@ -502,8 +517,12 @@ love programming;hate programming;love baseball;enjoy chatting
             tmpP.seton(false);
             tmpcar.setgap(-1);
             tmpP.setgap(-1);
+            tmpcar.setP("");
+            tmpP.setC_id("");
             car_node_ptr->setItem(tmpcar);
             Passenger_node_ptr->setItem(tmpP);
+            }
+            
         }else if (condition == "LC")//車子離線
         {
             //AAA111
@@ -548,11 +567,12 @@ love programming;hate programming;love baseball;enjoy chatting
                 cout << s <<" "<< status <<" "<<tmpcar.getjudge_time() << " "<< tmpcar.getscore();
                 if (status == 1)
                 {
-                    cout <<" "<< tmpcar.getlocation().x <<" "<< tmpcar.getlocation().y<<endl;
+                    cout <<" "<< tmpcar.getlocation().x <<" "<< tmpcar.getlocation().y;
                 }else if (status == 2 || status == 3)
                 {
-                    cout << " "<< tmpcar.getP() << endl;
+                    cout << " "<< tmpcar.getP() ;
                 }
+                cout << endl;
             }
         }else if (condition == "SP")//查詢乘客
         {
@@ -574,15 +594,37 @@ love programming;hate programming;love baseball;enjoy chatting
                 cout << s << " " << status;
                 if (status != 0)
                 {
-                    cout << " " << Passenger_node_ptr->getItem().getC_id() << endl;
+                    cout << " " << Passenger_node_ptr->getItem().getC_id();
                 }
+                cout << endl;
             }
         }else if (condition == "SR")//查詢平台收益
         {
             cout << benefit << endl;
         }else if (condition == "ZZ")//當機
         {   
-            // 全部離線----------------------------------------------------------------------------------------------------
+            // 全部離線
+        	Node<car>* car_node_ptr = car_bag.getfirstnode();
+        	Node<Passenger>* Passenger_node_ptr = Passenger_bag.getfirstnode();
+        	int i = 0;
+        	while(car_node_ptr != nullptr){
+        		// i++;
+        		// cout << i;
+        		car tmpcar(car_node_ptr->getItem());
+        		tmpcar.seton(false);
+        		tmpcar.setser(false);
+        		tmpcar.setP("");
+        		car_node_ptr->setItem(tmpcar);
+        		car_node_ptr = car_node_ptr->getNext();
+        	}
+        	while(Passenger_node_ptr != nullptr){
+        		Passenger tmpP(Passenger_node_ptr->getItem());
+        		tmpP.seton(false);
+        		tmpP.setser(false);
+        		tmpP.setC_id("");
+        		Passenger_node_ptr->setItem(tmpP);
+        		Passenger_node_ptr = Passenger_node_ptr->getNext();
+        	}
         }
     }
     return 0;
