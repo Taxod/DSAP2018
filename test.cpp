@@ -7,44 +7,40 @@ template<typename ItemType>
 class Node
 {
 private:
-  ItemType item;
-  Node<ItemType>* next; 
+  ItemType item; //放置物件
+  Node<ItemType>* next; //放置指標
 public:
   Node();
   Node(const ItemType& anItem);
   Node(const ItemType& anItem, Node<ItemType>* nextNodePtr);
-  void setItem(const ItemType& anItem);
-  void setNext(Node<ItemType>* nextNodePtr);
-  ItemType getItem() const ;
-  Node<ItemType>* getNext() const ;
-}; 
+  void setItem(const ItemType& anItem);//設定物件
+  void setNext(Node<ItemType>* nextNodePtr);//設定指到下一個物件的pointer
+  ItemType getItem() const ;//回傳物件
+  Node<ItemType>* getNext() const ;//回傳指到下一個物件的pointer
+};
+
+
 template<typename ItemType>
 class Bag
 {
 private:
-  Node<ItemType>* headPtr;
-  int itemCount;
-  Node<ItemType>* getPointerTo(const ItemType& target) const; 
+  Node<ItemType>* headPtr;//指向第一個Node
+  int itemCount; //總共有幾個Node
+  Node<ItemType>* getPointerTo(const ItemType& target) const; // 傳入item找到指向該item的pointer 
 public:
-  Bag();
+  Bag();//constuctor
   Bag(const Bag<ItemType>& aBag); // Copy constructor
-  ~Bag();                       
-  int getCurrentSize() const;
-  bool isEmpty() const;
-  bool add(const ItemType& newEntry);
-  bool remove(const ItemType& anEntry);
-  void clear();
-  bool contains(const ItemType& anEntry) const;
-  Node<ItemType>* get(const ItemType& target);
-  Node<ItemType>* get(string target);
-  Node<ItemType>* getfirstnode(){
-    return headPtr;
-  }
+  ~Bag();//destructor            
+  int getCurrentSize() const;//回傳有幾個Node
+  bool add(const ItemType& newEntry);//新增一個Node到Bag裡
+  void clear();//清除所有東西
+  Node<ItemType>* get(const ItemType& target);//傳入item回傳指向它的pointer
+  Node<ItemType>* get(string target);//傳入名稱回傳指向它的pointer
+  Node<ItemType>* getfirstnode(){return headPtr;}//得到指向第一個item的pointer
 };
 
 
-
-struct loc{
+struct loc{//地點structure
     int x;
     int y;
 };
@@ -56,45 +52,44 @@ protected:
     bool isser;//是不是在服務中
     loc location;//地點
     bool* attribute;//標籤 bool array
-    int attribute_len;
+    int attribute_len;//標籤長度
     int time;//上一次更新時間 int
-    int gap;
+    int gap;//等待時間間隔
 public:
     Entity(string id,int time,int attributeN);
     Entity();
-    virtual void print();
-    string getid(){return id;}
-    loc getlocation(){return location;}
-    void setlocation(loc c){location = c;}
-    void settime(int time){this->time = time;}
-    void setison(bool on){ison = on;}
-    int gettime(){return time;}
-    bool* getattribute(){return attribute;}
-    bool getser(){return isser;}
-    bool geton(){return ison;}
-    void seton(bool a){ison = a;}
-    void setser(bool a){isser = a;}
-    void setgap(int t){gap = t;}
-    int getgap(){return gap;}
-    void setattribute(bool tmp[]){
+    virtual void print();//印出東西
+    string getid(){return id;}//回傳物件的ID
+    loc getlocation(){return location;}//回傳物件的位置
+    void setlocation(loc c){location = c;}//設定物件位置
+    void settime(int time){this->time = time;}//設定時間
+    int gettime(){return time;}//回傳時間
+    bool* getattribute(){return attribute;}//回傳物件屬性
+    bool getser(){return isser;}//回傳是否服務中
+    bool geton(){return ison;}//回傳是否上線
+    void seton(bool a){ison = a;}//設定物件是否上線
+    void setser(bool a){isser = a;}//設定物件是不是在服務中
+    void setgap(int t){gap = t;}//設定物件的等待時間
+    int getgap(){return gap;}//回傳物件的等待時間
+    void setattribute(bool tmp[]){//設定標籤
         for (int i = 0; i < attribute_len; ++i)
         {
             attribute[i] = tmp[i];
         }
     }
 };
+
+
 class Passenger : public Entity
 {
 private:
-    string C_id;
+    string C_id;//紀錄配對車子的ID
 public:
     Passenger();
     Passenger(string id,int time,int attributeN);
-    void print();
-    void setC_id(string C){C_id = C;}
-    string getC_id(){return C_id;}
-    // ~passenger();
-    
+    void print();//印出乘客資料
+    void setC_id(string C){C_id = C;}//設定配對車子ID
+    string getC_id(){return C_id;}//回傳配對車子ID
 };
 
 class car : public Entity{
@@ -103,88 +98,43 @@ protected:
     bool high_level;//高檔車
     char direction;//方向
     int judge_time;//被評分次數
-    string P;
+    string P;//配對的乘客ID
 public:
     car();
     car(string id,int time,bool high_level,int attributeN);
-    void print();
-    char getdirection();
-    void setdirection(char c);
-    bool getlevel(){return high_level;}
-    string getP(){return P;};
-    void setP(string k){ P = k;};
-    void setscore(int s){score = s;}
-    int getscore(){return score;}
-    void setjudge_time(int n){judge_time = n;}
-    int getjudge_time(){return judge_time;}
+    void print();//印出車子的基本資料
+    char getdirection();//回傳車子的方向
+    void setdirection(char c);//設定車子的方向
+    bool getlevel(){return high_level;}//回傳車子的等級
+    string getP(){return P;};//回傳乘客的ID
+    void setP(string k){ P = k;};//設定乘客的ID
+    void setscore(int s){score = s;}//設定分數
+    int getscore(){return score;}//回傳分數
+    void setjudge_time(int n){judge_time = n;}//設定評分次數
+    int getjudge_time(){return judge_time;}//回傳評分次數
 };
-void car::setdirection(char c){
-    direction = c;
-}
-char car::getdirection(){
-    return direction;
-}
-int chargetime(string T){
-    string tmp = T.substr(0,T.find(':'));
-    T = T.substr(T.find(':')+1,string::npos);
-    int hour_ten = tmp[0]-'0';
-    int hour_one = tmp[1]-'0';
-    int hour = hour_ten*10 + hour_one;
-    int minute_ten = T[0] - '0';
-    int minute_one = T[1] - '0';
-    int minute = minute_ten*10 + minute_one;
-    int time = hour*60 + minute;
-    return time;
-}
 
 
-car change_car_loc_by_time(car A,int timegap){
-    char d = A.getdirection();//原本的方向
-    loc tmp = A.getlocation();//原本的位置
-    //更新位置
-    //車子移動的速度差異R 1/min other 2/min
-    int speed = 0;
-    if (A.getlevel() == true)
-    {
-        speed = 2;
-    }else{
-        speed = 1;
-    }
-    switch(d){
-        case 'N':
-            tmp.y += (timegap*speed);
-            break;
-        case 'S':
-            tmp.y -= (timegap*speed);
-            break;
-        case 'W':
-            tmp.x -= (timegap*speed);
-            break;
-        case 'E':
-            tmp.x += (timegap*speed);
-            break;
-        case 'H':
-            break;
-    }
-    A.setlocation(tmp);
-    return A;
-}
+int chargetime(string T);//change time to int
 
+car change_car_loc_by_time(car A,int timegap);//change car location by time
 
-int distance(loc A,loc B){
-    int d = abs(A.x - B.x) + abs(A.y - B.y);
-    return d;
-}
+int distance(loc A,loc B);//calaulte distance between two location
 
 
 
 int main()
 {   
-    int benefit = 0;
-    int max_dis,ar,br,al,bl,k,h,p,attributeN;
+    int benefit = 0;//平台總收益
+
+    int max_dis,ar,br,al,bl,k,h,p,attributeN;//系統參數
     cin >> max_dis >> ar >> br >> al >> bl >> k >> h >> p >> attributeN;
+    
     string trash;
     getline(cin,trash);
+
+
+    //切割標籤
     string tmp_a;
     string* total_attribute = new string [attributeN];
     getline(cin,tmp_a);
@@ -204,13 +154,12 @@ int main()
     Bag<car> car_bag;
     Bag<Passenger> Passenger_bag;
     while(getline(cin,s)){
+
         string T =  s.substr(0,s.find(' ')); // T 時間字串 ex : 00:00
-        
-        int time = chargetime(T);
-        //處理時間
+        int time = chargetime(T);//處理時間
 
         s = s.substr(s.find(' ')+1,string::npos);
-        string condition = s.substr(0,2);
+        string condition = s.substr(0,2);//事件代號
         s = s.substr(s.find(':')+1,string::npos);
         
 
@@ -218,7 +167,7 @@ int main()
         {   
             //新增乘客
             string _id = s.substr(0,s.find('('));
-            if (car_bag.get(_id) != nullptr)
+            if (car_bag.get(_id) != nullptr)//已經被註冊過
             {
                 continue;
             }
@@ -228,6 +177,7 @@ int main()
             {
                 tmpatt[i] = 0;
             }
+            //屬性標籤
             while(s.find(',') != string::npos){
                 string stmp = s.substr(0,s.find(','));
                 s.erase(0,s.find(',')+1);
@@ -253,18 +203,18 @@ int main()
             result.setattribute(tmpatt);
             result.seton(false);
             result.setser(false);
-            Passenger_bag.add(result);
+            Passenger_bag.add(result);//新增乘客
         }else if (condition == "NC")
         {
             //新增車子
             string _id = s.substr(0,s.find('('));
-            if (car_bag.get(_id) != nullptr)
+            if (car_bag.get(_id) != nullptr)//不符合新增條件
             {
                 continue;
             }
             char level = s.substr(s.find(')')+1,string::npos)[0];
             bool carlevel = 1;
-            if (level == 'R')
+            if (level == 'R')//車子種類
             {
                 carlevel = false;
             }
@@ -299,7 +249,7 @@ int main()
             result.setattribute(tmpatt);
             result.seton(false);
             result.setser(false);
-            car_bag.add(result);
+            car_bag.add(result);//新增一個車子
         }else if (condition == "OC")
         {
             //車子上線
@@ -315,14 +265,14 @@ int main()
             //車子行駛方向
             char c = s.substr(s.find(')')+1,string::npos)[0];
            
-            //如果找的到車子
+            //如果找的到車子、車子原本是離線狀態
             if (car_node_ptr != nullptr && car_node_ptr->getItem().geton() == false)
             {
                 car tt(car_node_ptr->getItem());
                 tt.setdirection(c);//設定方向
                 tt.setlocation(pl);//設定地點
                 tt.settime(time);//設定時間
-                tt.setison(true);//設定為上線
+                tt.seton(true);//設定為上線
                 tt.setser(false);
                 tt.setP("");
                 car_node_ptr->setItem(tt);
@@ -382,11 +332,10 @@ int main()
                     {
                         //refresh car location
                         int timegap = time - first->getItem().gettime();
-                        // car tcar(first->getItem());
                         car tcar(change_car_loc_by_time(first->getItem(),timegap));
                         tcar.settime(time);
                         first->setItem(tcar);
-                        // first->setItem(change_car_loc_by_time(first->getItem(),timegap));
+                        
                         int dis = distance(pl,first->getItem().getlocation());
                         if (dis <= max_dis)
                         {
@@ -411,6 +360,7 @@ int main()
                 }
                 if (max_suit_car != nullptr)
                 {
+                    //變更車子及乘客狀態
                     Passenger tmpP(Passenger_node_ptr->getItem());
                     car tmpcar(max_suit_car->getItem());
                     tmpP.settime(time);
@@ -447,6 +397,7 @@ int main()
                 //更新等待時間
                 tmpcar.setgap((time - tmpP.gettime()));
                 tmpP.setgap((time - tmpP.gettime()));
+                //變更車子及乘客狀態
                 tmpP.setser(true);
                 tmpP.settime(time);
                 tmpcar.settime(time);
@@ -649,6 +600,7 @@ int main()
             // 全部離線
             Node<car>* car_node_ptr = car_bag.getfirstnode();
             Node<Passenger>* Passenger_node_ptr = Passenger_bag.getfirstnode();
+            //車子離線、變更狀態
             while(car_node_ptr != nullptr){
                 int timegap = time - car_node_ptr->getItem().gettime();
                 car tmpcar(change_car_loc_by_time(car_node_ptr->getItem(),timegap));
@@ -660,10 +612,10 @@ int main()
                 car_node_ptr->setItem(tmpcar);
                 car_node_ptr = car_node_ptr->getNext();
             }
+            //乘客離線、變更狀態
             while(Passenger_node_ptr != nullptr){
                 int timegap = time - Passenger_node_ptr->getItem().gettime();
                 Passenger tmpP(Passenger_node_ptr->getItem());
-                // Passenger tmpP(change_car_loc_by_time(Passenger_node_ptr->getItem(),timegap));
                 tmpP.settime(time);
                 tmpP.seton(false);
                 tmpP.setser(false);
@@ -738,15 +690,66 @@ void car::print(){
 
 
 
+void car::setdirection(char c){
+    direction = c;
+}
+char car::getdirection(){
+    return direction;
+}
+
+
+car change_car_loc_by_time(car A,int timegap){
+    char d = A.getdirection();//原本的方向
+    loc tmp = A.getlocation();//原本的位置
+    //更新位置
+    //車子移動的速度差異R 1/min other 2/min
+    int speed = 0;
+    if (A.getlevel() == true)
+    {
+        speed = 2;
+    }else{
+        speed = 1;
+    }
+    switch(d){
+        case 'N':
+            tmp.y += (timegap*speed);
+            break;
+        case 'S':
+            tmp.y -= (timegap*speed);
+            break;
+        case 'W':
+            tmp.x -= (timegap*speed);
+            break;
+        case 'E':
+            tmp.x += (timegap*speed);
+            break;
+        case 'H':
+            break;
+    }
+    A.setlocation(tmp);
+    return A;
+}
+
+
+int distance(loc A,loc B){
+    int d = abs(A.x - B.x) + abs(A.y - B.y);
+    return d;
+}
 
 
 
-
-
-
-
-
-
+int chargetime(string T){
+    string tmp = T.substr(0,T.find(':'));
+    T = T.substr(T.find(':')+1,string::npos);
+    int hour_ten = tmp[0]-'0';
+    int hour_one = tmp[1]-'0';
+    int hour = hour_ten*10 + hour_one;
+    int minute_ten = T[0] - '0';
+    int minute_one = T[1] - '0';
+    int minute = minute_ten*10 + minute_one;
+    int time = hour*60 + minute;
+    return time;
+}
 
 
 
@@ -792,13 +795,10 @@ void car::print(){
 
 
 // -----------------------------------------------------------------------------------------
-//overload item operator=
 template <typename ItemType>
 Node<ItemType>::Node():next(nullptr){}
 template <typename ItemType>
-Node<ItemType>::Node(const ItemType& anItem):item(anItem),next(nullptr){
-    //overload assignment operator，constructor
-}
+Node<ItemType>::Node(const ItemType& anItem):item(anItem),next(nullptr){}
 template <typename ItemType>
 Node<ItemType>::Node(const ItemType& anItem, Node<ItemType>* nextNodePtr):next(nextNodePtr),item(anItem){}
 template<class ItemType>
@@ -844,9 +844,9 @@ template<typename ItemType>
 Bag<ItemType>::Bag():headPtr(nullptr),itemCount(0){}
 
 template<typename ItemType>
-Bag<ItemType>::Bag(const Bag<ItemType>& aBag){//copy--------
-    itemCount = aBag.itemCount;//??
-    Node<ItemType>* origChainPtr = aBag.headPtr;//??   
+Bag<ItemType>::Bag(const Bag<ItemType>& aBag){
+    itemCount = aBag.itemCount;
+    Node<ItemType>* origChainPtr = aBag.headPtr;
     if(origChainPtr == nullptr)
         headPtr = nullptr;
     else{
@@ -870,16 +870,7 @@ int Bag<ItemType>::getCurrentSize() const{
     return itemCount;
 }
 template<typename ItemType>
-bool Bag<ItemType>::isEmpty() const{
-    if (itemCount == 0)
-    {
-        return true;
-    }else{
-        return false;
-    }
-}
-template<typename ItemType>
-bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
+bool Bag<ItemType>::add(const ItemType& newEntry){
     Node<ItemType>* newNodePtr = new Node<ItemType>();
     newNodePtr->setItem(newEntry);
     newNodePtr->setNext(headPtr);
@@ -888,24 +879,9 @@ bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
     return true;
 }
 
-template<typename ItemType>
-bool Bag<ItemType>::remove(const ItemType& anEntry){
-    Node<ItemType>* entryNodePtr = getPointerTo(anEntry);
-    bool canRemoveItem = !isEmpty() && (entryNodePtr != nullptr);
-    if (canRemoveItem)
-    {
-        entryNodePtr->setItem(headPtr->getItem());
-        Node<ItemType>* nodeToDeletePtr = headPtr;
-        headPtr = headPtr->getNext();
-        delete nodeToDeletePtr;
-        nodeToDeletePtr = nullptr; 
-        itemCount--;
-    } 
-    return canRemoveItem;
-}
 
 template<typename ItemType>
-void Bag<ItemType>::clear(){//-----------copy
+void Bag<ItemType>::clear(){
     Node<ItemType>* nodeToDeletePtr = headPtr;
     while (headPtr != nullptr)
     {
@@ -917,15 +893,6 @@ void Bag<ItemType>::clear(){//-----------copy
     itemCount = 0;
 }
 
-template<typename ItemType>
-bool Bag<ItemType>::contains(const ItemType& anEntry) const{
-    if (getPointerTo(anEntry) == nullptr)
-    {
-        return false;
-    }else{
-        return true;
-    }
-}
 template<typename ItemType>
 Bag<ItemType>::~Bag(){
     clear();
