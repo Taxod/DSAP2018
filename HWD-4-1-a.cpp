@@ -10,6 +10,6 @@ int main(int argc, char const *argv[])
 		auxStack.push(aStack.peek());
 		aStack.pop();
 	}
-	aStack = auxStack();//need to overload operater=
+	aStack = auxStack;//need to overload operater=
 	return 0;
 }
