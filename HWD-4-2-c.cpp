@@ -13,7 +13,7 @@ string stack::readandcorrect(){
 	string c;
 	string s;
 	while(cin >> c){
-		if (c != '<-')
+		if (c != '←')
 		{
 			aStack.push(c);
 		}else{

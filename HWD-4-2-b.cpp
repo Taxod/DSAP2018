@@ -17,3 +17,15 @@ int main(int argc, char const *argv[])
 	aStack = auxStack;
 	return 0;
 }
+
+while(輸入字元){
+	push進astack
+}
+while(aStack不是空的){
+	將astack的物件放入auxstack
+	把物件從astack，pop
+}
+while(auxStack不是空的){
+	印出物件
+	pop物件從auxstack
+}

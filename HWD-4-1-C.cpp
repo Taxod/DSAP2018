@@ -6,15 +6,13 @@ int main(int argc, char const *argv[])
 {
 	stack aStack;
 	stack auxStack;
-	itemtype specified_item;
+	ItemType specified_item;
 	while(!aStack.isEmpty()){
 		if (aStack.peek() != specified_item)
 		{
-			auxStack.push(aStack.peek())
-			aStack.pop();
-		}else{
-			aStack.pop();
+			auxStack.push(aStack.peek());
 		}
+		aStack.pop();
 	}
 	while(!auxStack.isEmpty()){
 		aStack.push(auxStack.peek());

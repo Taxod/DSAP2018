@@ -22,7 +22,19 @@ bool isLanguageL(string s){
 			if (second == false)
 			{
 				second_c = s[i]
+				if (aStack.isEmpty)
+					return false;
 				aStack.pop();
+				if (aStack.isEmpty)
+					return false;
+				aStack.pop();
+			}else if (second && s[i] == second_c)
+			{
+				if (aStack.isEmpty)
+					return false;
+				aStack.pop();
+				if (aStack.isEmpty)
+					return false;
 				aStack.pop();
 			}else{
 				return false;

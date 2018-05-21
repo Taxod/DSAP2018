@@ -10,6 +10,9 @@ int main(int argc, char const *argv[])
 		auxStack.push(aStack.peek());
 		aStack.pop();
 	}
-	aStack = auxStack;//need to overload operater=
+	while(!auxStack.isEmpty()){
+		cout << auxStack.peek();
+		auxStack.pop();
+	}
 	return 0;
 }

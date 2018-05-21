@@ -16,5 +16,6 @@ int main(int argc, char const *argv[])
 		aStack.push(auxStack.peek());
 		auxStack.pop();
 	}
+	cout << count;
 	return 0;
 }

@@ -8,7 +8,6 @@ int main(int argc, char const *argv[])
 }
 
 template <typename ItemType>
-
 void ArrayStack<ItemType>::push(const ItemType& newEntry){
 	try{
 		if (top < MAX_STACK-1)

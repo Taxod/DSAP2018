@@ -15,12 +15,20 @@ private:
 	int top;
 public:
 	ArrayStack();
+	~ArrayStack();
 	bool isEmpty() const;
 	bool push(const ItemType& newEntry);
 	bool pop();
 	ItemType peek() const;
 }
-
+template<typename ItemType>
+ArrayStack<ItemType>::~ArrayStack(){
+	delete [] item;
+}
+template <typename ItemType>
+ArrayStack<ItemType>::ArrayStack():top(-1){
+	item = new ItemType [MAX_STACK];
+}
 template <typename ItemType>
 bool ArrayStack<ItemType>::push(const ItemType& newEntry){
 	bool result = false;
@@ -48,8 +56,4 @@ bool ArrayStack<ItemType>::push(const ItemType& newEntry){
 		result = true;
 	}
 	return result;
-}
-template <typename ItemType>
-ArrayStack<ItemType>::ArrayStack():top(-1){
-	item = new ItemType [MAX_STACK];
 }
