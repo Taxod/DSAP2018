@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <string>
 using namespace std;
 
 template<typename Itemtype>
@@ -28,12 +28,14 @@ public:
 	virtual Itemtype peek() const = 0;
 };
 
+template <typename Itemtype>
 class Stack : public StackInterface<Itemtype>
 {
 private:
 	Node<Itemtype>* topPtr;
 public:
 	Stack();
+	Stack(const Stack<Itemtype>& aStack);
 	~Stack();
 	bool isEmpty() const;
 	bool push(const Itemtype& newEntry);
@@ -41,13 +43,233 @@ public:
 	Itemtype peek() const;
 };
 
-template <typename Itemtype>
-Stack<Itemtype>::Stack():topPtr(nullptr){}
+
+
+
+
+
 
 int main(int argc, char const *argv[])
 {
+	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
+	string s;
+	getline(cin,s);
+	Stack<string> A;
+	Stack<string> postfix;
+	for (int i = 0; i < s.length(); ++i)
+	{
+		
+	}
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename Itemtype>
+Stack<Itemtype>::Stack():topPtr(nullptr){}
+
+template <typename Itemtype>
+Stack<Itemtype>::Stack(const Stack<Itemtype>& aStack){
+	Node<Itemtype>* origChainPtr = aStack.topPtr;
+	if (origChainPtr == nullptr)
+	{
+		topPtr = nullptr;
+	}else{
+		topPtr = new Node<Itemtype>();
+		topPtr->setItem(origChainPtr->getItem());
+		Node<Itemtype>* newChainPtr = topPtr;
+		origChainPtr = origChainPtr->getNext();
+		while(origChainPtr != nullptr){
+			Itemtype nextItem = origChainPtr->getItem();
+			Node<Itemtype>* newNodePtr = new Node<Itemtype>(nextItem);
+			newChainPtr->setNext(newNodePtr);
+			newChainPtr = newChainPtr->getNext();
+			origChainPtr = origChainPtr->getNext();
+		}
+		newChainPtr->setNext(nullptr);
+	}
+}
+
+template <typename Itemtype>
+bool Stack<Itemtype>::push(const Itemtype& newItem){
+	Node<Itemtype>* newNodePtr = new Node<Itemtype>(newItem,topPtr);
+	topPtr = newNodePtr;
+	newNodePtr = nullptr;
+	return true;
+}
+
+template <typename Itemtype>
+bool Stack<Itemtype>::pop(){
+	bool result = false;
+	if (!isEmpty())
+	{
+		Node<Itemtype>* nodeToDeletePtr = topPtr;
+		topPtr = topPtr->getNext();
+
+		nodeToDeletePtr->setNext(nullptr);
+		delete nodeToDeletePtr;
+		nodeToDeletePtr = nullptr;
+		return true;
+	}
+	return result;
+}
+
+template <typename Itemtype>
+Stack<Itemtype>::~Stack(){
+	while(!isEmpty()){
+		pop();
+	}
+}
+
+template <typename Itemtype>
+Itemtype Stack<Itemtype>::peek()const {
+	return topPtr->getItem();
+}//-------------------------------------
+//沒有考慮裡面沒東西--------------------------------------------
+
+template <typename Itemtype>//不確定--------------------
+bool Stack<Itemtype>::isEmpty() const{
+	if (topPtr == nullptr)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+
+
+
+
 
 
 //overload item operator=
