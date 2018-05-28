@@ -43,10 +43,66 @@ public:
 	Itemtype peek() const;
 };
 
+bool seconed_precedence(char a,char b){
+	if (b == '^')
+	{
+		return true;
+	}
+	if (b == '%' || b == '*' || b == '/')
+	{
+		if (a != '^')
+		{
+			return true;
+		}else{
+			return false;
+		}
+	}
+	if (b == '+' || b == '-')
+	{
+		if (a == '+' || a == '-' )
+		{
+			return true;
+		}else{
+			return false;
+		}
+	}
+}
 
 
-
-
+string InfixtoPostfix(string s){
+	Stack<char> _operator;
+	string postfix = "";
+	// cout << s << "\n";
+	for (int i = 0; i < int(s.length()); ++i)
+	{
+		if (isdigit(s[i]) || s[i] == 'x')
+		{
+			postfix += s[i];
+		}else if (s[i] == '(')
+		{
+			_operator.push(s[i]);
+		}else if (s[i] == ')')
+		{
+			while(_operator.peek() != '('){
+				postfix += _operator.peek();
+				_operator.pop();
+			}
+			_operator.pop();
+		}else{
+			while(!_operator.isEmpty() && _operator.peek() != '(' && seconed_precedence(s[i],_operator.peek())){
+				postfix += _operator.peek();
+				_operator.pop();
+			}
+			_operator.push(s[i]);
+		}
+	}
+	while(!_operator.isEmpty()){
+		postfix += _operator.peek();
+		_operator.pop();
+	}
+	// cout << postfix << endl;
+	return postfix;
+}
 
 
 int main(int argc, char const *argv[])
@@ -54,12 +110,8 @@ int main(int argc, char const *argv[])
 	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
 	string s;
 	getline(cin,s);
-	Stack<string> A;
-	Stack<string> postfix;
-	for (int i = 0; i < s.length(); ++i)
-	{
-		
-	}
+	string postfix = InfixtoPostfix(s);
+	cout << postfix;
 	return 0;
 }
 
