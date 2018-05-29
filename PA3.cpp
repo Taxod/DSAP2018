@@ -205,8 +205,20 @@ int main(int argc, char const *argv[])
 					calculate.push(result);
 					break;
 				case '-':
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp2 - tmp1;
+					calculate.push(result);
 					break;
 				case '*':
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp1 * tmp2;
+					calculate.push(result);
 					break;
 				case '/':
 					break;
