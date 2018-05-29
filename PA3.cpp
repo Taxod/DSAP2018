@@ -16,7 +16,6 @@ public:
   void setNext(Node<Itemtype>* nextNodePtr);
   Itemtype getItem() const ;
   Node<Itemtype>* getNext() const ;
-  // Node<Itemtype>* operator+(Node<Itemtype>* ptr);
 };
 template <typename Itemtype>
 class StackInterface
@@ -65,9 +64,55 @@ public:
 	void operator=(const Polynomial q);
 	void print();
 	void printtest();
+	friend ostream& operator<<(ostream& os, const Polynomial &p);
 	// ~Polynomial();
 	
 };
+
+ostream& operator<<(ostream& os, const Polynomial &p){
+	for (int i = Max; i > 0; ++i)
+	{
+		/* code */
+	}
+}
+
+
+void print_postfix(string postfix){
+	bool flag = false;
+	string tmp = "";
+	for (int i = 0; i < int(postfix.length()-1); ++i)
+	{
+		// cout << i << postfix[i] << ":\n";
+		if (isdigit(postfix[i]))
+		{
+			tmp += postfix[i];
+			flag = true;
+		}else if (flag)
+		{
+			cout << tmp;
+			flag = false;
+			tmp = "";
+			cout <<" ";
+			cout << postfix[i] << " ";
+		}else{
+			cout << postfix[i] << " ";
+		}
+	}
+	if (flag)
+	{
+		cout << tmp << " ";
+	}
+	cout << postfix[postfix.length()-1];
+	cout << "\n";
+}
+
+
+
+
+
+
+
+
 void Polynomial::printtest(){
 	for (int i = 0; i < Max; ++i)
 	{
@@ -81,34 +126,55 @@ void Polynomial::printtest(){
 }
 void Polynomial::print(){
 	bool mark = true;
-	for (int i = 100; i > 0 ; --i)
+	for (int i = 99; i > 0 ; --i)
 	{
-		if (P[i] != 0 && mark)
+		if (P[i] != 0)
 		{
-			cout << P[i] << "x^" << i;//--------------------------
-			mark = false;
-		}else if (P[i] > 0)
-		{
-			cout << "+";
-			if (P[i] != 1)
+			if (mark)
 			{
-				cout << P[i];
-			}
-			cout << "x^" << i;
-		}else if (P[i] < 0)
-		{
-			if (P[i] != -1)
-			{
-				cout << P[i];
+				if (P[i] != 1)
+				{
+					cout << P[i] << "x";
+				}else{
+					cout << "x";
+				}
+				if (i != 1)
+				{
+					cout << "^" << i;
+				}
+				mark = false;
 			}else{
-				cout << "-";
+				if (P[i] > 0)
+				{
+					cout << "+";
+					if (P[i] != 1)
+					{
+						cout << P[i] << "x";
+					}else{
+						cout << "x";
+					}
+					if (i != 1)
+					{
+						cout << "^" << i;
+					}
+				}else{
+					if (P[i] != -1)
+					{
+						cout << P[i] << "x";
+					}else{
+						cout << "-x";
+					}
+					if (i != 1)
+					{
+						cout << "^" << i;
+					}
+				}
 			}
-			cout << "x^" << i;
 		}
 	}
 	if (P[0] != 0)
 	{
-		if (P[0] > 0)
+		if (P[0] > 0 &&!mark)
 		{
 			cout << "+";
 		}
@@ -128,7 +194,7 @@ void Polynomial::operator=(const Polynomial q){
 Polynomial Polynomial::operator^(const Polynomial q){
 	Polynomial result;
 	result = *this;
-	for (int i = 0; i < q.P[0]; ++i)
+	for (int i = 0; i < q.P[0]-1; ++i)
 	{
 		result = result * *this;//-------------------------------
 	}
@@ -208,12 +274,13 @@ int main(int argc, char const *argv[])
 {
 	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
 	
-	/*string s;
+	string s;
 	getline(cin,s);
-	string postfix = InfixtoPostfix(s);*/
-	
+	// string s = "(1+x)^2";
+	string postfix = InfixtoPostfix(s);
+	// cout << postfix << endl;
+	print_postfix(postfix);
 	//12x2^*5x2^*3x3^*-x+2+2x2^*2-/2^x2^1+%+
-	string postfix = "1x+";
 	//-----------------------------------
 
 	bool series_num = false;
@@ -228,12 +295,7 @@ int main(int argc, char const *argv[])
 		}else{
 			if (series_num){
 				Polynomial tmpnum(stoi(tmp_s),0);
-				cout << stoi(tmp_s) << "**\n";
-				tmpnum.printtest();
-				cout << "---\n";
-				tmpnum.print();
-				calculate.push(tmpnum);//-----------------------------
-
+				calculate.push(tmpnum);//-------------------------------------------
 				tmp_s="";
 				series_num = false;	
 			}
@@ -285,6 +347,7 @@ int main(int argc, char const *argv[])
 			}
 		}
 	}
+	calculate.peek().print();
 	return 0;
 }
 
