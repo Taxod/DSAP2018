@@ -43,32 +43,85 @@ public:
 	Itemtype peek() const;
 };
 
-struct poly
-{
-	int co;//coefficient
-	int power;
-	poly(){
-		co = 0;
-		power = -1;
-	}
-};
 
 
+const int Max = 100;
 class Polynomial
 {
 private:
 	int Cnt;
-	int P[100];
+	int P[Max];
 public:
 	void setvalue(int value ,int index);
 	int getvalue(int index);
 	int getCnt(){return Cnt;};
 	Polynomial();
 	Polynomial(int value,int index);
+	// Polynomial(const Polynomial &q);
+	Polynomial operator+(const Polynomial q);
+	Polynomial operator-(const Polynomial q);
+	Polynomial operator*(const Polynomial q);
+	Polynomial operator^(const Polynomial q);
+	void operator=(const Polynomial q);
+	void print(){for (int i = 0; i < 10; ++i){cout << P[i] << " ";}cout << endl;}
 	// ~Polynomial();
 	
 };
+void Polynomial::operator=(const Polynomial q){
+	this->Cnt = q.Cnt;
+	for (int i = 0; i < Max; ++i)
+	{
+		this->P[i] = q.P[i];
+	}
+}
+// Polynomial::Polynomial(const Polynomial &q){
+// 	*this = q;
+// }----------****************************************************************
+Polynomial Polynomial::operator^(const Polynomial q){
+	Polynomial result;
+	result = *this;
+	for (int i = 0; i < q.P[0]; ++i)
+	{
+		result = result * *this;//-------------------------------
+	}
+	return result;
+}
+Polynomial Polynomial::operator*(const Polynomial q){
+	Polynomial result;
+	for (int i = 0; i < Max; ++i)
+	{
+		for (int j = 0; j < Max; ++j)
+		{
+			result.P[i+j] += (this->P[i] * q.P[j]);
+		}
+	}
+	return result;
+}
+
+Polynomial Polynomial::operator-(const Polynomial q){
+	Polynomial result;
+	for (int i = 0; i < Max; ++i)
+	{
+		result.P[i] = this->P[i] - q.P[i];
+	}
+	return result;
+}
+
+
+Polynomial Polynomial::operator+(const Polynomial q){
+	Polynomial result;
+	for (int i = 0; i < Max; ++i)
+	{
+		result.P[i] = this->P[i] + q.P[i];
+	}
+	return result;
+}
 Polynomial::Polynomial(int value,int index){
+	Cnt = 0;
+	for (int i = 0; i < 100; ++i)
+	{
+		P[i] = 0;
+	}
 	P[index] = value;
 }
 int Polynomial::getvalue(int index){
@@ -112,7 +165,7 @@ int main(int argc, char const *argv[])
 	string postfix = InfixtoPostfix(s);*/
 	
 	//12x2^*5x2^*3x3^*-x+2+2x2^*2-/2^x2^1+%+
-	string postfix = "123456x/";
+	string postfix = "1x+";
 	//-----------------------------------
 
 	bool series_num = false;
@@ -124,16 +177,32 @@ int main(int argc, char const *argv[])
 		{
 			tmp_s += postfix[i];
 			series_num = true;
-		}else if (series_num){
-			Polynomial tmpnum(1345,0);//--------------
+		}else{
+			if (series_num){
 
-			// tmpnum.setvalue(stoi(tmp_s),0);
-			// tmpnum.setvalue(1346,0);//---------------
-			calculate.push(tmpnum);
-			tmp_s="";
-			series_num = false;
+				// Polynomial tmpnum(1345,0);//--------------
+				// tmpnum.setvalue(stoi(tmp_s),0);
+				Polynomial tmpnum;
+				tmpnum.setvalue(1345,0);
+				cout << "-------";
+				tmpnum.print();
+				calculate.push(tmpnum);//-----------------------------
+
+				tmp_s="";
+				series_num = false;	
+			}
+
+			Polynomial tmp1;
+			Polynomial tmp2;
+			Polynomial result;
 			switch(postfix[i]){
 				case '+':
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp1 + tmp2;
+					calculate.push(result);
 					break;
 				case '-':
 					break;
@@ -150,26 +219,10 @@ int main(int argc, char const *argv[])
 					calculate.push(t);
 					break;
 			}
-		}else{
-			switch(postfix[i]){
-				case '+':
-					break;
-				case '-':
-					break;
-				case '*':
-					break;
-				case '/':
-					cout << calculate.peek().getvalue(1);
-					break;
-				case '%':
-					break;
-				case '^':
-					break;
-				case 'x':
-					break;
-			}
 		}
 	}
+	cout << calculate.peek().getvalue(0) << " ";
+	cout << calculate.peek().getvalue(1) << endl;
 	return 0;
 }
 
