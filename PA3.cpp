@@ -63,10 +63,58 @@ public:
 	Polynomial operator*(const Polynomial q);
 	Polynomial operator^(const Polynomial q);
 	void operator=(const Polynomial q);
-	void print(){for (int i = 0; i < 10; ++i){cout << P[i] << " ";}cout << endl;}
+	void print();
+	void printtest();
 	// ~Polynomial();
 	
 };
+void Polynomial::printtest(){
+	for (int i = 0; i < Max; ++i)
+	{
+		cout << P[i] << " ";
+		if ((i+1) % 20 == 0)
+		{
+			cout << endl;
+		}
+	}
+	cout << "///////////////\n";
+}
+void Polynomial::print(){
+	bool mark = true;
+	for (int i = 100; i > 0 ; --i)
+	{
+		if (P[i] != 0 && mark)
+		{
+			cout << P[i] << "x^" << i;//--------------------------
+			mark = false;
+		}else if (P[i] > 0)
+		{
+			cout << "+";
+			if (P[i] != 1)
+			{
+				cout << P[i];
+			}
+			cout << "x^" << i;
+		}else if (P[i] < 0)
+		{
+			if (P[i] != -1)
+			{
+				cout << P[i];
+			}else{
+				cout << "-";
+			}
+			cout << "x^" << i;
+		}
+	}
+	if (P[0] != 0)
+	{
+		if (P[0] > 0)
+		{
+			cout << "+";
+		}
+		cout << P[0];
+	}
+}
 void Polynomial::operator=(const Polynomial q){
 	this->Cnt = q.Cnt;
 	for (int i = 0; i < Max; ++i)
@@ -179,12 +227,10 @@ int main(int argc, char const *argv[])
 			series_num = true;
 		}else{
 			if (series_num){
-
-				// Polynomial tmpnum(1345,0);//--------------
-				// tmpnum.setvalue(stoi(tmp_s),0);
-				Polynomial tmpnum;
-				tmpnum.setvalue(1345,0);
-				cout << "-------";
+				Polynomial tmpnum(stoi(tmp_s),0);
+				cout << stoi(tmp_s) << "**\n";
+				tmpnum.printtest();
+				cout << "---\n";
 				tmpnum.print();
 				calculate.push(tmpnum);//-----------------------------
 
@@ -225,6 +271,12 @@ int main(int argc, char const *argv[])
 				case '%':
 					break;
 				case '^':
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp2 ^ tmp1;
+					calculate.push(result);
 					break;
 				case 'x':
 					Polynomial t(1,1);
@@ -233,8 +285,6 @@ int main(int argc, char const *argv[])
 			}
 		}
 	}
-	cout << calculate.peek().getvalue(0) << " ";
-	cout << calculate.peek().getvalue(1) << endl;
 	return 0;
 }
 
