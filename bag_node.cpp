@@ -1,90 +1,90 @@
 #include <iostream>
 using namespace std;
 
-template<typename ItemType>
+template<typename Itemtype>
 class Node
 {
 private:
-  ItemType item;
-  Node<ItemType>* next; 
+  Itemtype item;
+  Node<Itemtype>* next; 
 public:
   Node();
-  Node(const ItemType& anItem);
-  Node(const ItemType& anItem, Node<ItemType>* nextNodePtr);
-  void setItem(const ItemType& anItem);
-  void setNext(Node<ItemType>* nextNodePtr);
-  ItemType getItem() const ;
-  Node<ItemType>* getNext() const ;
+  Node(const Itemtype& anItem);
+  Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr);
+  void setItem(const Itemtype& anItem);
+  void setNext(Node<Itemtype>* nextNodePtr);
+  Itemtype getItem() const ;
+  Node<Itemtype>* getNext() const ;
 }; 
 
 
 //overload item operator=
-template <typename ItemType>
-Node<ItemType>::Node():next(nullptr){}
-template <typename ItemType>
-Node<ItemType>::Node(const ItemType& anItem):item(anItem),next(nullptr){
+template <typename Itemtype>
+Node<Itemtype>::Node():next(nullptr){}
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem):item(anItem),next(nullptr){
 	//overload assignment operator，constructor
 }
-template <typename ItemType>
-Node<ItemType>::Node(const ItemType& anItem, Node<ItemType>* nextNodePtr):next(nextNodePtr),item(anItem){}
-template<class ItemType>
-void Node<ItemType>::setItem(const ItemType& anItem)
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr):next(nextNodePtr),item(anItem){}
+template<class Itemtype>
+void Node<Itemtype>::setItem(const Itemtype& anItem)
 {
   item = anItem;
 } 
 
-template<typename ItemType>
-void Node<ItemType>::setNext(Node<ItemType>* nextNodePtr)
+template<typename Itemtype>
+void Node<Itemtype>::setNext(Node<Itemtype>* nextNodePtr)
 {
   next = nextNodePtr;
 } 
 
-template<typename ItemType>
-ItemType Node<ItemType>::getItem() const
+template<typename Itemtype>
+Itemtype Node<Itemtype>::getItem() const
 {
   return item;
 } 
 
-template<typename ItemType>
-Node<ItemType>* Node<ItemType>::getNext() const
+template<typename Itemtype>
+Node<Itemtype>* Node<Itemtype>::getNext() const
 {
   return next;
 } 
 
-template<typename ItemType>
+template<typename Itemtype>
 class Bag
 {
 private:
-  Node<ItemType>* headPtr;
+  Node<Itemtype>* headPtr;
   int itemCount;
-  Node<ItemType>* getPointerTo(const ItemType& target) const; 
+  Node<Itemtype>* getPointerTo(const Itemtype& target) const; 
 public:
   Bag();
-  Bag(const Bag<ItemType>& aBag); // Copy constructor
+  Bag(const Bag<Itemtype>& aBag); // Copy constructor
   ~Bag();                       
   int getCurrentSize() const;
   bool isEmpty() const;
-  bool add(const ItemType& newEntry);
-  bool remove(const ItemType& anEntry);
+  bool add(const Itemtype& newEntry);
+  bool remove(const Itemtype& anEntry);
   void clear();
-  bool contains(const ItemType& anEntry) const;
-  ItemType get(const ItemType& target)const;
-  ItemType get(const string target)const;
-  // int getFrequencyOf(const ItemType& anEntry) const;
-  // vector<ItemType> toVector() const;
+  bool contains(const Itemtype& anEntry) const;
+  Itemtype get(const Itemtype& target)const;
+  Itemtype get(const string target)const;
+  // int getFrequencyOf(const Itemtype& anEntry) const;
+  // vector<Itemtype> toVector() const;
 };
 
-template <typename ItemType>
-ItemType Bag<ItemType>::get(const ItemType& target)const{
-	Node<ItemType>* ptr;
+template <typename Itemtype>
+Itemtype Bag<Itemtype>::get(const Itemtype& target)const{
+	Node<Itemtype>* ptr;
 	ptr = getPointerTo(target);
 	return ptr->getItem;
 }
 
-template <typename ItemType>
-ItemType Bag<ItemType>::get(const string target)const{
+template <typename Itemtype>
+Itemtype Bag<Itemtype>::get(const string target)const{
 	bool found = false;
-	Node<ItemType>* tmptr = headPtr;
+	Node<Itemtype>* tmptr = headPtr;
 	while(!found && (tmptr != nullptr)){
 		if (target == tmptr->getItem().id)
 		{
@@ -96,10 +96,10 @@ ItemType Bag<ItemType>::get(const string target)const{
 	return tmptr->getItem();
 }
 
-template<typename ItemType>
-Node<ItemType>* Bag<ItemType>::getPointerTo(const ItemType& target) const{
+template<typename Itemtype>
+Node<Itemtype>* Bag<Itemtype>::getPointerTo(const Itemtype& target) const{
 	bool found = false;
-	Node<ItemType>* tmptr = headPtr;
+	Node<Itemtype>* tmptr = headPtr;
 	while(!found && (tmptr != nullptr)){
 		if (target == tmptr->getItem())
 		{
@@ -111,24 +111,24 @@ Node<ItemType>* Bag<ItemType>::getPointerTo(const ItemType& target) const{
 	return tmptr;
 }
 
-template<typename ItemType>
-Bag<ItemType>::Bag():headPtr(nullptr),itemCount(0){}
+template<typename Itemtype>
+Bag<Itemtype>::Bag():headPtr(nullptr),itemCount(0){}
 
-template<typename ItemType>
-Bag<ItemType>::Bag(const Bag<ItemType>& aBag){//copy--------
+template<typename Itemtype>
+Bag<Itemtype>::Bag(const Bag<Itemtype>& aBag){//copy--------
 	itemCount = aBag.itemCount;
-    Node<ItemType>* origChainPtr = aBag.headPtr;   
+    Node<Itemtype>* origChainPtr = aBag.headPtr;   
     if(origChainPtr == nullptr)
     	headPtr = nullptr;
     else{
-    	headPtr = new Node<ItemType>();
+    	headPtr = new Node<Itemtype>();
     	headPtr->setItem(origChainPtr->getItem());
-    	Node<ItemType>* newChainPtr = headPtr;
+    	Node<Itemtype>* newChainPtr = headPtr;
     while(origChainPtr != nullptr)
     {
         origChainPtr = origChainPtr->getNext();
-        ItemType nextItem = origChainPtr->getItem();
-        Node<ItemType>* newNodePtr = new Node<ItemType>(nextItem);
+        Itemtype nextItem = origChainPtr->getItem();
+        Node<Itemtype>* newNodePtr = new Node<Itemtype>(nextItem);
         newChainPtr->setNext(newNodePtr);
         newChainPtr = newChainPtr->getNext();
     }      
@@ -136,12 +136,12 @@ Bag<ItemType>::Bag(const Bag<ItemType>& aBag){//copy--------
   } 
 }
 
-template<typename ItemType>
-int Bag<ItemType>::getCurrentSize() const{
+template<typename Itemtype>
+int Bag<Itemtype>::getCurrentSize() const{
 	return itemCount;
 }
-template<typename ItemType>
-bool Bag<ItemType>::isEmpty() const{
+template<typename Itemtype>
+bool Bag<Itemtype>::isEmpty() const{
 	if (itemCount == 0)
 	{
 		return true;
@@ -149,9 +149,9 @@ bool Bag<ItemType>::isEmpty() const{
 		return false;
 	}
 }
-template<typename ItemType>
-bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
-	Node<ItemType>* newNodePtr = new Node<ItemType>();
+template<typename Itemtype>
+bool Bag<Itemtype>::add(const Itemtype& newEntry){//----copy
+	Node<Itemtype>* newNodePtr = new Node<Itemtype>();
     newNodePtr->setItem(newEntry);
     newNodePtr->setNext(headPtr);
     headPtr = newNodePtr;
@@ -159,14 +159,14 @@ bool Bag<ItemType>::add(const ItemType& newEntry){//----copy
     return true;
 }
 
-template<typename ItemType>
-bool Bag<ItemType>::remove(const ItemType& anEntry){
-	Node<ItemType>* entryNodePtr = getPointerTo(anEntry);
+template<typename Itemtype>
+bool Bag<Itemtype>::remove(const Itemtype& anEntry){
+	Node<Itemtype>* entryNodePtr = getPointerTo(anEntry);
   	bool canRemoveItem = !isEmpty() && (entryNodePtr != nullptr);
   	if (canRemoveItem)
   	{
     	entryNodePtr->setItem(headPtr->getItem());
-    	Node<ItemType>* nodeToDeletePtr = headPtr;
+    	Node<Itemtype>* nodeToDeletePtr = headPtr;
     	headPtr = headPtr->getNext();
     	delete nodeToDeletePtr;
     	nodeToDeletePtr = nullptr; 
@@ -175,9 +175,9 @@ bool Bag<ItemType>::remove(const ItemType& anEntry){
 	return canRemoveItem;
 }
 
-template<typename ItemType>
-void Bag<ItemType>::clear(){//-----------copy
-	Node<ItemType>* nodeToDeletePtr = headPtr;
+template<typename Itemtype>
+void Bag<Itemtype>::clear(){//-----------copy
+	Node<Itemtype>* nodeToDeletePtr = headPtr;
   	while (headPtr != nullptr)
     {
     	headPtr = headPtr->getNext();
@@ -188,8 +188,8 @@ void Bag<ItemType>::clear(){//-----------copy
     itemCount = 0;
 }
 
-template<typename ItemType>
-bool Bag<ItemType>::contains(const ItemType& anEntry) const{
+template<typename Itemtype>
+bool Bag<Itemtype>::contains(const Itemtype& anEntry) const{
 	if (getPointerTo(anEntry) == nullptr)
 	{
 		return false;
@@ -197,13 +197,13 @@ bool Bag<ItemType>::contains(const ItemType& anEntry) const{
 		return true;
 	}
 }
-template<typename ItemType>
-Bag<ItemType>::~Bag(){
+template<typename Itemtype>
+Bag<Itemtype>::~Bag(){
 	clear();
 }
 
 
-// template<typename ItemType>
+// template<typename Itemtype>
 void fii(Bag<int> u){}
 int main(int argc, char const *argv[])
 {

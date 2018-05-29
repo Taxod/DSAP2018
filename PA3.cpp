@@ -16,8 +16,8 @@ public:
   void setNext(Node<Itemtype>* nextNodePtr);
   Itemtype getItem() const ;
   Node<Itemtype>* getNext() const ;
-}; 
-
+  // Node<Itemtype>* operator+(Node<Itemtype>* ptr);
+};
 template <typename Itemtype>
 class StackInterface
 {
@@ -42,6 +42,140 @@ public:
 	bool pop();
 	Itemtype peek() const;
 };
+
+struct poly
+{
+	int co;//coefficient
+	int power;
+	poly(){
+		co = 0;
+		power = -1;
+	}
+};
+
+
+class Polynomial
+{
+private:
+	int Cnt;
+	int P[100];
+public:
+	void setvalue(int value ,int index);
+	int getvalue(int index);
+	int getCnt(){return Cnt;};
+	Polynomial();
+	Polynomial(int value,int index);
+	// ~Polynomial();
+	
+};
+Polynomial::Polynomial(int value,int index){
+	P[index] = value;
+}
+int Polynomial::getvalue(int index){
+	return P[index];
+}
+void Polynomial::setvalue(int value,int index){
+	if (P[index] == 0)
+	{
+		Cnt++;
+	}
+	if (value == 0)
+	{
+		Cnt--;
+	}
+	P[index] = value;
+
+}
+Polynomial::Polynomial(){
+	Cnt = 0;
+	for (int i = 0; i < 100; ++i)
+	{
+		P[i] = 0;
+	}
+}
+
+
+
+bool seconed_precedence(char a,char b);
+string InfixtoPostfix(string s);
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
+	
+	/*string s;
+	getline(cin,s);
+	string postfix = InfixtoPostfix(s);*/
+	
+	//12x2^*5x2^*3x3^*-x+2+2x2^*2-/2^x2^1+%+
+	string postfix = "123456x/";
+	//-----------------------------------
+
+	bool series_num = false;
+	string tmp_s = "";
+	Stack<Polynomial> calculate;
+	for (int i = 0; i < int(postfix.length()); ++i)
+	{
+		if (isdigit(postfix[i]))
+		{
+			tmp_s += postfix[i];
+			series_num = true;
+		}else if (series_num){
+			Polynomial tmpnum(1345,0);//--------------
+
+			// tmpnum.setvalue(stoi(tmp_s),0);
+			// tmpnum.setvalue(1346,0);//---------------
+			calculate.push(tmpnum);
+			tmp_s="";
+			series_num = false;
+			switch(postfix[i]){
+				case '+':
+					break;
+				case '-':
+					break;
+				case '*':
+					break;
+				case '/':
+					break;
+				case '%':
+					break;
+				case '^':
+					break;
+				case 'x':
+					Polynomial t(1,1);
+					calculate.push(t);
+					break;
+			}
+		}else{
+			switch(postfix[i]){
+				case '+':
+					break;
+				case '-':
+					break;
+				case '*':
+					break;
+				case '/':
+					cout << calculate.peek().getvalue(1);
+					break;
+				case '%':
+					break;
+				case '^':
+					break;
+				case 'x':
+					break;
+			}
+		}
+	}
+	return 0;
+}
+
+
+
+
 
 bool seconed_precedence(char a,char b){
 	if (b == '^')
@@ -103,21 +237,6 @@ string InfixtoPostfix(string s){
 	// cout << postfix << endl;
 	return postfix;
 }
-
-
-int main(int argc, char const *argv[])
-{
-	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
-	string s;
-	getline(cin,s);
-	string postfix = InfixtoPostfix(s);
-	cout << postfix;
-	return 0;
-}
-
-
-
-
 
 
 
