@@ -61,7 +61,8 @@ public:
 	Polynomial operator-(const Polynomial q);
 	Polynomial operator*(const Polynomial q);
 	Polynomial operator^(const Polynomial q);
-	Polynomial operator/(const Polynomial q);
+	Polynomial operator/(Polynomial q);
+	Polynomial operator%(Polynomial q);
 	void operator=(const Polynomial q);
 	void print();
 	void printtest();
@@ -70,7 +71,7 @@ public:
 	
 };
 
-Polynomial Polynomial::operator/(const Polynomial q){
+Polynomial Polynomial::operator%(Polynomial q){
 	Polynomial result;
 	Polynomial tmp;
 	tmp = *this;
@@ -97,14 +98,21 @@ Polynomial Polynomial::operator/(const Polynomial q){
 		result.setvalue(0,0);
 		return result;
 	}else{
-		while(max_power_p > max_power_q){
+		int count = 0;
+		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
+			count ++;
 			int gap = max_power_p - max_power_q;
-			double co_gap = double(P[max_power_p])/double(q.P[max_power_q]);
+			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
 			result.setvalue(co_gap,gap);
 			//------------減了之後小於0的狀況------------------------------------
-			for (int i = Max-1; i >= 0; --i)
+			//(4*x^2+10)/(x+1)
+			for (int i = Max-1-gap; i >= 0; --i)
 			{
-				tmp.P[i] = tmp.P[i] - double(q.P[i+gap]) * co_gap;
+				if (q.P[i] != 0)
+				{
+					tmp.P[i+gap] = tmp.P[i+gap] - double(q.P[i]) * co_gap;	
+				}
+
 			}
 			for (int i = Max-1; i >= 0; --i)
 			{
@@ -113,6 +121,71 @@ Polynomial Polynomial::operator/(const Polynomial q){
 					max_power_p = i;
 					break;
 				}
+			}
+			if (count == 5)
+			{
+				break;
+			}
+		}
+	}
+	return tmp;
+}
+
+
+
+Polynomial Polynomial::operator/(Polynomial q){
+	Polynomial result;
+	Polynomial tmp;
+	tmp = *this;
+	int max_power_p;
+	int max_power_q;
+	for (int i = Max-1; i >= 0; --i)
+	{
+		if (this->P[i] != 0)
+		{
+			max_power_p = i;
+			break;
+		}
+	}
+	for (int i = Max-1; i >= 0; --i)
+	{
+		if (q.P[i] != 0)
+		{
+			max_power_q = i;
+			break;
+		}
+	}
+	if (max_power_p < max_power_q)
+	{
+		// result.setvalue(0,0);
+		return result;
+	}else{
+		int count = 0;
+		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
+			count ++;
+			int gap = max_power_p - max_power_q;
+			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
+			result.setvalue(co_gap,gap);
+			//(4*x^2+10)%(x+1)
+			for (int i = Max-1-gap; i >= 0; --i)
+			{
+				if (q.P[i] != 0)
+				{
+					tmp.P[i+gap] = tmp.P[i+gap] - double(q.P[i]) * co_gap;	
+				}
+
+			}
+			for (int i = Max-1; i >= 0; --i)
+			{
+				if (tmp.P[i] != 0)
+				{
+					max_power_p = i;
+					break;
+				}
+			}
+			if (count == 5)
+			{
+				break;
 			}
 		}
 	}
@@ -385,7 +458,13 @@ int main(int argc, char const *argv[])
 					result = tmp2 / tmp1;
 					calculate.push(result); 
 					break;
-				case '%':
+				case '%':					
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp2 % tmp1;
+					calculate.push(result);
 					break;
 				case '^':
 					tmp1 = calculate.peek();
