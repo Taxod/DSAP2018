@@ -61,6 +61,7 @@ public:
 	Polynomial operator-(const Polynomial q);
 	Polynomial operator*(const Polynomial q);
 	Polynomial operator^(const Polynomial q);
+	Polynomial operator/(const Polynomial q);
 	void operator=(const Polynomial q);
 	void print();
 	void printtest();
@@ -69,6 +70,54 @@ public:
 	
 };
 
+Polynomial Polynomial::operator/(const Polynomial q){
+	Polynomial result;
+	Polynomial tmp;
+	tmp = *this;
+	int max_power_p;
+	int max_power_q;
+	for (int i = Max-1; i >= 0; --i)
+	{
+		if (this->P[i] != 0)
+		{
+			max_power_p = i;
+			break;
+		}
+	}
+	for (int i = Max-1; i >= 0; --i)
+	{
+		if (q.P[i] != 0)
+		{
+			max_power_q = i;
+			break;
+		}
+	}
+	if (max_power_p < max_power_q)
+	{
+		result.setvalue(0,0);
+		return result;
+	}else{
+		while(max_power_p > max_power_q){
+			int gap = max_power_p - max_power_q;
+			double co_gap = double(P[max_power_p])/double(q.P[max_power_q]);
+			result.setvalue(co_gap,gap);
+			//------------減了之後小於0的狀況------------------------------------
+			for (int i = Max-1; i >= 0; --i)
+			{
+				tmp.P[i] = tmp.P[i] - double(q.P[i+gap]) * co_gap;
+			}
+			for (int i = Max-1; i >= 0; --i)
+			{
+				if (tmp.P[i] != 0)
+				{
+					max_power_p = i;
+					break;
+				}
+			}
+		}
+	}
+	return result;
+}
 ostream& operator<<(ostream& os, const Polynomial &p){
 	for (int i = Max; i > 0; ++i)
 	{
@@ -126,7 +175,7 @@ void Polynomial::printtest(){
 }
 void Polynomial::print(){
 	bool mark = true;
-	for (int i = 99; i > 0 ; --i)
+	for (int i = Max-1; i > 0 ; --i)
 	{
 		if (P[i] != 0)
 		{
@@ -232,7 +281,7 @@ Polynomial Polynomial::operator+(const Polynomial q){
 }
 Polynomial::Polynomial(int value,int index){
 	Cnt = 0;
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < Max; ++i)
 	{
 		P[i] = 0;
 	}
@@ -255,7 +304,7 @@ void Polynomial::setvalue(int value,int index){
 }
 Polynomial::Polynomial(){
 	Cnt = 0;
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < Max; ++i)
 	{
 		P[i] = 0;
 	}
@@ -329,6 +378,12 @@ int main(int argc, char const *argv[])
 					calculate.push(result);
 					break;
 				case '/':
+					tmp1 = calculate.peek();
+					calculate.pop();
+					tmp2 = calculate.peek();
+					calculate.pop();
+					result = tmp2 / tmp1;
+					calculate.push(result); 
 					break;
 				case '%':
 					break;
