@@ -49,7 +49,7 @@ class Polynomial
 {
 private:
 	int Cnt;
-	int P[Max];
+	double P[Max];
 public:
 	void setvalue(int value ,int index);
 	int getvalue(int index);
@@ -98,9 +98,8 @@ Polynomial Polynomial::operator%(Polynomial q){
 		result.setvalue(0,0);
 		return result;
 	}else{
-		int count = 0;
 		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
-			count ++;
+			// count ++;
 			int gap = max_power_p - max_power_q;
 			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
 			result.setvalue(co_gap,gap);
@@ -122,11 +121,11 @@ Polynomial Polynomial::operator%(Polynomial q){
 					break;
 				}
 			}
-			if (count == 5)
-			{
-				break;
-			}
 		}
+	}
+	for (int i = Max-1; i >= 0; --i)
+	{
+		tmp.P[i] = int(tmp.P[i]);
 	}
 	return tmp;
 }
@@ -157,12 +156,10 @@ Polynomial Polynomial::operator/(Polynomial q){
 	}
 	if (max_power_p < max_power_q)
 	{
-		// result.setvalue(0,0);
 		return result;
 	}else{
-		int count = 0;
 		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
-			count ++;
+			// count ++;
 			int gap = max_power_p - max_power_q;
 			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
 			result.setvalue(co_gap,gap);
@@ -182,10 +179,6 @@ Polynomial Polynomial::operator/(Polynomial q){
 					max_power_p = i;
 					break;
 				}
-			}
-			if (count == 5)
-			{
-				break;
 			}
 		}
 	}

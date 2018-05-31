@@ -49,13 +49,13 @@ class Polynomial
 {
 private:
 	int Cnt;
-	int P[Max];
+	double P[Max];
 public:
 	void setvalue(int value ,int index);
 	int getvalue(int index);
 	int getCnt(){return Cnt;};
 	Polynomial();
-	Polynomial(int value,int index);
+	Polynomial(double value,int index);
 	// Polynomial(const Polynomial &q);
 	Polynomial operator+(const Polynomial q);
 	Polynomial operator-(const Polynomial q);
@@ -64,16 +64,32 @@ public:
 	Polynomial operator/(Polynomial q);
 	Polynomial operator%(Polynomial q);
 	void operator=(const Polynomial q);
+	bool operator==(const Polynomial q);
 	void print();
 	void printtest();
 	friend ostream& operator<<(ostream& os, const Polynomial &p);
 	// ~Polynomial();
 	
 };
+bool Polynomial::operator==(const Polynomial q){
+	for (int i = Max-1; i >= 0; --i)
+	{
+		if (P[i] != q.P[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 
 Polynomial Polynomial::operator%(Polynomial q){
 	Polynomial result;
 	Polynomial tmp;
+	if (*this == q)
+	{
+		return tmp;
+	}
 	tmp = *this;
 	int max_power_p;
 	int max_power_q;
@@ -98,19 +114,16 @@ Polynomial Polynomial::operator%(Polynomial q){
 		result.setvalue(0,0);
 		return result;
 	}else{
-		int count = 0;
-		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
-			count ++;
+		while(max_power_p >= max_power_q){
 			int gap = max_power_p - max_power_q;
 			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
 			result.setvalue(co_gap,gap);
-			//------------減了之後小於0的狀況------------------------------------
 			//(4*x^2+10)/(x+1)
 			for (int i = Max-1-gap; i >= 0; --i)
 			{
 				if (q.P[i] != 0)
 				{
-					tmp.P[i+gap] = tmp.P[i+gap] - double(q.P[i]) * co_gap;	
+					tmp.P[i+gap] = double(tmp.P[i+gap]) - double(q.P[i]) * co_gap;	
 				}
 
 			}
@@ -122,11 +135,24 @@ Polynomial Polynomial::operator%(Polynomial q){
 					break;
 				}
 			}
-			if (count == 5)
+			bool iftmpzero = true;
+			for (int i = 0; i < Max; ++i)
 			{
-				break;
+				if (tmp.P[i] != 0)
+				{
+					iftmpzero = false;
+					break;
+				}
+			}
+			if (iftmpzero)
+			{
+				return tmp;
 			}
 		}
+	}
+	for (int i = Max-1; i >= 0; --i)
+	{
+		tmp.P[i] = int(tmp.P[i]);
 	}
 	return tmp;
 }
@@ -136,6 +162,11 @@ Polynomial Polynomial::operator%(Polynomial q){
 Polynomial Polynomial::operator/(Polynomial q){
 	Polynomial result;
 	Polynomial tmp;
+	if (*this == q)
+	{
+		result.setvalue(1,0);
+		return result;
+	}
 	tmp = *this;
 	int max_power_p;
 	int max_power_q;
@@ -157,21 +188,18 @@ Polynomial Polynomial::operator/(Polynomial q){
 	}
 	if (max_power_p < max_power_q)
 	{
-		// result.setvalue(0,0);
 		return result;
 	}else{
-		int count = 0;
-		while(max_power_p >= max_power_q/* ||(max_power_p == max_power_q && P[max_power_p] > q.P[max_power_q])*/){
-			count ++;
+		while(max_power_p >= max_power_q){
 			int gap = max_power_p - max_power_q;
 			double co_gap = double(tmp.P[max_power_p])/double(q.P[max_power_q]);
 			result.setvalue(co_gap,gap);
-			//(4*x^2+10)%(x+1)
+			//(4*x+10)/2
 			for (int i = Max-1-gap; i >= 0; --i)
 			{
 				if (q.P[i] != 0)
 				{
-					tmp.P[i+gap] = tmp.P[i+gap] - double(q.P[i]) * co_gap;	
+					tmp.P[i+gap] = double(tmp.P[i+gap]) - double(q.P[i]) * co_gap;	
 				}
 
 			}
@@ -183,10 +211,20 @@ Polynomial Polynomial::operator/(Polynomial q){
 					break;
 				}
 			}
-			if (count == 5)
+			bool iftmpzero = true;
+			for (int i = 0; i < Max; ++i)
 			{
-				break;
+				if (tmp.P[i] != 0)
+				{
+					iftmpzero = false;
+					break;
+				}
 			}
+			if (iftmpzero)
+			{
+				return result;
+			}
+
 		}
 	}
 	return result;
@@ -257,51 +295,63 @@ void Polynomial::printtest(){
 }
 void Polynomial::print(){
 	bool mark = true;
+	bool printed = false;
 	for (int i = Max-1; i > 0 ; --i)
 	{
-		if (P[i] != 0)
+		if (int(P[i]) != 0)
 		{
 			if (mark)
 			{
-				if (P[i] != 1 && P[i] != -1)
+				if (int(P[i]) != 1 && int(P[i]) != -1)
 				{
-					cout << P[i] << "x";
+					cout << int(P[i]) << "x";
+					printed = true;
 				}else{
 					if (P[i] == -1)
 					{
 						cout << "-";
+						printed = true;
 					}
 					cout << "x";
+					printed = true;
 				}
 				if (i != 1)
 				{
 					cout << "^" << i;
+					printed = true;
 				}
 				mark = false;
 			}else{
 				if (P[i] > 0)
 				{
 					cout << "+";
+					printed = true;
 					if (P[i] != 1)
 					{
-						cout << P[i] << "x";
+						cout << int(P[i]) << "x";
+						printed = true;
 					}else{
 						cout << "x";
+						printed = true;
 					}
 					if (i != 1)
 					{
 						cout << "^" << i;
+						printed = true;
 					}
 				}else{
 					if (P[i] != -1)
 					{
-						cout << P[i] << "x";
+						cout << int(P[i]) << "x";
+						printed = true;
 					}else{
 						cout << "-x";
+						printed = true;
 					}
 					if (i != 1)
 					{
 						cout << "^" << i;
+						printed = true;
 					}
 				}
 			}
@@ -312,9 +362,15 @@ void Polynomial::print(){
 		if (P[0] > 0 &&!mark)
 		{
 			cout << "+";
+			printed = true;
 		}
-		cout << P[0];
+		cout << int(P[0]);
+		printed = true;
 	}
+	if(!printed){
+		cout << "0";
+	}
+	
 }
 void Polynomial::operator=(const Polynomial q){
 	this->Cnt = q.Cnt;
@@ -365,7 +421,7 @@ Polynomial Polynomial::operator+(const Polynomial q){
 	}
 	return result;
 }
-Polynomial::Polynomial(int value,int index){
+Polynomial::Polynomial(double value,int index){
 	Cnt = 0;
 	for (int i = 0; i < Max; ++i)
 	{
@@ -409,16 +465,13 @@ int main(int argc, char const *argv[])
 {
 	//12*x^2+(((5*x^2-3*x^3+x+2)/(2*x^2-2))^2)%(x^2+1)
 	
-//	string s;
-//	getline(cin,s);
-	string s = "(3*x^2+x+3)/(-x-2)";
-	cout << s <<endl;
+	string s;
+	getline(cin,s);
 	string postfix = InfixtoPostfix(s);
-	cout << postfix << endl;
-	print_postfix(postfix);//fake-----------------
+	print_postfix(postfix);//fake
 
 
-	//加工資料------------------------------------------------------------------
+	//加工資料
 	for (int i = 0; i < s.length(); ++i)
 	{
 		if (s[i] == '-')
@@ -427,13 +480,13 @@ int main(int argc, char const *argv[])
 				if (s[i+1] == 'x')
 				{
 					//insert (-1*x)
+					s.replace(i,2,"(-1*x)");
 				}
 			}
 		}
 	}
 
-
-
+	postfix = InfixtoPostfix(s);
 	//12x2^*5x2^*3x3^*-x+2+2x2^*2-/2^x2^1+%+
 
 
@@ -647,7 +700,6 @@ string InfixtoPostfix(const string s){
 		postfix += _operator.peek();
 		_operator.pop();
 	}
-	// cout << postfix << endl;
 	return postfix;
 }
 
