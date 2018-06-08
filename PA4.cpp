@@ -1,6 +1,53 @@
+
 #include <iostream>
 #include <string>
 using namespace std;
+template<typename Itemtype>
+class Node
+{
+private:
+  Itemtype item;
+  Node<Itemtype>* next; 
+public:
+  Node();
+  Node(const Itemtype& anItem);
+  Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr);
+  void setItem(const Itemtype& anItem);
+  void setNext(Node<Itemtype>* nextNodePtr);
+  Itemtype getItem() const ;
+  Node<Itemtype>* getNext() const ;
+};
+template <typename Itemtype>
+Node<Itemtype>::Node():next(nullptr){}
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem):item(anItem),next(nullptr){
+	//overload assignment operator，constructor
+}
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr):next(nextNodePtr),item(anItem){}
+template<class Itemtype>
+void Node<Itemtype>::setItem(const Itemtype& anItem)
+{
+  item = anItem;
+} 
+
+template<typename Itemtype>
+void Node<Itemtype>::setNext(Node<Itemtype>* nextNodePtr)
+{
+  next = nextNodePtr;
+} 
+
+template<typename Itemtype>
+Itemtype Node<Itemtype>::getItem() const
+{
+  return item;
+} 
+
+template<typename Itemtype>
+Node<Itemtype>* Node<Itemtype>::getNext() const
+{
+  return next;
+} 
 
 template <typename Itemtype>
 class queueInterface
@@ -13,17 +60,26 @@ public:
 };
 
 template <typename Itemtype>
-class queue
+class queue : public queueInterface<Itemtype>
 {
 private:
 	Node<Itemtype>* backPtr;
 	Node<Itemtype>* frontPtr;
 public:
+	bool isEmpty() const;
+	bool enqueue(const Itemtype& newEntry);
+	bool dequeue();
+	Itemtype peekFront() const;
 	queue();
 	~queue();
 };
+
 template <typename Itemtype>
-bool queue<Itemtype>::isEmpty(){
+Itemtype queue<Itemtype>::peekFront() const{
+	return frontPtr->getItem();
+}
+template <typename Itemtype>
+bool queue<Itemtype>::isEmpty() const{
 	if (frontPtr == nullptr)
 	{
 		return true;
