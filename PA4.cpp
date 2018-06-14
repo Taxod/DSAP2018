@@ -17,37 +17,6 @@ public:
   Itemtype getItem() const ;
   Node<Itemtype>* getNext() const ;
 };
-template <typename Itemtype>
-Node<Itemtype>::Node():next(nullptr){}
-template <typename Itemtype>
-Node<Itemtype>::Node(const Itemtype& anItem):item(anItem),next(nullptr){
-	//overload assignment operator，constructor
-}
-template <typename Itemtype>
-Node<Itemtype>::Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr):next(nextNodePtr),item(anItem){}
-template<class Itemtype>
-void Node<Itemtype>::setItem(const Itemtype& anItem)
-{
-  item = anItem;
-} 
-
-template<typename Itemtype>
-void Node<Itemtype>::setNext(Node<Itemtype>* nextNodePtr)
-{
-  next = nextNodePtr;
-} 
-
-template<typename Itemtype>
-Itemtype Node<Itemtype>::getItem() const
-{
-  return item;
-} 
-
-template<typename Itemtype>
-Node<Itemtype>* Node<Itemtype>::getNext() const
-{
-  return next;
-} 
 
 template <typename Itemtype>
 class queueInterface
@@ -70,9 +39,156 @@ public:
 	bool enqueue(const Itemtype& newEntry);
 	bool dequeue();
 	Itemtype peekFront() const;
-	queue();
-	~queue();
+	queue();//-------------------------------------------------------
+	~queue();//------------------------------------------------------
 };
+
+template <typename Itemtype>
+class HeapInterface
+{
+public:
+	virtual bool isEmpty () const = 0;
+	virtual int getNumberOfNodes () const = 0;
+	virtual int getHeight () const = 0;
+	virtual Itemtype peekTop () const = 0;
+	virtual bool add( const Itemtype & newData ) = 0;
+	virtual bool remove() = 0;
+	virtual void clear() = 0;
+};
+
+template <typename Itemtype>
+class Heap :public HeapInterface<Itemtype>
+{
+private:
+	static const int ROOT_INDEX = 0;
+	static const int DEFAULT_CAPACITY = 21;
+	Itemtype* items;
+	int itemCnt;
+	int maxItem;
+	void heapRebuild(int rootIndex,Itemtype* items,int itemCnt);
+public:
+	Heap();//-------------------------------------------------
+	~Heap();//------------------------------------------
+
+	bool isEmpty () const;
+	int getNumberOfNodes () const;
+	int getHeight () const;
+	Itemtype peekTop () const;
+	bool add( const Itemtype & newData );
+	bool remove();
+	void clear();	
+};
+
+template <typename Itemtype>
+void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
+	if (the root is not a leaf)//--------
+	{
+		int largeChildIndex = 2 * rootIndex + 1;
+		if (the root has a right child)//-------------
+		{
+			int rightchildindex = largeChildIndex + 1;
+			if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading---------------
+			{
+				largeChildIndex = rightchildindex;
+			}
+			if (items[rootIndex] < items[largeChildIndex])
+			{
+				swap()//swap items[rootindex] and items[largechildIndex]-----------
+				heapRebuild(largeChildIndex,items,itemCnt);
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------
+
+template <typename Itemtype>
+bool Heap<Itemtype>::remove(){
+	bool result = false;
+	items[0] = items[itemCnt-1];
+	itemCnt--;
+	heapRebuild(0,items,itemCnt);
+	return true;
+}
+
+
+template <typename Itemtype>
+bool Heap<Itemtype>::add(const Itemtype& newData){
+	int result = 0;
+	return result;
+}
+
+
+
+template <typename Itemtype>
+int Heap<Itemtype>::getHeight()const{
+	int result = 0;
+	return result;
+}
+
+
+//-------------------------------------------------------------------
+template <typename Itemtype>
+void Heap<Itemtype>::clear(){
+	delete [] items;
+	items = nullptr;
+	itemCnt = 0;
+	//可能出錯--------------------------
+}
+
+
+template <typename Itemtype>
+Itemtype Heap<Itemtype>::peekTop()const{
+	return items[0];
+}
+
+
+
+template <typename Itemtype>
+int Heap<Itemtype>::getNumberOfNodes()const{
+	return itemCnt;
+}
+
+
+template <typename Itemtype>
+bool Heap<Itemtype>::isEmpty()const{
+	if (itemCnt == 0)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+
+
+
+
+
+
+int TransferTime(string s){
+	string hour = s.substr(0,s.find(":"));
+	s = s.substr(s.find(":")+1,string::npos);
+	string minute = s.substr(0,s.find(":"));
+	string second = s.substr(s.find(":")+1,string::npos);
+	// int result = 60*60*stoi(hour) + 60*stoi(minute) + second;
+	// return result;
+	return 0;
+}
+
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+	string test = "00:05:10";
+	// int h = TransferTime(test);
+	return 0;
+}
+
+
+
 
 template <typename Itemtype>
 Itemtype queue<Itemtype>::peekFront() const{
@@ -121,27 +237,34 @@ bool queue<Itemtype>::dequeue(){
 
 
 
-
-
-
-int TransferTime(string s){
-	string hour = s.substr(0,s.find(":"));
-	s = s.substr(s.find(":")+1,string::npos);
-	string minute = s.substr(0,s.find(":"));
-	string second = s.substr(s.find(":")+1,string::npos);
-	// int result = 60*60*stoi(hour) + 60*stoi(minute) + second;
-	// return result;
-	return 0;
+template <typename Itemtype>
+Node<Itemtype>::Node():next(nullptr){}
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem):item(anItem),next(nullptr){
+	//overload assignment operator，constructor
 }
-
-
-
-
-
-
-int main(int argc, char const *argv[])
+template <typename Itemtype>
+Node<Itemtype>::Node(const Itemtype& anItem, Node<Itemtype>* nextNodePtr):next(nextNodePtr),item(anItem){}
+template<class Itemtype>
+void Node<Itemtype>::setItem(const Itemtype& anItem)
 {
-	string test = "00:05:10";
-	// int h = TransferTime(test);
-	return 0;
-}
+  item = anItem;
+} 
+
+template<typename Itemtype>
+void Node<Itemtype>::setNext(Node<Itemtype>* nextNodePtr)
+{
+  next = nextNodePtr;
+} 
+
+template<typename Itemtype>
+Itemtype Node<Itemtype>::getItem() const
+{
+  return item;
+} 
+
+template<typename Itemtype>
+Node<Itemtype>* Node<Itemtype>::getNext() const
+{
+  return next;
+} 
