@@ -49,7 +49,7 @@ class HeapInterface
 public:
 	virtual bool isEmpty () const = 0;
 	virtual int getNumberOfNodes () const = 0;
-	virtual int getHeight () const = 0;
+	// virtual int getHeight () const = 0;
 	virtual Itemtype peekTop () const = 0;
 	virtual bool add( const Itemtype & newData ) = 0;
 	virtual bool remove() = 0;
@@ -66,25 +66,33 @@ private:
 	int itemCnt;
 	int maxItem;
 	void heapRebuild(int rootIndex,Itemtype* items,int itemCnt);
+	void swap(int a,int b);
 public:
 	Heap();//-------------------------------------------------
 	~Heap();//------------------------------------------
 
 	bool isEmpty () const;
 	int getNumberOfNodes () const;
-	int getHeight () const;
+	// int getHeight () const;
 	Itemtype peekTop () const;
 	bool add( const Itemtype & newData );
 	bool remove();
 	void clear();	
 };
-
+template <typename Itemtype>
+void Heap<Itemtype>::swap(int a,int b){
+	Itemtype tmp;
+	tmp = items[a];
+	items[a] = items[b];
+	items[b] = items[a];
+	//operator overloading ----------------------------------------
+}
 template <typename Itemtype>
 void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
-	if (the root is not a leaf)//--------
+	if (rootIndex*2+2 < itemCnt || rootIndex*2+1 < itemCnt)//--------
 	{
 		int largeChildIndex = 2 * rootIndex + 1;
-		if (the root has a right child)//-------------
+		if (rootIndex*2+2 < itemCnt)//-------------
 		{
 			int rightchildindex = largeChildIndex + 1;
 			if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading---------------
@@ -93,7 +101,7 @@ void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
 			}
 			if (items[rootIndex] < items[largeChildIndex])
 			{
-				swap()//swap items[rootindex] and items[largechildIndex]-----------
+				swap(rootIndex,largeChildIndex);//swap items[rootindex] and items[largeChildIndex]
 				heapRebuild(largeChildIndex,items,itemCnt);
 			}
 		}
@@ -115,19 +123,32 @@ bool Heap<Itemtype>::remove(){
 template <typename Itemtype>
 bool Heap<Itemtype>::add(const Itemtype& newData){
 	int result = 0;
-	return result;
+	items[itemCnt] = newData;
+	int newDataIndex = itemCnt;
+	bool inplace = false;
+	while((newDataIndex > 0) and !inplace){
+		int parentIndex = (newDataIndex-1) / 2;
+		if (items[newDataIndex] <= items[parentIndex])
+		{
+			inplace = true;
+		}else{
+			swap(newDataIndex,parentIndex);
+			newDataIndex = parentIndex;
+		}
+	}
+	itemCnt++;
+	return true;
 }
 
 
-
+/*
 template <typename Itemtype>
 int Heap<Itemtype>::getHeight()const{
 	int result = 0;
 	return result;
-}
+}*/
 
 
-//-------------------------------------------------------------------
 template <typename Itemtype>
 void Heap<Itemtype>::clear(){
 	delete [] items;
