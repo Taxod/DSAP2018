@@ -51,7 +51,7 @@ queue<Itemtype>::~queue(){
 }
 
 template <typename Itemtype>
-queue<Itemtype>::queue(const queue<Itemtype>& q){//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+queue<Itemtype>::queue(const queue<Itemtype>& q){//!*
 	while(!this->isEmpty()){
 		this->dequeue();
 	}
@@ -133,13 +133,13 @@ template <typename Itemtype>
 class PriorityQueue : protected Heap<Itemtype>
 {
 public:
-	PriorityQueue();//--------------------------------
-	PriorityQueue(const PriorityQueue<Itemtype> &P);
-	~PriorityQueue();//-------------------------------
+	PriorityQueue();
+	PriorityQueue(const PriorityQueue<Itemtype> &P);//!*
+	~PriorityQueue();
 	bool isEmpty() const ;
 	bool add (const Itemtype& newEntry);
 	bool remove();
-	Itemtype peek() const throw( logic_error/*PreconViolatedExcep*/);	
+	Itemtype peek() const;	
 };
 template <typename Itemtype>
 PriorityQueue<Itemtype>::PriorityQueue(const PriorityQueue<Itemtype> & P){
@@ -163,7 +163,7 @@ PriorityQueue<Itemtype>::~PriorityQueue(){
 }
 template <typename Itemtype>
 PriorityQueue<Itemtype>::PriorityQueue(){
-	// Heap<Itemtype>::Heap();
+	// Heap<Itemtype>::Heap();!*
 }
 
 
@@ -173,22 +173,99 @@ int TransferTime(string s){
 	s = s.substr(s.find(":")+1,string::npos);
 	string minute = s.substr(0,s.find(":"));
 	string second = s.substr(s.find(":")+1,string::npos);
-	// int result = 60*60*stoi(hour) + 60*stoi(minute) + second;
+	// cout << hour << " " << minute << " " << second << "|" <<  endl;
+	// int result = 60*60*stoi(hour) + 60*stoi(minute) + second;!*
 	// return result;
 	return 0;
 }
+class Passenger
+{
+private:
+	string ID;
+	int starttime;
+	int endtime;
+	char car;//N:non-reserved S:standard B:business
+public:
+	Passenger();
+	Passenger(string ID,int starttime,char car);
+	Passenger(const Passenger& P);
+	bool operator=(const Passenger &P);
+	// ~Passenger();
+};
 
-
-
+bool Passenger::operator=(const Passenger& P){
+	if (this->ID == P.ID)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+Passenger::Passenger(){
+	starttime = 0;
+	endtime = 0;
+	ID = "";
+	car = 'A';
+}
+Passenger::Passenger(string ID,int starttime,char car):ID(ID),starttime(starttime),car(car){
+	endtime = 0;
+}
+Passenger::Passenger(const Passenger& P){
+	this->ID = P.ID;
+	this->starttime = P.starttime;
+	this -> endtime = P.endtime;
+	this->car = P.car;
+}
 
 
 
 int main(int argc, char const *argv[])
 {
-	string test = "00:05:10";
+	// string test = "00:05:10";
+	int standard_car,business_car;
+	cin >> standard_car >> business_car;
+	string trash = "";
+	getline(cin,trash);
+	string s;
+	while(getline(cin,s)){
+		int time = TransferTime(s.substr(0,s.find(" ")));
+		s = s.substr(s.find(" ")+1,string::npos);
+		char event = s.substr(0,s.find(" "))[0];
+		s = s.substr(s.find(" ")+1,string::npos);
+		string Passenger_ID = "";
+		cout << s << endl;
+		char carclass = 0;
+		int peroid = 0;
+		int changed_line = 0;
+		switch(event){
+			case 'A':
+				Passenger_ID = s.substr(0,s.find(" "));
+				s = s.substr(s.find(" ")+1,string::npos);
+				carclass = s.substr(0,s.find(" "))[0];
+				peroid = stoi(s.substr(s.find(" ")+1,string::npos));
+				cout << Passenger_ID << ":" << carclass << ":" << peroid;
+				// cout << 'A' << endl;
+				break;
+			case 'D':
+				Passenger_ID = s;
+				cout << Passenger_ID << ":" << endl;
+				// cout << 'D' << endl;
+				break;
+			case 'Q':
+				Passenger_ID = s.substr(0,s.find(" "));
+				changed_line = stoi(s.substr(s.find(" ")+1,string::npos));
+				cout << Passenger_ID << ":" << changed_line << "\n";
+				// cout << 'Q' << endl;
+				break;
+		}
+		// cout << time << endl;
+		// cout << s << endl;
+	}
 	// int h = TransferTime(test);
 	return 0;
 }
+
+
 //priortyqueue-----------------------------------------
 
 template <typename Itemtype>
@@ -207,13 +284,10 @@ bool PriorityQueue<Itemtype>::remove(){
 }
 
 template <typename Itemtype>
-Itemtype PriorityQueue<Itemtype>::peek() const throw( logic_error/*PreconViolatedExcep*/){
-	try{
+Itemtype PriorityQueue<Itemtype>::peek() const{
+	
 		return Heap<Itemtype>::peekTop();
-	}
-	catch(/*PreconViolatedExcep */logic_error e){
-		throw /*PreconViolatedExcep*/ logic_error("Attemped peek into an empty priority queue.");
-	}
+	
 }
 //-----------------------------------------------------
 
@@ -340,7 +414,7 @@ void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
 		if (rootIndex*2+2 < itemCnt)
 		{
 			int rightchildindex = largeChildIndex + 1;
-			if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading---------------
+			if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading!*
 			{
 				largeChildIndex = rightchildindex;
 			}
@@ -366,7 +440,17 @@ bool Heap<Itemtype>::remove(){
 
 template <typename Itemtype>
 bool Heap<Itemtype>::add(const Itemtype& newData){
-	int result = 0;
+	if (itemCnt + 1 >= maxItem)
+	{
+		Itemtype* tmp = items;
+		delete items;
+		items = new Itemtype [maxItem*2];
+		maxItem*=2;
+		for (int i = 0; i < itemCnt; ++i)
+		{
+			items[i] = tmp[i];
+		}
+	}//!*
 	items[itemCnt] = newData;
 	int newDataIndex = itemCnt;
 	bool inplace = false;
