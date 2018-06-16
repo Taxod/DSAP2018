@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include<exception>
 using namespace std;
 template<typename Itemtype>
 class Node
@@ -63,7 +64,7 @@ private:
 	static const int DEFAULT_CAPACITY = 21;
 	Itemtype* items;
 	int itemCnt;
-	int maxItem;
+	int maxItem;//需要注意大小變更-------------------------------------------
 	void heapRebuild(int rootIndex,Itemtype* items,int itemCnt);
 	void swap(int a,int b);
 public:
@@ -79,6 +80,42 @@ public:
 	void clear();	
 };
 
+template <typename Itemtype>
+class PriorityQueue : private Heap<Itemtype>
+{
+public:
+	PriorityQueue();//--------------------------------
+	~PriorityQueue();//-------------------------------
+	bool isEmpty() const ;
+	bool add (const Itemtype& newEntry);
+	bool remove();
+	Itemtype peek() const throw( logic_error/*PreconViolatedExcep*/);	
+};
+
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::isEmpty() const{
+	return Heap<Itemtype>::isEmpty();
+}
+
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::add(const Itemtype& newEntry){
+	return Heap<Itemtype>::add(newEntry);
+}
+
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::remove(){
+	return Heap<Itemtype>::remove();
+}
+
+template <typename Itemtype>
+Itemtype PriorityQueue<Itemtype>::peek() const throw( logic_error/*PreconViolatedExcep*/){
+	try{
+		return Heap<Itemtype>::peekTop();
+	}
+	catch(/*PreconViolatedExcep */logic_error e){
+		throw /*PreconViolatedExcep*/ logic_error("Attemped peek into an empty priority queue.");
+	}
+}
 
 
 
@@ -106,7 +143,7 @@ int main(int argc, char const *argv[])
 
 
 
-
+//queue-------------------------------------------------
 template <typename Itemtype>
 Itemtype queue<Itemtype>::peekFront() const{
 	return frontPtr->getItem();
@@ -151,8 +188,10 @@ bool queue<Itemtype>::dequeue(){
 	}
 	return result;
 }
+//-------------------------------------------
 
 
+//Node----------------------------------------
 
 template <typename Itemtype>
 Node<Itemtype>::Node():next(nullptr){}
@@ -185,6 +224,25 @@ Node<Itemtype>* Node<Itemtype>::getNext() const
 {
   return next;
 } 
+//-------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
