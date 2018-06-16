@@ -178,22 +178,48 @@ int TransferTime(string s){
 	// return result;
 	return 0;
 }
-class Passenger
+class Event
 {
 private:
 	string ID;
 	int starttime;
 	int endtime;
 	char car;//N:non-reserved S:standard B:business
+	bool inser;
+	bool finished;
+	char Eventtype;
+	int period_time;
 public:
-	Passenger();
-	Passenger(string ID,int starttime,char car);
-	Passenger(const Passenger& P);
-	bool operator=(const Passenger &P);
-	// ~Passenger();
+	Event();
+	Event(string ID,int starttime,char car);
+	Event(const Event& P);
+	bool operator==(const Event &P);
+	bool operator>(const Event &E);
+	bool operator<(const Event &E);
+	bool operator<=(const Event &E);
+	// ~Event();
 };
-
-bool Passenger::operator=(const Passenger& P){
+bool Event::operator<=(const Event &E){
+		if(this->starttime <= E.starttime)
+			return true;
+		else
+			return false;
+	}
+bool Event::operator>(const Event& E){
+	if (this->starttime > E.starttime)
+		return true;
+	else
+		return false;
+}
+bool Event::operator<(const Event&E){
+	if (this->starttime < E.starttime)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+bool Event::operator==(const Event& P){
 	if (this->ID == P.ID)
 	{
 		return true;
@@ -201,20 +227,33 @@ bool Passenger::operator=(const Passenger& P){
 		return false;
 	}
 }
-Passenger::Passenger(){
+Event::Event(){
 	starttime = 0;
 	endtime = 0;
 	ID = "";
 	car = 'A';
+	inser = false;
+	finished = false;
+	Eventtype = 'A';
+	period_time = 0;
 }
-Passenger::Passenger(string ID,int starttime,char car):ID(ID),starttime(starttime),car(car){
+Event::Event(string ID,int starttime,char Eventtype):ID(ID),starttime(starttime),Eventtype(Eventtype){
 	endtime = 0;
+	inser = false;
+	finished = false;
+	car = 'A';
+	period_time = 0;
+
 }
-Passenger::Passenger(const Passenger& P){
+Event::Event(const Event& P){
 	this->ID = P.ID;
 	this->starttime = P.starttime;
 	this -> endtime = P.endtime;
 	this->car = P.car;
+	this -> inser = P.inser;
+	this->finished = P.finished;
+	this->Eventtype = P.Eventtype;
+	this->period_time = P.period_time;
 }
 
 
@@ -222,39 +261,56 @@ Passenger::Passenger(const Passenger& P){
 int main(int argc, char const *argv[])
 {
 	// string test = "00:05:10";
+	PriorityQueue<Event> eventlist;
 	int standard_car,business_car;
 	cin >> standard_car >> business_car;
+	bool* is_business_car_queues = new bool [(standard_car+business_car)];
+	for (int i = 0; i < (business_car+standard_car); ++i)
+	{
+		if (i < business_car)
+		{
+			is_business_car_queues[i] = true;
+		}else{
+			is_business_car_queues[i] = false;
+		}
+	}
+	queue<Event>* ticket_counter = new queue<Event> [(business_car+standard_car)];
+	bool* teller_isser = new bool [(business_car+standard_car)];
+	for (int i = 0; i < (business_car+standard_car); ++i)
+	{
+		teller_isser[i] = 0;
+	}
 	string trash = "";
 	getline(cin,trash);
 	string s;
 	while(getline(cin,s)){
 		int time = TransferTime(s.substr(0,s.find(" ")));
 		s = s.substr(s.find(" ")+1,string::npos);
+		
 		char event = s.substr(0,s.find(" "))[0];
 		s = s.substr(s.find(" ")+1,string::npos);
-		string Passenger_ID = "";
-		cout << s << endl;
+		string Event_ID = "";
 		char carclass = 0;
 		int peroid = 0;
 		int changed_line = 0;
 		switch(event){
 			case 'A':
-				Passenger_ID = s.substr(0,s.find(" "));
+				Event_ID = s.substr(0,s.find(" "));
 				s = s.substr(s.find(" ")+1,string::npos);
 				carclass = s.substr(0,s.find(" "))[0];
 				peroid = stoi(s.substr(s.find(" ")+1,string::npos));
-				cout << Passenger_ID << ":" << carclass << ":" << peroid;
+				cout << Event_ID << ":" << carclass << ":" << peroid;
 				// cout << 'A' << endl;
 				break;
 			case 'D':
-				Passenger_ID = s;
-				cout << Passenger_ID << ":" << endl;
+				Event_ID = s;
+				cout << Event_ID << ":" << endl;
 				// cout << 'D' << endl;
 				break;
 			case 'Q':
-				Passenger_ID = s.substr(0,s.find(" "));
+				Event_ID = s.substr(0,s.find(" "));
 				changed_line = stoi(s.substr(s.find(" ")+1,string::npos));
-				cout << Passenger_ID << ":" << changed_line << "\n";
+				cout << Event_ID << ":" << changed_line << "\n";
 				// cout << 'Q' << endl;
 				break;
 		}
