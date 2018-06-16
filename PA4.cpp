@@ -198,15 +198,22 @@ public:
 	bool operator>(const Event &E);
 	bool operator<(const Event &E);
 	bool operator<=(const Event &E);
+	bool operator>=(const Event &E);
 	void print(){cout << ID << ":" << Eventtype << endl;}
 	// ~Event();
 };
+bool Event::operator>=(const Event &E){
+	if(this->starttime >= E.starttime)
+		return true;
+	else
+		return false;
+}
 bool Event::operator<=(const Event &E){
-		if(this->starttime <= E.starttime)
-			return true;
-		else
-			return false;
-	}
+	if(this->starttime <= E.starttime)
+		return true;
+	else
+		return false;
+}
 bool Event::operator>(const Event& E){
 	if (this->starttime > E.starttime)
 		return true;
@@ -335,9 +342,7 @@ int main(int argc, char const *argv[])
 			// cout << 'Q' << endl;
 		}
 	}
-	cout << eventlist.isEmpty() << ";";
 	while(!eventlist.isEmpty()){
-		cout << "-------";
 		eventlist.peek().print();
 		eventlist.remove();
 	}
@@ -492,11 +497,11 @@ void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
 		if (rootIndex*2+2 < itemCnt)
 		{
 			int rightchildindex = largeChildIndex + 1;
-			if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading!*
+			if (items[rightchildindex] < items[largeChildIndex])//operatoroverloading!*
 			{
 				largeChildIndex = rightchildindex;
 			}
-			if (items[rootIndex] < items[largeChildIndex])
+			if (items[rootIndex] > items[largeChildIndex])
 			{
 				swap(rootIndex,largeChildIndex);//swap items[rootindex] and items[largeChildIndex]
 				heapRebuild(largeChildIndex,items,itemCnt);
@@ -534,7 +539,7 @@ bool Heap<Itemtype>::add(const Itemtype& newData){
 	bool inplace = false;
 	while((newDataIndex > 0) and !inplace){
 		int parentIndex = (newDataIndex-1) / 2;
-		if (items[newDataIndex] <= items[parentIndex])
+		if (items[newDataIndex] >= items[parentIndex])
 		{
 			inplace = true;
 		}else{

@@ -100,7 +100,7 @@ int main(int argc, char const *argv[])
     P.add(11);  
     P.add(846168);  
     while(!P.isEmpty()){
-        // cout << P.peekTop() << endl;
+        cout << P.peekTop() << endl;
         P.remove();
     }
     return 0;
@@ -129,11 +129,11 @@ void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
         if (rootIndex*2+2 < itemCnt)
         {
             int rightchildindex = largeChildIndex + 1;
-            if (items[rightchildindex] > items[largeChildIndex])//operatoroverloading!*
+            if (items[rightchildindex] < items[largeChildIndex])//operatoroverloading!*
             {
                 largeChildIndex = rightchildindex;
             }
-            if (items[rootIndex] < items[largeChildIndex])
+            if (items[rootIndex] > items[largeChildIndex])
             {
                 swap(items[rootIndex],items[largeChildIndex]);//swap items[rootindex] and items[largeChildIndex]
                 heapRebuild(largeChildIndex,items,itemCnt);
@@ -150,7 +150,7 @@ bool Heap<Itemtype>::remove(){
     items[0] = items[itemCnt-1];
     itemCnt--;
     heapRebuild(0,items,itemCnt);
-    cout << peekTop() << endl;
+    // cout << peekTop() << endl;
     return true;
 }
 
@@ -173,7 +173,7 @@ bool Heap<Itemtype>::add(const Itemtype& newData){
     bool inplace = false;
     while((newDataIndex > 0) and !inplace){
         int parentIndex = (newDataIndex-1) / 2;
-        if (items[newDataIndex] <= items[parentIndex])
+        if (items[newDataIndex] >= items[parentIndex])
         {
             inplace = true;
         }else{
