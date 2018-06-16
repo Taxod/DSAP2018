@@ -39,9 +39,32 @@ public:
 	bool enqueue(const Itemtype& newEntry);
 	bool dequeue();
 	Itemtype peekFront() const;
-	queue();//-------------------------------------------------------
-	~queue();//------------------------------------------------------
+	queue();
+	~queue();
+	queue(const queue<Itemtype>& q);//copy constructor
 };
+template <typename Itemtype>
+queue<Itemtype>::~queue(){
+	while(!isEmpty()){
+		this->dequeue();
+	}
+}
+
+template <typename Itemtype>
+queue<Itemtype>::queue(const queue<Itemtype>& q){//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	while(!this->isEmpty()){
+		this->dequeue();
+	}
+	while(!q.isEmpty()){
+		this->enqueue(q.peekFront());
+		q.dequeue();
+	}
+}
+template <typename Itemtype>
+queue<Itemtype>::queue(){
+	backPtr = nullptr;
+	frontPtr = nullptr;
+}
 
 template <typename Itemtype>
 class HeapInterface
@@ -59,7 +82,7 @@ public:
 template <typename Itemtype>
 class Heap :public HeapInterface<Itemtype>
 {
-private:
+protected:
 	static const int ROOT_INDEX = 0;
 	static const int DEFAULT_CAPACITY = 21;
 	Itemtype* items;
@@ -68,9 +91,9 @@ private:
 	void heapRebuild(int rootIndex,Itemtype* items,int itemCnt);
 	void swap(int a,int b);
 public:
-	Heap();//-------------------------------------------------
-	~Heap();//------------------------------------------
-
+	Heap();
+	Heap(const Heap<Itemtype>& H);
+	~Heap();
 	bool isEmpty () const;
 	int getNumberOfNodes () const;
 	// int getHeight () const;
@@ -79,42 +102,68 @@ public:
 	bool remove();
 	void clear();	
 };
+template <typename Itemtype>
+Heap<Itemtype>::Heap(const Heap<Itemtype> &H){
+	while(!this->isEmpty()){
+		this->remove();
+	}
+	delete items;
+	this -> maxItem = H.maxItem;
+	items = new Itemtype [maxItem];
+	for (int i = 0; i < H.itemCnt; ++i)
+	{
+		this->items[i] = H.items[i];
+	}
+	this->itemCnt = H.itemCnt;
+}
+template <typename Itemtype>
+Heap<Itemtype>::~Heap(){
+	while(!isEmpty()){
+		this->remove();
+	}
+}
+template <typename Itemtype>
+Heap<Itemtype>::Heap(){
+	itemCnt = 0;
+	items = new Itemtype [DEFAULT_CAPACITY];
+	maxItem = DEFAULT_CAPACITY;
+}
 
 template <typename Itemtype>
-class PriorityQueue : private Heap<Itemtype>
+class PriorityQueue : protected Heap<Itemtype>
 {
 public:
 	PriorityQueue();//--------------------------------
+	PriorityQueue(const PriorityQueue<Itemtype> &P);
 	~PriorityQueue();//-------------------------------
 	bool isEmpty() const ;
 	bool add (const Itemtype& newEntry);
 	bool remove();
 	Itemtype peek() const throw( logic_error/*PreconViolatedExcep*/);	
 };
-
 template <typename Itemtype>
-bool PriorityQueue<Itemtype>::isEmpty() const{
-	return Heap<Itemtype>::isEmpty();
-}
-
-template <typename Itemtype>
-bool PriorityQueue<Itemtype>::add(const Itemtype& newEntry){
-	return Heap<Itemtype>::add(newEntry);
-}
-
-template <typename Itemtype>
-bool PriorityQueue<Itemtype>::remove(){
-	return Heap<Itemtype>::remove();
-}
-
-template <typename Itemtype>
-Itemtype PriorityQueue<Itemtype>::peek() const throw( logic_error/*PreconViolatedExcep*/){
-	try{
-		return Heap<Itemtype>::peekTop();
+PriorityQueue<Itemtype>::PriorityQueue(const PriorityQueue<Itemtype> & P){
+	while(!this->isEmpty()){
+		this->remove();
 	}
-	catch(/*PreconViolatedExcep */logic_error e){
-		throw /*PreconViolatedExcep*/ logic_error("Attemped peek into an empty priority queue.");
+	delete this->items;
+	this -> maxItem = P.maxItem;
+	this->items = new Itemtype [this->maxItem];
+	for (int i = 0; i < P.itemCnt; ++i)
+	{
+		this->items[i] = P.items[i];
 	}
+	this->itemCnt = P.itemCnt;
+}
+template <typename Itemtype>
+PriorityQueue<Itemtype>::~PriorityQueue(){
+	while(!isEmpty()){
+		this->remove();
+	}
+}
+template <typename Itemtype>
+PriorityQueue<Itemtype>::PriorityQueue(){
+	// Heap<Itemtype>::Heap();
 }
 
 
@@ -140,7 +189,33 @@ int main(int argc, char const *argv[])
 	// int h = TransferTime(test);
 	return 0;
 }
+//priortyqueue-----------------------------------------
 
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::isEmpty() const{
+	return Heap<Itemtype>::isEmpty();
+}
+
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::add(const Itemtype& newEntry){
+	return Heap<Itemtype>::add(newEntry);
+}
+
+template <typename Itemtype>
+bool PriorityQueue<Itemtype>::remove(){
+	return Heap<Itemtype>::remove();
+}
+
+template <typename Itemtype>
+Itemtype PriorityQueue<Itemtype>::peek() const throw( logic_error/*PreconViolatedExcep*/){
+	try{
+		return Heap<Itemtype>::peekTop();
+	}
+	catch(/*PreconViolatedExcep */logic_error e){
+		throw /*PreconViolatedExcep*/ logic_error("Attemped peek into an empty priority queue.");
+	}
+}
+//-----------------------------------------------------
 
 
 //queue-------------------------------------------------
