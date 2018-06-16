@@ -199,6 +199,8 @@ public:
 	bool operator<(const Event &E);
 	bool operator<=(const Event &E);
 	bool operator>=(const Event &E);
+	int gettime(){return starttime;}
+	char getevent(){return Eventtype;}
 	void print(){cout << ID << ":" << Eventtype << endl;}
 	// ~Event();
 };
@@ -303,19 +305,24 @@ int main(int argc, char const *argv[])
 	{
 		teller_isser[i] = 0;
 	}
+	
 	string trash = "";
 	getline(cin,trash);
+	
 	string s;
+	
 	while(!getline(cin,s).eof()){
 		int time = TransferTime(s.substr(0,s.find(" ")));
 		s = s.substr(s.find(" ")+1,string::npos);
 		
 		char event = s.substr(0,s.find(" "))[0];
 		s = s.substr(s.find(" ")+1,string::npos);
+
 		string Event_ID = "";
 		char carclass = 0;
 		int period = 0;
 		int changed_line = 0;
+		
 		if (event == 'A')
 		{
 			Event_ID = s.substr(0,s.find(" "));
@@ -342,10 +349,26 @@ int main(int argc, char const *argv[])
 			// cout << 'Q' << endl;
 		}
 	}
+
 	while(!eventlist.isEmpty()){
-		eventlist.peek().print();
-		eventlist.remove();
+		Event tmp(eventlist.peek());
+		int currenttime = tmp.gettime();
+
+		if (tmp.getevent() == 'A')
+		{
+			/* code */
+		}else if (tmp.getevent() == 'D')
+		{
+			/* code */
+		}else{
+
+		}
+
+		// eventlist.peek().print();
+		// eventlist.remove();
 	}
+
+
 
 	return 0;
 }
@@ -497,7 +520,7 @@ void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
 		if (rootIndex*2+2 < itemCnt)
 		{
 			int rightchildindex = largeChildIndex + 1;
-			if (items[rightchildindex] < items[largeChildIndex])//operatoroverloading!*
+			if (items[rightchildindex] < items[largeChildIndex])//operatoroverloading
 			{
 				largeChildIndex = rightchildindex;
 			}
