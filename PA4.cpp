@@ -130,7 +130,7 @@ Heap<Itemtype>::Heap(){
 }
 
 template <typename Itemtype>
-class PriorityQueue : protected Heap<Itemtype>
+class PriorityQueue : public Heap<Itemtype>
 {
 public:
 	PriorityQueue();
@@ -173,10 +173,8 @@ int TransferTime(string s){
 	s = s.substr(s.find(":")+1,string::npos);
 	string minute = s.substr(0,s.find(":"));
 	string second = s.substr(s.find(":")+1,string::npos);
-	// cout << hour << " " << minute << " " << second << "|" <<  endl;
-	// int result = 60*60*stoi(hour) + 60*stoi(minute) + second;!*
-	// return result;
-	return 0;
+	int result = 60*60*stoi(hour) + 60*stoi(minute) + stoi(second);
+	return result;
 }
 class Event
 {
@@ -189,14 +187,18 @@ private:
 	bool finished;
 	char Eventtype;
 	int period_time;
+	int changed;
 public:
 	Event();
-	Event(string ID,int starttime,char car);
+	Event(string ID,int starttime,char Eventtype);
+	Event(string ID,int starttime,char Eventtype,int changed);
+	Event(string ID,int starttime,char Eventtype,int period_time,char car);
 	Event(const Event& P);
 	bool operator==(const Event &P);
 	bool operator>(const Event &E);
 	bool operator<(const Event &E);
 	bool operator<=(const Event &E);
+	void print(){cout << ID << ":" << Eventtype << endl;}
 	// ~Event();
 };
 bool Event::operator<=(const Event &E){
@@ -236,6 +238,13 @@ Event::Event(){
 	finished = false;
 	Eventtype = 'A';
 	period_time = 0;
+	changed = 0;
+}
+Event::Event(string ID,int starttime,char Eventtype,int period_time,char car):ID(ID),starttime(starttime),Eventtype(Eventtype),period_time(period_time),car(car){
+	endtime = 0;
+	inser = false;
+	finished = false;
+	changed = 0;
 }
 Event::Event(string ID,int starttime,char Eventtype):ID(ID),starttime(starttime),Eventtype(Eventtype){
 	endtime = 0;
@@ -243,7 +252,14 @@ Event::Event(string ID,int starttime,char Eventtype):ID(ID),starttime(starttime)
 	finished = false;
 	car = 'A';
 	period_time = 0;
-
+	changed = 0;
+}
+Event::Event(string ID,int starttime,char Eventtype,int changed):ID(ID),starttime(starttime),Eventtype(Eventtype),changed(changed){
+	endtime = 0;
+	inser = false;
+	finished = false;
+	car = 'A';
+	period_time = 0;
 }
 Event::Event(const Event& P){
 	this->ID = P.ID;
@@ -283,7 +299,7 @@ int main(int argc, char const *argv[])
 	string trash = "";
 	getline(cin,trash);
 	string s;
-	while(getline(cin,s)){
+	while(!getline(cin,s).eof()){
 		int time = TransferTime(s.substr(0,s.find(" ")));
 		s = s.substr(s.find(" ")+1,string::npos);
 		
@@ -291,33 +307,41 @@ int main(int argc, char const *argv[])
 		s = s.substr(s.find(" ")+1,string::npos);
 		string Event_ID = "";
 		char carclass = 0;
-		int peroid = 0;
+		int period = 0;
 		int changed_line = 0;
-		switch(event){
-			case 'A':
-				Event_ID = s.substr(0,s.find(" "));
-				s = s.substr(s.find(" ")+1,string::npos);
-				carclass = s.substr(0,s.find(" "))[0];
-				peroid = stoi(s.substr(s.find(" ")+1,string::npos));
-				cout << Event_ID << ":" << carclass << ":" << peroid;
-				// cout << 'A' << endl;
-				break;
-			case 'D':
-				Event_ID = s;
-				cout << Event_ID << ":" << endl;
-				// cout << 'D' << endl;
-				break;
-			case 'Q':
-				Event_ID = s.substr(0,s.find(" "));
-				changed_line = stoi(s.substr(s.find(" ")+1,string::npos));
-				cout << Event_ID << ":" << changed_line << "\n";
-				// cout << 'Q' << endl;
-				break;
+		if (event == 'A')
+		{
+			Event_ID = s.substr(0,s.find(" "));
+			s = s.substr(s.find(" ")+1,string::npos);
+			carclass = s.substr(0,s.find(" "))[0];
+			period = stoi(s.substr(s.find(" ")+1,string::npos));
+			Event E(Event_ID,time,'A',period,carclass);
+			eventlist.add(E);
+			// cout << Event_ID << ":" << carclass << ":" << peroid;
+			// cout << 'A' << endl;
+		}else if (event == 'D')
+		{
+			Event_ID = s;
+			Event E(Event_ID,time,'D');
+			eventlist.add(E);
+			// cout << Event_ID << ":" << endl;
+			// cout << 'D' << endl;
+		}else{
+			Event_ID = s.substr(0,s.find(" "));
+			changed_line = stoi(s.substr(s.find(" ")+1,string::npos));
+			Event E(Event_ID,time,'Q',changed_line);
+			eventlist.add(E);
+			// cout << Event_ID << ":" << changed_line << "\n";
+			// cout << 'Q' << endl;
 		}
-		// cout << time << endl;
-		// cout << s << endl;
 	}
-	// int h = TransferTime(test);
+	cout << eventlist.isEmpty() << ";";
+	while(!eventlist.isEmpty()){
+		cout << "-------";
+		eventlist.peek().print();
+		eventlist.remove();
+	}
+
 	return 0;
 }
 
@@ -341,9 +365,7 @@ bool PriorityQueue<Itemtype>::remove(){
 
 template <typename Itemtype>
 Itemtype PriorityQueue<Itemtype>::peek() const{
-	
-		return Heap<Itemtype>::peekTop();
-	
+	return Heap<Itemtype>::peekTop();
 }
 //-----------------------------------------------------
 
@@ -460,7 +482,7 @@ void Heap<Itemtype>::swap(int a,int b){
 	Itemtype tmp;
 	tmp = items[a];
 	items[a] = items[b];
-	items[b] = items[a];
+	items[b] = tmp;
 }
 template <typename Itemtype>
 void Heap<Itemtype>::heapRebuild(int rootIndex,Itemtype* items,int itemCnt){
