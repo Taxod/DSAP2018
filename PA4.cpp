@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include<math.h>
 #include<exception>
 using namespace std;
 template<typename Itemtype>
@@ -41,10 +42,88 @@ public:
 	bool dequeue();
 	Itemtype peekFront() const;
 	int getcnt(){return queuecnt;}
+	bool contain(const string C);
+	void removeitem(string s);
+	Itemtype getitem(string s);
 	queue();
 	~queue();
+	
+	void trversal();
 	queue(const queue<Itemtype>& q);//copy constructor
 };
+
+template <typename Itemtype>
+void queue<Itemtype>::trversal(){
+	queue<Itemtype> tmp;
+	while(!this->isEmpty()){
+		cout << this->peekFront();
+		tmp.enqueue(this->peekFront());
+		this->dequeue();
+	}
+	while(!tmp.isEmpty()){
+		this->enqueue(tmp.peekFront());
+		tmp.dequeue();
+	}
+}
+template <typename Itemtype>
+Itemtype queue<Itemtype>::getitem(string s){
+	queue<Itemtype> tt;
+	Itemtype tmp;
+	while(!this->isEmpty()){
+		if (this->peekFront().getID() == s)
+		{
+			tmp = this->peekFront();
+			break;
+		}else{
+			tt.enqueue(this->peekFront());
+			this->dequeue();
+		}
+	}
+	while(!tt.isEmpty()){
+		this->enqueue(tt.peekFront());
+		tt.dequeue();
+	}
+	return tmp;
+}
+template <typename Itemtype>
+void queue<Itemtype>::removeitem(string s){
+	queue<Itemtype> tt;
+	while(!this->isEmpty()){
+		if (this->peekFront().getID() == s && this->peekFront().getevent() != 'D')
+		{
+			this->dequeue();
+			queuecnt--;
+			break;
+		}else{
+			tt.enqueue(this->peekFront());
+			this->dequeue();
+		}
+	}
+	while(!tt.isEmpty()){
+		this->enqueue(tt.peekFront());
+		tt.dequeue();
+	}
+}
+template <typename Itemtype>
+bool queue<Itemtype>::contain(const string C){
+	queue<Itemtype> tmp;
+	bool iscontain = false;
+	while(!this->isEmpty()){
+		if (this->peekFront().getID() == C)
+		{
+			iscontain = true;
+			break;
+		}else{
+			tmp.enqueue(this->peekFront());
+			this->dequeue();
+		}
+	}
+	while(!tmp.isEmpty()){
+		this->enqueue(tmp.peekFront());
+		tmp.dequeue();
+	}
+	return iscontain;
+}
 template <typename Itemtype>
 queue<Itemtype>::~queue(){
 	while(!isEmpty()){
@@ -87,7 +166,7 @@ class Heap :public HeapInterface<Itemtype>
 {
 protected:
 	static const int ROOT_INDEX = 0;
-	static const int DEFAULT_CAPACITY = 21;
+	static const int DEFAULT_CAPACITY = 10000;
 	Itemtype* items;
 	int itemCnt;
 	int maxItem;//需要注意大小變更-------------------------------------------
@@ -143,6 +222,18 @@ public:
 	bool add (const Itemtype& newEntry);
 	bool remove();
 	Itemtype peek() const;	
+	void triversal(){
+		PriorityQueue tmp;
+		while(!this->isEmpty()){
+			cout << this->peek();
+			tmp.add(this->peek());
+			this->remove();
+		}
+		while(!tmp.isEmpty()){
+			this->add(tmp.peek());
+			tmp.remove();
+		}
+	}
 };
 template <typename Itemtype>
 PriorityQueue<Itemtype>::PriorityQueue(const PriorityQueue<Itemtype> & P){
@@ -168,9 +259,62 @@ template <typename Itemtype>
 PriorityQueue<Itemtype>::PriorityQueue(){
 	// Heap<Itemtype>::Heap();!*
 }
-
-
-
+string IntToTime(int n){
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
+    string result = "";
+    while(n >= 3600){
+		hour = n / 3600;
+        n %= 3600;
+    }
+    while(n >=60){
+        minute = n / 60;
+        n %= 60;
+    }
+    second = n;
+    if (hour > 23)
+    {
+    	hour -= 24;
+    }
+    if (hour == 0)
+    {
+        result += "00:";
+    }else if (hour < 10)
+    {
+        result += "0";
+        result += to_string(hour);
+        result +=":";
+    }else{
+        result += to_string(hour);
+        result += ":";
+    }
+    if (minute == 0)
+    {
+        result += "00:";
+    }else if (minute < 10)
+    {
+        result += "0";
+        result += to_string(minute);
+        result +=":";
+    }else{
+        result += to_string(minute);
+        result += ":";
+    }
+    if (second == 0)
+    {
+        result += "00";
+    }else if (second < 10)
+    {
+        result += "0";
+        result += to_string(second);
+//        result +=":";
+    }else{
+        result += to_string(second);
+        // result += ":";
+    }
+    return result;
+}
 int TransferTime(string s){
 	string hour = s.substr(0,s.find(":"));
 	s = s.substr(s.find(":")+1,string::npos);
@@ -191,47 +335,136 @@ private:
 	char Eventtype;
 	int period_time;
 	int changed;
+	int row;
+	int startbuytime;
 public:
 	Event();
-	Event(string ID,int starttime,char Eventtype);
+	Event(string ID,int endtime,char Eventtype);
 	Event(string ID,int starttime,char Eventtype,int changed);
 	Event(string ID,int starttime,char Eventtype,int period_time,char car);
 	Event(const Event& P);
-	bool operator==(const Event &P);
+	bool operator==(const Event &P);//overload=------------------------------------!*
 	bool operator>(const Event &E);
 	bool operator<(const Event &E);
 	bool operator<=(const Event &E);
 	bool operator>=(const Event &E);
-	int gettime(){return starttime;}
+	int gettime(){
+		if(Eventtype == 'D')
+			return endtime;
+		else
+			return starttime;}
 	char getevent(){return Eventtype;}
 	char getcarclass(){return car;}
 	void setser(bool ser){inser = ser;}
 	void setendtime(int end){endtime = end;}
 	void setevent(char e){Eventtype = e;}
 	void print(){cout << ID << ":" << Eventtype << endl;}
+	void setrow(int r){row = r;}
 	int getperiod(){return period_time;}
+	string getID(){return ID;}
+	int getchanged(){return changed;}
+	bool getser(){return inser;}
+	int getrow(){return row;}
+	friend ostream& operator<<(ostream& os, const Event &E);
+	void setstarttime(int n){starttime = n;}
+	void setstartbuytime(int n){startbuytime = n;}
+	int getstarttime(){return starttime;}
+//	int getperiod(){return period_time;}
+	int getendtime(){return endtime;}
+	void printanswer(){
+		cout << ID << " " << IntToTime(startbuytime) << " " << IntToTime(endtime) << endl;
+	}
+	int getwaittime(){
+		return (endtime - starttime - period_time);
+	}
 	// ~Event();
 };
+
+ostream& operator<<(ostream& os, const Event &E){
+	os << E.ID << " "<< E.Eventtype<< " " << E.starttime << " " << E.endtime << " " << E.row  << " " << E.car << endl;
+}
 bool Event::operator>=(const Event &E){
-	if(this->starttime >= E.starttime)
+	int compare1;
+	int compare2;
+	if (this->Eventtype == 'D')
+	{
+		compare1 = endtime;
+	}else{
+		compare1 = starttime;
+	}
+	if (E.Eventtype == 'D')
+	{
+		compare2 = E.endtime;
+	}else{
+		compare2 = E.starttime;
+	}
+	if (compare1 >= compare2)
+	{
 		return true;
-	else
+	}else{
 		return false;
+	}
 }
 bool Event::operator<=(const Event &E){
-	if(this->starttime <= E.starttime)
+	int compare1;
+	int compare2;
+	if (this->Eventtype == 'D')
+	{
+		compare1 = endtime;
+	}else{
+		compare1 = starttime;
+	}
+	if (E.Eventtype == 'D')
+	{
+		compare2 = E.endtime;
+	}else{
+		compare2 = E.starttime;
+	}
+	if (compare1 <= compare2)
+	{
 		return true;
-	else
+	}else{
 		return false;
+	}
 }
 bool Event::operator>(const Event& E){
-	if (this->starttime > E.starttime)
+	int compare1;
+	int compare2;
+	if (this->Eventtype == 'D')
+	{
+		compare1 = endtime;
+	}else{
+		compare1 = starttime;
+	}
+	if (E.Eventtype == 'D')
+	{
+		compare2 = E.endtime;
+	}else{
+		compare2 = E.starttime;
+	}
+	if (compare1 > compare2)
+	{
 		return true;
-	else
+	}else{
 		return false;
+	}
 }
 bool Event::operator<(const Event&E){
-	if (this->starttime < E.starttime)
+	int compare1;
+	int compare2;
+	if (this->Eventtype == 'D')
+	{
+		compare1 = endtime;
+	}else{
+		compare1 = starttime;
+	}
+	if (E.Eventtype == 'D')
+	{
+		compare2 = E.endtime;
+	}else{
+		compare2 = E.starttime;
+	}
+	if (compare1 < compare2)
 	{
 		return true;
 	}else{
@@ -263,11 +496,11 @@ Event::Event(string ID,int starttime,char Eventtype,int period_time,char car):ID
 	finished = false;
 	changed = 0;
 }
-Event::Event(string ID,int starttime,char Eventtype):ID(ID),starttime(starttime),Eventtype(Eventtype){
-	endtime = 0;
+Event::Event(string ID,int endtime,char Eventtype):ID(ID),endtime(endtime),Eventtype(Eventtype){
+	starttime = 0;
 	inser = false;
 	finished = false;
-	car = 'A';
+	car = '-';
 	period_time = 0;
 	changed = 0;
 }
@@ -275,7 +508,7 @@ Event::Event(string ID,int starttime,char Eventtype,int changed):ID(ID),starttim
 	endtime = 0;
 	inser = false;
 	finished = false;
-	car = 'A';
+	car = '-';
 	period_time = 0;
 }
 Event::Event(const Event& P){
@@ -287,6 +520,9 @@ Event::Event(const Event& P){
 	this->finished = P.finished;
 	this->Eventtype = P.Eventtype;
 	this->period_time = P.period_time;
+	this->changed = P.changed;
+	this->row = P.row;
+	this->startbuytime = P.startbuytime;
 }
 
 
@@ -294,6 +530,8 @@ Event::Event(const Event& P){
 int main(int argc, char const *argv[])
 {
 	// string test = "00:05:10";
+	double total_wait = 0;
+	double finished_man = 0;
 	PriorityQueue<Event> eventlist;
 	int standard_car,business_car;
 	cin >> standard_car >> business_car;
@@ -340,22 +578,16 @@ int main(int argc, char const *argv[])
 			period = stoi(s.substr(s.find(" ")+1,string::npos));
 			Event E(Event_ID,time,'A',period,carclass);
 			eventlist.add(E);
-			// cout << Event_ID << ":" << carclass << ":" << peroid;
-			// cout << 'A' << endl;
 		}else if (event == 'D')
 		{
 			Event_ID = s;
 			Event E(Event_ID,time,'D');
 			eventlist.add(E);
-			// cout << Event_ID << ":" << endl;
-			// cout << 'D' << endl;
 		}else{
 			Event_ID = s.substr(0,s.find(" "));
 			changed_line = stoi(s.substr(s.find(" ")+1,string::npos));
 			Event E(Event_ID,time,'Q',changed_line);
 			eventlist.add(E);
-			// cout << Event_ID << ":" << changed_line << "\n";
-			// cout << 'Q' << endl;
 		}
 	}
 
@@ -379,7 +611,9 @@ int main(int argc, char const *argv[])
 						Event depart(tmp);//----
 						depart.setser(true);
 						depart.setendtime(departtime);
+						depart.setstartbuytime(currenttime);
 						depart.setevent('D');
+						depart.setrow(i);
 						eventlist.add(depart);
 						teller_isser[i] = true;
 						finished_ = true;
@@ -394,6 +628,7 @@ int main(int argc, char const *argv[])
 				if (!finished_)
 				{
 					eventlist.remove();
+					tmp.setrow(minindex);
 					ticket_counter[minindex].enqueue(tmp);
 					finished_ = true;
 				}
@@ -410,7 +645,9 @@ int main(int argc, char const *argv[])
 						Event depart(tmp);//----
 						depart.setser(true);
 						depart.setendtime(departtime);
+						depart.setstartbuytime(currenttime);
 						depart.setevent('D');
+						depart.setrow(i);
 						eventlist.add(depart);
 						teller_isser[i] = true;
 						finished_ = true;
@@ -425,25 +662,76 @@ int main(int argc, char const *argv[])
 				if (!finished_)
 				{
 					eventlist.remove();
+					tmp.setrow(minindex);
 					ticket_counter[minindex].enqueue(tmp);
 					finished_ = true;
 				}
 			}
 		}else if (tmp.getevent() == 'D')
-		{
-			/* code */
-					eventlist.remove();
+		{	//檢查inser
+			eventlist.remove();
+			if (!tmp.getser())
+			{
+				for (int i = 0; i < toatal_car; ++i)
+				{
+					if (ticket_counter[i].contain(tmp.getID()))
+					{
+						total_wait += tmp.getendtime() - ticket_counter[i].getitem(tmp.getID()).getstarttime();
+						
+						finished_man++;
+						ticket_counter[i].removeitem(tmp.getID());
+					}
+				}
+			}else if (!ticket_counter[tmp.getrow()].isEmpty() && tmp.getser())
+			{
+				Event customer(ticket_counter[tmp.getrow()].peekFront());
+				ticket_counter[tmp.getrow()].dequeue();
+				int departtime = currenttime + customer.getperiod();
+				Event depart(customer);						
+				depart.setser(true);
+				depart.setstartbuytime(currenttime);
+				depart.setendtime(departtime);
+				depart.setevent('D');
+				eventlist.add(depart);
+				total_wait += tmp.getwaittime();
+				finished_man ++;
+				tmp.printanswer();
+			}else{
+				tmp.printanswer();
+				total_wait += tmp.getwaittime();
+				finished_man++;
+				teller_isser[tmp.getrow()] = false;
+			}
 		}else{
-
-					eventlist.remove();
+			eventlist.remove();
+			for (int i = 0; i < toatal_car; ++i)
+			{
+				if (ticket_counter[i].contain(tmp.getID()))
+				{
+					Event wanttochangedman(ticket_counter[i].getitem(tmp.getID()));
+					if (ticket_counter[wanttochangedman.getrow()].getcnt() > ticket_counter[tmp.getchanged()].getcnt())
+					{
+						ticket_counter[i].removeitem(wanttochangedman.getID());
+						if (!teller_isser[tmp.getchanged()])
+						{
+							int departtime = currenttime + wanttochangedman.getperiod();
+							Event depart(wanttochangedman);
+							depart.setser(true);
+							depart.setstartbuytime(currenttime);
+							depart.setendtime(departtime);
+							depart.setevent('D');
+							depart.setrow(tmp.getchanged());
+							eventlist.add(depart);
+							teller_isser[tmp.getchanged()] = true;
+						}else{
+							ticket_counter[tmp.getchanged()].enqueue(wanttochangedman);
+						}
+					}
+				}
+			}
 		}
-
-		// eventlist.peek().print();
-		// eventlist.remove();
 	}
-
-
-
+	cout << int(round(total_wait/finished_man));
 	return 0;
 }
 
