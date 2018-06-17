@@ -209,6 +209,7 @@ public:
 	void setendtime(int end){endtime = end;}
 	void setevent(char e){Eventtype = e;}
 	void print(){cout << ID << ":" << Eventtype << endl;}
+	int getperiod(){return period_time;}
 	// ~Event();
 };
 bool Event::operator>=(const Event &E){
@@ -373,7 +374,6 @@ int main(int argc, char const *argv[])
 				{
 					if (ticket_counter[i].isEmpty() && !teller_isser[i])
 					{
-						//---------------------------
 						eventlist.remove();
 						int departtime = currenttime + tmp.getperiod();
 						Event depart(tmp);//----
@@ -393,17 +393,49 @@ int main(int argc, char const *argv[])
 				}
 				if (!finished_)
 				{
-					ticket_counter.enqueue(tmp);
+					eventlist.remove();
+					ticket_counter[minindex].enqueue(tmp);
 					finished_ = true;
 				}
 			}else{
-
+				int minwait = ticket_counter[business_car].getcnt();
+				int minindex = business_car;
+				bool finished_ = false;
+				for (int i = 0; i < toatal_car; ++i)
+				{
+					if (ticket_counter[i].isEmpty() && !teller_isser[i] && !is_business_car_queues[i])
+					{
+						eventlist.remove();
+						int departtime = currenttime + tmp.getperiod();
+						Event depart(tmp);//----
+						depart.setser(true);
+						depart.setendtime(departtime);
+						depart.setevent('D');
+						eventlist.add(depart);
+						teller_isser[i] = true;
+						finished_ = true;
+						break;
+					}else{
+						if (ticket_counter[i].getcnt() < minwait)
+						{
+							minindex = i;
+						}
+					}
+				}
+				if (!finished_)
+				{
+					eventlist.remove();
+					ticket_counter[minindex].enqueue(tmp);
+					finished_ = true;
+				}
 			}
 		}else if (tmp.getevent() == 'D')
 		{
 			/* code */
+					eventlist.remove();
 		}else{
 
+					eventlist.remove();
 		}
 
 		// eventlist.peek().print();
