@@ -34,11 +34,13 @@ class queue : public queueInterface<Itemtype>
 private:
 	Node<Itemtype>* backPtr;
 	Node<Itemtype>* frontPtr;
+	int queuecnt;
 public:
 	bool isEmpty() const;
 	bool enqueue(const Itemtype& newEntry);
 	bool dequeue();
 	Itemtype peekFront() const;
+	int getcnt(){return queuecnt;}
 	queue();
 	~queue();
 	queue(const queue<Itemtype>& q);//copy constructor
@@ -64,6 +66,7 @@ template <typename Itemtype>
 queue<Itemtype>::queue(){
 	backPtr = nullptr;
 	frontPtr = nullptr;
+	queuecnt = 0;
 }
 
 template <typename Itemtype>
@@ -201,6 +204,10 @@ public:
 	bool operator>=(const Event &E);
 	int gettime(){return starttime;}
 	char getevent(){return Eventtype;}
+	char getcarclass(){return car;}
+	void setser(bool ser){inser = ser;}
+	void setendtime(int end){endtime = end;}
+	void setevent(char e){Eventtype = e;}
 	void print(){cout << ID << ":" << Eventtype << endl;}
 	// ~Event();
 };
@@ -289,6 +296,7 @@ int main(int argc, char const *argv[])
 	PriorityQueue<Event> eventlist;
 	int standard_car,business_car;
 	cin >> standard_car >> business_car;
+	int toatal_car = standard_car + business_car;
 	bool* is_business_car_queues = new bool [(standard_car+business_car)];
 	for (int i = 0; i < (business_car+standard_car); ++i)
 	{
@@ -356,7 +364,41 @@ int main(int argc, char const *argv[])
 
 		if (tmp.getevent() == 'A')
 		{
-			/* code */
+			if (tmp.getcarclass() == 'B')
+			{
+				int minwait = ticket_counter[0].getcnt();
+				int minindex = 0;
+				bool finished_ = false;
+				for (int i = 0; i < toatal_car; ++i)
+				{
+					if (ticket_counter[i].isEmpty() && !teller_isser[i])
+					{
+						//---------------------------
+						eventlist.remove();
+						int departtime = currenttime + tmp.getperiod();
+						Event depart(tmp);//----
+						depart.setser(true);
+						depart.setendtime(departtime);
+						depart.setevent('D');
+						eventlist.add(depart);
+						teller_isser[i] = true;
+						finished_ = true;
+						break;
+					}else{
+						if (ticket_counter[i].getcnt() < minwait)
+						{
+							minindex = i;
+						}
+					}
+				}
+				if (!finished_)
+				{
+					ticket_counter.enqueue(tmp);
+					finished_ = true;
+				}
+			}else{
+
+			}
 		}else if (tmp.getevent() == 'D')
 		{
 			/* code */
@@ -372,6 +414,27 @@ int main(int argc, char const *argv[])
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //priortyqueue-----------------------------------------
@@ -421,6 +484,7 @@ bool queue<Itemtype>::enqueue(const Itemtype& newEntry){
 		backPtr->setNext(newNodePtr);
 	}
 	backPtr = newNodePtr;
+	queuecnt++;
 	return true;
 }
 template <typename Itemtype>
@@ -441,6 +505,7 @@ bool queue<Itemtype>::dequeue(){
 		nodeToDeletePtr = nullptr;
 		result = true;
 	}
+	queuecnt--;
 	return result;
 }
 //-------------------------------------------
